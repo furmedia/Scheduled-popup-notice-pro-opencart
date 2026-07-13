@@ -1,6 +1,6 @@
 # Scheduled Popup & Notice Pro
 
-Scheduled Popup & Notice Pro is an OpenCart 3.x extension for timed storefront popups and optional order-confirmation messages.
+Scheduled Popup & Notice Pro is a family of version-specific OpenCart extensions for timed storefront popups and optional order-confirmation messages.
 
 ## Features
 
@@ -13,15 +13,24 @@ Scheduled Popup & Notice Pro is an OpenCart 3.x extension for timed storefront p
 - Admin interface translations for English, Romanian, German, Spanish, French, Italian, and Brazilian Portuguese.
 - OpenCart 3.x OCMOD package with no external PHP dependencies.
 
-## Compatibility
+## Compatibility packages
 
-- OpenCart 3.0.x, tested against 3.0.3.8.
-- PHP 7.4+.
-- Journal-compatible when the active theme uses the standard OpenCart footer controller/template.
+Use the archive matching the installed OpenCart generation. Do not install the OpenCart 3 archive on OpenCart 2 or 4.
+
+| Package | Target | Status |
+|---|---|---|
+| `scheduled_popup_notice_pro_oc2_20_22.ocmod.zip` | OpenCart 2.0–2.2 | release candidate adapter |
+| `scheduled_popup_notice_pro_oc2_23.ocmod.zip` | OpenCart 2.3.x | release candidate adapter |
+| `scheduled_popup_notice_pro_oc3.ocmod.zip` | OpenCart 3.0.x | supported OCMOD adapter |
+| `scheduled_popup_notice_pro_oc3_journal.ocmod.zip` | OpenCart 3 + Journal 3 | Journal-aware OCMOD adapter |
+| `scheduled_popup_notice_pro_oc4_40.ocmod.zip` | OpenCart 4.0.x | extension adapter, runtime certification required |
+| `scheduled_popup_notice_pro_oc4_41.ocmod.zip` | OpenCart 4.1.x | extension adapter, runtime certification required |
+
+The OpenCart 2 and OpenCart 4 archives are deliberately separate because those releases do not share the OpenCart 3 route, template, event, or installer contracts. See `docs/COMPATIBILITY.md` and the per-version `docs/` files for exact boundaries and test requirements. PHP support follows the target OpenCart release; the package does not change the store's PHP requirements.
 
 ## Installation
 
-1. Upload `dist/scheduled_popup_notice_pro.ocmod.zip` through **Extensions → Installer**.
+1. Choose the archive for the exact OpenCart generation from `dist/`.
 2. Open **Extensions → Modifications** and click **Refresh**.
 3. Open **Extensions → Extensions → Modules**.
 4. Install and edit **Scheduled Popup & Notice Pro**.

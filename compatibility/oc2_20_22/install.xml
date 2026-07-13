@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>Scheduled Popup &amp; Notice Pro</name>
+  <code>cristale_shipping_notice</code>
+  <version>1.0.0</version>
+  <author>Furmedia</author>
+  <link>https://github.com/furmedia</link>
+
+  <file path="catalog/controller/common/footer.php">
+    <operation error="skip">
+      <search><![CDATA[$data['scripts'] = $this->document->getScripts('footer');]]></search>
+      <add position="before"><![CDATA[
+        $data['cristale_shipping_notice'] = $this->load->controller('extension/module/cristale_shipping_notice');
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="catalog/view/theme/*/template/common/footer.twig">
+    <operation error="skip">
+      <search><![CDATA[</body>]]></search>
+      <add position="before"><![CDATA[
+{% if cristale_shipping_notice %}{{ cristale_shipping_notice }}{% endif %}
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="catalog/controller/mail/order.php">
+    <operation error="skip">
+      <search><![CDATA[$data['text_greeting'] = sprintf($language->get('text_greeting'), $order_info['store_name']);]]></search>
+      <add position="after"><![CDATA[
+            $cristale_shipping_notice_email = $this->load->controller('extension/module/cristale_shipping_notice/getEmailMessage');
+
+            if ($cristale_shipping_notice_email) {
+                $data['text_greeting'] .= "\n\n" . $cristale_shipping_notice_email;
+            }
+      ]]></add>
+    </operation>
+  </file>
+</modification>

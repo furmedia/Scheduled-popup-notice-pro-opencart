@@ -2,7 +2,7 @@
 
 ## Short description
 
-Schedule polished storefront popups and optional order-confirmation messages in OpenCart 3.x. Set a start date, an exclusive expiry date, timezone, editable copy, and a responsive popup design from admin.
+Schedule polished storefront popups and optional order-confirmation messages across supported OpenCart generations. Set a start date, an exclusive expiry date, timezone, editable copy, and a responsive popup design from admin.
 
 ## Full description
 
@@ -22,7 +22,9 @@ The popup is centered, responsive, keyboard-friendly, and includes a visible clo
 
 ## Requirements
 
-- OpenCart 3.0.x.
+- Separate download archives are provided for OpenCart 2.0-2.2, 2.3, 3.0, 3 + Journal 3, 4.0 and 4.1.
+- Select the archive matching the installed generation; the installers and runtime APIs are not interchangeable.
+- See `docs/COMPATIBILITY.md` for certification status and test boundaries.
 - PHP 7.4 or newer.
 - OCMOD enabled.
 
