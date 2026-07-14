@@ -1,4 +1,3 @@
-# OpenCart 4.1.x adapter
+# Scheduled Popup Notice Pro - oc4_41
 
-Status: release candidate. Runtime certification is still required against the exact demo at https://oc4_41.foxly.ro/ before a public marketplace compatibility claim.
-
+Pachet nativ pentru OpenCart 4.x. Foloseste evenimentele OpenCart pentru popup si mesajul din e-mail, fara modificarea fisierelor de baza sau a temei.

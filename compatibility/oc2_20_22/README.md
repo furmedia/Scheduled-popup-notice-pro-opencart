@@ -1,4 +1,3 @@
-# OpenCart 2.0-2.2 adapter
+# Scheduled Popup Notice Pro - oc2_20_22
 
-Status: release candidate. Runtime certification is still required against the exact demo at https://oc2_20_22.foxly.ro/ before a public marketplace compatibility claim.
-
+Compatibilitate dedicata pentru OpenCart oc2_20_22. Instaleaza arhiva OCMOD, apoi refresh la Modificari si instaleaza modulul din Extensii.

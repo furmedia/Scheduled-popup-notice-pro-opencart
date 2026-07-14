@@ -38,5 +38,5 @@ $_['error_permission'] = 'Atenție: Nu ai permisiunea să modifici acest modul!'
 $_['error_timezone'] = 'Fusul orar nu este valid.';
 $_['error_datetime'] = 'Data trebuie să respecte formatul YYYY-MM-DD HH:MM:SS.';
 
-['text_preview_thanks'] = 'Vă mulțumim pentru înțelegere!';
+$_['text_preview_thanks'] = 'Vă mulțumim pentru înțelegere!';
 

@@ -25,8 +25,8 @@ The popup is centered, responsive, keyboard-friendly, and includes a visible clo
 - Separate download archives are provided for OpenCart 2.0-2.2, 2.3, 3.0, 3 + Journal 3, 4.0 and 4.1.
 - Select the archive matching the installed generation; the installers and runtime APIs are not interchangeable.
 - See `docs/COMPATIBILITY.md` for certification status and test boundaries.
-- PHP 7.4 or newer.
-- OCMOD enabled.
+- PHP must match the selected OpenCart release. The included compatibility matrix documents the validation runtimes.
+- OCMOD is required for OpenCart 2 and 3. OpenCart 4 uses native events and does not require an OCMOD refresh.
 
 ## Included files
 

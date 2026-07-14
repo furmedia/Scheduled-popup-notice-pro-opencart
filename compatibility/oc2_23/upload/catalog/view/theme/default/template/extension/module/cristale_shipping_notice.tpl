@@ -1,0 +1,243 @@
+<div class="cristale-shipping-notice" hidden role="dialog" aria-modal="true" aria-labelledby="cristale-shipping-notice-title">
+  <div class="cristale-shipping-notice__overlay" aria-hidden="true"></div>
+  <div class="cristale-shipping-notice__modal">
+    <button type="button" class="cristale-shipping-notice__close" aria-label="<?php echo $close_label; ?>">&times;</button>
+    <div class="cristale-shipping-notice__hero" aria-hidden="true">
+      <img class="cristale-shipping-notice__image" data-src="<?php echo $image; ?>" alt="" decoding="async">
+    </div>
+    <div class="cristale-shipping-notice__content">
+      <div class="cristale-shipping-notice__topline">
+        <span class="cristale-shipping-notice__icon">🚚</span>
+        <strong id="cristale-shipping-notice-title"><?php echo $title; ?></strong>
+      </div>
+      <p class="cristale-shipping-notice__message"><?php echo $message; ?></p>
+      <div class="cristale-shipping-notice__divider" aria-hidden="true"></div>
+      <p class="cristale-shipping-notice__submessage"><?php echo $submessage; ?></p>
+      <p class="cristale-shipping-notice__thanks"><?php echo $thanks; ?></p>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var notice = document.querySelector('.cristale-shipping-notice');
+  if (!notice) return;
+
+  try {
+    if (sessionStorage.getItem('cristaleShippingNoticeClosed') === '1') {
+      return;
+    }
+  } catch (e) {}
+
+  function setStyle(element, styles) {
+    if (!element) return;
+    Object.keys(styles).forEach(function (key) {
+      element.style[key] = styles[key];
+    });
+  }
+
+  var blurredElements = [];
+
+  function applyPageBlur() {
+    var target = document.querySelector('.site-wrapper');
+
+    if (!target) {
+      return;
+    }
+
+    blurredElements = [target];
+
+    blurredElements.forEach(function (element) {
+      element.setAttribute('data-cristale-old-filter', element.style.filter || '');
+      element.setAttribute('data-cristale-old-transition', element.style.transition || '');
+      element.setAttribute('data-cristale-old-will-change', element.style.willChange || '');
+
+      setStyle(element, {
+        filter: 'blur(3px)',
+        transition: 'filter .18s ease',
+        willChange: 'filter'
+      });
+    });
+  }
+
+  function clearPageBlur() {
+    blurredElements.forEach(function (element) {
+      element.style.filter = element.getAttribute('data-cristale-old-filter') || '';
+      element.style.transition = element.getAttribute('data-cristale-old-transition') || '';
+      element.style.willChange = element.getAttribute('data-cristale-old-will-change') || '';
+      element.removeAttribute('data-cristale-old-filter');
+      element.removeAttribute('data-cristale-old-transition');
+      element.removeAttribute('data-cristale-old-will-change');
+    });
+
+    blurredElements = [];
+  }
+
+  var isMobile = window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
+  var overlay = notice.querySelector('.cristale-shipping-notice__overlay');
+  var modal = notice.querySelector('.cristale-shipping-notice__modal');
+  var close = notice.querySelector('.cristale-shipping-notice__close');
+  var hero = notice.querySelector('.cristale-shipping-notice__hero');
+  var image = notice.querySelector('.cristale-shipping-notice__image');
+  var content = notice.querySelector('.cristale-shipping-notice__content');
+  var topline = notice.querySelector('.cristale-shipping-notice__topline');
+  var title = notice.querySelector('#cristale-shipping-notice-title');
+  var icon = notice.querySelector('.cristale-shipping-notice__icon');
+  var message = notice.querySelector('.cristale-shipping-notice__message');
+  var divider = notice.querySelector('.cristale-shipping-notice__divider');
+  var submessage = notice.querySelector('.cristale-shipping-notice__submessage');
+  var thanks = notice.querySelector('.cristale-shipping-notice__thanks');
+
+  setStyle(notice, {
+    color: '#2d2430',
+    fontFamily: 'inherit',
+    inset: '0',
+    position: 'fixed',
+    zIndex: '999999'
+  });
+  setStyle(overlay, {
+    background: 'rgba(37,24,42,.28)',
+    inset: '0',
+    position: 'absolute',
+    zIndex: '0'
+  });
+  setStyle(modal, {
+    background: '#fffafc',
+    border: '1px solid rgba(119,64,112,.2)',
+    borderRadius: '18px',
+    boxShadow: '0 22px 60px rgba(62,35,67,.24)',
+    display: 'flex',
+    flexDirection: 'column',
+    left: '50%',
+    maxHeight: isMobile ? '90vh' : '92vh',
+    maxWidth: '92vw',
+    minHeight: isMobile ? '0' : '470px',
+    overflow: 'hidden',
+    position: 'absolute',
+    textAlign: 'center',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isMobile ? '92vw' : '520px',
+    zIndex: '1'
+  });
+  setStyle(close, {
+    alignItems: 'center',
+    background: '#e21d2f',
+    border: '3px solid #fff',
+    borderRadius: '999px',
+    boxShadow: '0 8px 20px rgba(126,18,31,.35)',
+    color: '#fff',
+    cursor: 'pointer',
+    display: 'flex',
+    fontSize: '30px',
+    fontWeight: '700',
+    height: '44px',
+    justifyContent: 'center',
+    lineHeight: '1',
+    padding: '0',
+    position: 'absolute',
+    right: '12px',
+    top: '12px',
+    width: '44px',
+    zIndex: '3'
+  });
+  setStyle(hero, {
+    height: isMobile ? '116px' : '140px',
+    overflow: 'hidden',
+    position: 'relative'
+  });
+  setStyle(image, {
+    display: 'block',
+    height: '100%',
+    objectFit: 'cover',
+    objectPosition: 'center',
+    width: '100%'
+  });
+  setStyle(content, {
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: isMobile ? '10px' : '13px',
+    justifyContent: 'flex-start',
+    lineHeight: '1.24',
+    marginTop: '-24px',
+    padding: isMobile ? '0 18px 22px' : '0 38px 28px',
+    position: 'relative',
+    zIndex: '2'
+  });
+  setStyle(topline, {
+    alignItems: 'center',
+    background: 'linear-gradient(135deg,#462348,#64305d)',
+    borderRadius: '999px',
+    boxShadow: '0 10px 24px rgba(70,35,72,.22)',
+    color: '#fff',
+    display: 'inline-flex',
+    gap: '12px',
+    minHeight: isMobile ? '54px' : '64px',
+    padding: isMobile ? '7px 16px 7px 9px' : '9px 24px 9px 12px'
+  });
+  setStyle(title, {
+    color: '#fff',
+    fontSize: isMobile ? '19px' : '26px',
+    letterSpacing: '0',
+    textTransform: 'uppercase'
+  });
+  setStyle(icon, {
+    alignItems: 'center',
+    background: '#ead2dc',
+    borderRadius: '999px',
+    display: 'inline-flex',
+    flex: '0 0 auto',
+    fontSize: isMobile ? '23px' : '30px',
+    height: isMobile ? '40px' : '48px',
+    justifyContent: 'center',
+    width: isMobile ? '40px' : '48px'
+  });
+  setStyle(message, {
+    color: '#6f3a68',
+    fontSize: isMobile ? '20px' : '27px',
+    fontWeight: '700',
+    margin: '8px 0 0',
+    textTransform: 'uppercase'
+  });
+  setStyle(divider, {
+    background: 'linear-gradient(90deg,transparent,#d6aebf,transparent)',
+    height: '2px',
+    maxWidth: '360px',
+    width: '80%'
+  });
+  setStyle(submessage, {
+    color: '#2f2934',
+    fontSize: isMobile ? '18px' : '23px',
+    fontWeight: '600',
+    margin: '0'
+  });
+  setStyle(thanks, {
+    background: 'linear-gradient(135deg,#7b3d73,#8b4a7e)',
+    color: '#fff',
+    fontSize: isMobile ? '17px' : '21px',
+    fontStyle: 'italic',
+    margin: isMobile ? '2px -18px -22px' : '2px -38px -28px',
+    padding: isMobile ? '13px 18px' : '15px 24px',
+    width: isMobile ? 'calc(100% + 36px)' : 'calc(100% + 76px)'
+  });
+
+  if (document.body && notice.parentNode !== document.body) {
+    document.body.appendChild(notice);
+  }
+
+  if (image && image.getAttribute('data-src') && !image.getAttribute('src')) {
+    image.setAttribute('src', image.getAttribute('data-src'));
+  }
+
+  applyPageBlur();
+  notice.hidden = false;
+
+  if (close) {
+    close.addEventListener('click', function () {
+      clearPageBlur();
+      notice.hidden = true;
+      try { sessionStorage.setItem('cristaleShippingNoticeClosed', '1'); } catch (e) {}
+    });
+  }
+})();
+</script>

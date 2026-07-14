@@ -25,7 +25,7 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
 
             $this->session->data['success'] = $this->language->get('text_success');
 
-            $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true));
+            $this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true));
         }
 
         $data['heading_title'] = $this->language->get('heading_title');
@@ -94,22 +94,22 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('text_home'),
-            'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
+            'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
         );
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('text_extension'),
-            'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true)
+            'href' => $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true)
         );
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('heading_title'),
-            'href' => $this->url->link('extension/module/cristale_shipping_notice', 'user_token=' . $this->session->data['user_token'], true)
+            'href' => $this->url->link('extension/module/cristale_shipping_notice', 'token=' . $this->session->data['token'], true)
         );
 
-        $data['action'] = $this->url->link('extension/module/cristale_shipping_notice', 'user_token=' . $this->session->data['user_token'], true);
-        $data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true);
-        $data['clear_cache'] = $this->url->link('extension/module/cristale_shipping_notice/clearCache', 'user_token=' . $this->session->data['user_token'], true);
+        $data['action'] = $this->url->link('extension/module/cristale_shipping_notice', 'token=' . $this->session->data['token'], true);
+        $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true);
+        $data['clear_cache'] = $this->url->link('extension/module/cristale_shipping_notice/clearCache', 'token=' . $this->session->data['token'], true);
         $catalog_url = defined('HTTPS_CATALOG') ? HTTPS_CATALOG : (defined('HTTP_CATALOG') ? HTTP_CATALOG : '../');
         $data['banner_preview'] = $catalog_url . 'catalog/view/theme/default/image/cristale_shipping_notice/shipping-notice-background.webp';
 
@@ -135,7 +135,7 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
 
         if (!$this->user->hasPermission('modify', 'extension/module/cristale_shipping_notice')) {
             $this->session->data['error_warning'] = $this->language->get('error_permission');
-            $this->response->redirect($this->url->link('extension/module/cristale_shipping_notice', 'user_token=' . $this->session->data['user_token'], true));
+            $this->response->redirect($this->url->link('extension/module/cristale_shipping_notice', 'token=' . $this->session->data['token'], true));
             return;
         }
 
@@ -154,7 +154,7 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
         $warm = $this->warmHomepage();
 
         $this->session->data['success'] = sprintf($this->language->get('text_cache_success'), $deleted, $warm['status'], $warm['milliseconds']);
-        $this->response->redirect($this->url->link('extension/module/cristale_shipping_notice', 'user_token=' . $this->session->data['user_token'], true));
+        $this->response->redirect($this->url->link('extension/module/cristale_shipping_notice', 'token=' . $this->session->data['token'], true));
     }
 
     public function install() {

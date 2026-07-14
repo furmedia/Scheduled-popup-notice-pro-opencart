@@ -1,4 +1,3 @@
-# OpenCart 3 + Journal 3 adapter
+# Scheduled Popup Notice Pro - oc3_journal
 
-Status: release candidate. Runtime certification is still required against the exact demo at https://oc3_journal.foxly.ro/ before a public marketplace compatibility claim.
-
+Compatibilitate dedicata pentru OpenCart 3.x. Arhiva include OCMOD si resursele popup.

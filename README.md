@@ -19,22 +19,24 @@ Use the archive matching the installed OpenCart generation. Do not install the O
 
 | Package | Target | Status |
 |---|---|---|
-| `scheduled_popup_notice_pro_oc2_20_22.ocmod.zip` | OpenCart 2.0–2.2 | release candidate adapter |
-| `scheduled_popup_notice_pro_oc2_23.ocmod.zip` | OpenCart 2.3.x | release candidate adapter |
+| `scheduled_popup_notice_pro_oc2_20_22.ocmod.zip` | OpenCart 2.0–2.2 | legacy OCMOD adapter |
+| `scheduled_popup_notice_pro_oc2_23.ocmod.zip` | OpenCart 2.3.x | extension/module OCMOD adapter |
 | `scheduled_popup_notice_pro_oc3.ocmod.zip` | OpenCart 3.0.x | supported OCMOD adapter |
 | `scheduled_popup_notice_pro_oc3_journal.ocmod.zip` | OpenCart 3 + Journal 3 | Journal-aware OCMOD adapter |
-| `scheduled_popup_notice_pro_oc4_40.ocmod.zip` | OpenCart 4.0.x | extension adapter, runtime certification required |
-| `scheduled_popup_notice_pro_oc4_41.ocmod.zip` | OpenCart 4.1.x | extension adapter, runtime certification required |
+| `scheduled_popup_notice_pro_oc4_40.ocmod.zip` | OpenCart 4.0.x | native event extension |
+| `scheduled_popup_notice_pro_oc4_41.ocmod.zip` | OpenCart 4.1.x | native event extension |
 
 The OpenCart 2 and OpenCart 4 archives are deliberately separate because those releases do not share the OpenCart 3 route, template, event, or installer contracts. See `docs/COMPATIBILITY.md` and the per-version `docs/` files for exact boundaries and test requirements. PHP support follows the target OpenCart release; the package does not change the store's PHP requirements.
 
 ## Installation
 
 1. Choose the archive for the exact OpenCart generation from `dist/`.
-2. Open **Extensions → Modifications** and click **Refresh**.
-3. Open **Extensions → Extensions → Modules**.
-4. Install and edit **Scheduled Popup & Notice Pro**.
+2. Upload it through **Extensions → Installer**.
+3. For OpenCart 2 and 3, open **Extensions → Modifications** and click **Refresh**.
+4. Open **Extensions → Extensions → Modules**, install and edit **Scheduled Popup & Notice Pro**.
 5. Set the status, timezone, schedule, and messages.
+
+OpenCart 4 uses native events and `install.json`; it does not require an OCMOD refresh. The module installation registers the footer popup and order-email events automatically.
 
 The package is disabled on first install and contains an expired demo schedule so it cannot unexpectedly appear on a live store.
 
