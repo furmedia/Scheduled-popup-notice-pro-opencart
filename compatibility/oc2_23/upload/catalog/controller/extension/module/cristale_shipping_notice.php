@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 class ControllerExtensionModuleCristaleShippingNotice extends Controller {
     private $defaults = array(
         'status' => 0,

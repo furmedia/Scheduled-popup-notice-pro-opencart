@@ -11,7 +11,7 @@ Scheduled Popup & Notice Pro is a family of version-specific OpenCart extensions
 - Email injection runs only while the schedule is active.
 - Safe cache-clear and homepage warm-up action in admin; it does not delete carts, orders, customers, or sessions.
 - Admin interface translations for English, Romanian, German, Spanish, French, Italian, and Brazilian Portuguese.
-- OpenCart 3.x OCMOD package with no external PHP dependencies.
+- Version-specific packages for OpenCart 2.0-2.2, 2.3, 3.x, 3.x + Journal 3, 4.0.x, and 4.1.x, with no external PHP dependencies.
 
 ## Compatibility packages
 

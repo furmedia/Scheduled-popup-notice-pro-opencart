@@ -8,12 +8,12 @@ $_['text_success'] = 'Sucesso: módulo salvo.';
 $_['text_edit'] = 'Editar aviso programado';
 $_['text_enabled'] = 'Ativado';
 $_['text_disabled'] = 'Desativado';
-$_['text_signature'] = 'Scheduled Popup & Notice Pro for OpenCart 3.x.';
-$_['text_banner_image_note'] = 'This is the storefront popup preview. The text remains editable using the fields below.';
+$_['text_signature'] = 'Scheduled Popup & Notice Pro para OpenCart 3.x.';
+$_['text_banner_image_note'] = 'Esta é a pré-visualização do popup da loja. O texto continua editável nos campos abaixo.';
 $_['text_preview_thanks'] = 'Agradecemos a sua compreensão!';
-$_['text_performance_tools'] = 'Performance tools';
-$_['text_performance_note'] = 'Clears OpenCart/Journal file cache and warms the homepage. It does not delete carts, orders, customers, or sessions.';
-$_['text_cache_success'] = 'Cache cleared: %d files. Homepage warmed: HTTP %d in %d ms.';
+$_['text_performance_tools'] = 'Ferramentas de desempenho';
+$_['text_performance_note'] = 'Limpa o cache de arquivos do OpenCart/Journal e aquece a página inicial. Não exclui carrinhos, pedidos, clientes ou sessões.';
+$_['text_cache_success'] = 'Cache limpo: %d arquivos. Página inicial aquecida: HTTP %d em %d ms.';
 
 // Entry
 $_['entry_status'] = 'Status';
@@ -30,12 +30,12 @@ $_['entry_email_message'] = 'Mensagem do email de confirmação';
 $_['button_clear_cache'] = 'Limpar cache e aquecer início';
 
 // Help
-$_['help_datetime'] = 'Format: YYYY-MM-DD HH:MM:SS. Example: 2026-06-24 00:00:00';
-$_['help_ends_at'] = 'The expiration date is exclusive. To stop on June 30, use 2026-06-30 00:00:00.';
-$_['help_email_message'] = 'This text is added to the customer order confirmation email only while the period is active.';
+$_['help_datetime'] = 'Formato: YYYY-MM-DD HH:MM:SS. Exemplo: 2026-06-24 00:00:00';
+$_['help_ends_at'] = 'A data de expiração é exclusiva. Para parar em 30 de junho, use 2026-06-30 00:00:00.';
+$_['help_email_message'] = 'Este texto é adicionado ao e-mail de confirmação do pedido do cliente somente enquanto o período estiver ativo.';
 
 // Error
-$_['error_permission'] = 'Warning: You do not have permission to modify this module!';
+$_['error_permission'] = 'Atenção: você não tem permissão para modificar este módulo!';
 $_['error_timezone'] = 'O fuso horário não é válido.';
-$_['error_datetime'] = 'The date must use the YYYY-MM-DD HH:MM:SS format.';
+$_['error_datetime'] = 'A data deve usar o formato YYYY-MM-DD HH:MM:SS.';
 

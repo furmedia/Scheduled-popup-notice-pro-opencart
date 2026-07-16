@@ -13,6 +13,6 @@ This project ships separate adapter families because OpenCart 2, 3 and 4 have di
 
 ## Required certification
 
-Before publishing a compatibility claim, install the matching archive on the corresponding Foxly demo, test a clean install and uninstall, save settings, activate a current schedule, close and reopen the popup, verify blur cleanup, verify the order email hook, refresh modifications/cache for OpenCart 2/3, and test the default theme plus Journal where applicable. Local static checks are complete; remote demo certification still requires logged-in admin installation and browser interaction.
+Before publishing a compatibility claim, install the matching archive on the corresponding Foxly demo, test a clean install and uninstall, save settings, activate a current schedule, close and reopen the popup, verify blur cleanup, verify the order email hook, refresh modifications/cache for OpenCart 2/3, and test the default theme plus Journal where applicable. Local static checks are complete. The six public Foxly storefronts and admin login pages were reachable on 2026-07-16; remote installation certification still requires an authenticated administrator session for each demo.
 
 The archives are intentionally disabled with an expired demo schedule. No package should be installed across generations. A custom theme or checkout may require a theme-specific hook because the popup is inserted at the storefront footer.

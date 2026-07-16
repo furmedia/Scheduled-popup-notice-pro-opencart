@@ -1,4 +1,4 @@
-<?php echo $header; ?><?php echo $column_left; ?>
+﻿<?php echo $header; ?><?php echo $column_left; ?>
 <div id="content">
   <div class="page-header">
     <div class="container-fluid">
@@ -49,7 +49,7 @@
                   </div>
                   <div style="position:relative;z-index:2;margin-top:-24px;padding:0 38px 28px;">
                     <div style="display:inline-flex;align-items:center;gap:12px;min-height:64px;padding:9px 24px 9px 12px;border-radius:999px;background:linear-gradient(135deg,#462348,#64305d);box-shadow:0 10px 24px rgba(70,35,72,.22);color:#fff;">
-                      <span style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:999px;background:#ead2dc;font-size:30px;">🚚</span>
+                      <span style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:999px;background:#ead2dc;font-size:30px;">ðŸšš</span>
                       <strong style="font-size:26px;line-height:1;text-transform:uppercase;"><?php echo $module_cristale_shipping_notice_banner_title; ?></strong>
                     </div>
                     <div style="margin-top:18px;color:#6f3a68;font-size:27px;font-weight:700;line-height:1.24;text-transform:uppercase;"><?php echo $module_cristale_shipping_notice_banner_message; ?></div>
