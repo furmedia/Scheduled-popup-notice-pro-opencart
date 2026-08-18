@@ -145,7 +145,7 @@ class ControllerModuleCristaleShippingNotice extends Controller {
         $this->model_setting_setting->editSetting('module_cristale_shipping_notice', $existing);
         $this->createStatsTable();
         $this->db->query("DELETE FROM `" . DB_PREFIX . "modification` WHERE `code` = 'cristale_shipping_notice'");
-        $this->db->query("INSERT INTO `" . DB_PREFIX . "modification` SET `name` = '" . $this->db->escape($this->language->get('heading_title')) . "', `code` = 'cristale_shipping_notice', `author` = 'Furmedia', `version` = '2.0.0', `link` = 'https://github.com/furmedia/scheduled-popup-notice-pro', `xml` = '" . $this->db->escape($this->getModificationXml()) . "', `status` = '1', `date_added` = NOW()");
+        $this->db->query("INSERT INTO `" . DB_PREFIX . "modification` SET `name` = '" . $this->db->escape($this->language->get('heading_title')) . "', `code` = 'cristale_shipping_notice', `author` = 'Furmedia', `version` = '2.0.0', `link` = 'https://github.com/furmedia/Scheduled-popup-notice-pro-opencart', `xml` = '" . $this->db->escape($this->getModificationXml()) . "', `status` = '1', `date_added` = NOW()");
     }
 
     public function uninstall() {
@@ -407,7 +407,7 @@ class ControllerModuleCristaleShippingNotice extends Controller {
     private function getModificationXml() {
         return '<?xml version="1.0" encoding="utf-8"?>
 <modification>
-  <name>Scheduled Popup &amp; Notice Pro</name><code>cristale_shipping_notice</code><version>2.0.0</version><author>Furmedia</author><link>https://github.com/furmedia/scheduled-popup-notice-pro</link>
+  <name>Scheduled Popup &amp; Notice Pro</name><code>cristale_shipping_notice</code><version>2.0.0</version><author>Furmedia</author><link>https://github.com/furmedia/Scheduled-popup-notice-pro-opencart</link>
   <file path="catalog/controller/common/footer.php"><operation error="skip"><search><![CDATA[$data[\'powered\'] = sprintf($this->language->get(\'text_powered\'), $this->config->get(\'config_name\'), date(\'Y\', time()));]]></search><add position="after"><![CDATA[$data[\'cristale_shipping_notice\'] = $this->load->controller(\'module/cristale_shipping_notice\');]]></add></operation></file>
   <file path="catalog/view/theme/*/template/common/footer.tpl"><operation error="skip"><search><![CDATA[</body>]]></search><add position="before"><![CDATA[<?php if ($cristale_shipping_notice) { echo $cristale_shipping_notice; } ?>]]></add></operation></file>
   <file path="catalog/model/checkout/order.php"><operation error="skip"><search><![CDATA[$data[\'text_greeting\'] = sprintf($language->get(\'text_new_greeting\'), $order_info[\'store_name\']);]]></search><add position="after"><![CDATA[$cristale_shipping_notice_email = $this->load->controller(\'module/cristale_shipping_notice/getEmailMessage\', $order_info); if ($cristale_shipping_notice_email) { $data[\'text_greeting\'] .= "\n\n" . $cristale_shipping_notice_email; }]]></add></operation></file>

@@ -4,7 +4,7 @@
   <code>cristale_shipping_notice</code>
   <version>2.0.0</version>
   <author>Furmedia</author>
-  <link>https://github.com/furmedia/scheduled-popup-notice-pro</link>
+  <link>https://github.com/furmedia/Scheduled-popup-notice-pro-opencart</link>
 
   <file path="catalog/controller/common/footer.php">
     <operation error="skip">
