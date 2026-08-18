@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $_['text_close'] = 'Chiudi avviso';
 $_['text_thanks'] = 'Grazie per la comprensione!';
 $_['text_days'] = 'Giorni';

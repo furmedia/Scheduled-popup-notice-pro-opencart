@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 class ControllerModuleCristaleShippingNotice extends Controller {
     private $engine_loaded = false;
 

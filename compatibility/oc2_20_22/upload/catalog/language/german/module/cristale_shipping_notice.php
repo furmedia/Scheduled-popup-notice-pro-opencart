@@ -1,6 +1,6 @@
-﻿<?php
-$_['text_close'] = 'AnkÃ¼ndigung schlieÃŸen';
-$_['text_thanks'] = 'Vielen Dank fÃ¼r Ihr VerstÃ¤ndnis!';
+<?php
+$_['text_close'] = 'Ankündigung schließen';
+$_['text_thanks'] = 'Vielen Dank für Ihr Verständnis!';
 $_['text_days'] = 'Tage';
 $_['text_hours'] = 'Stunden';
 $_['text_minutes'] = 'Minuten';

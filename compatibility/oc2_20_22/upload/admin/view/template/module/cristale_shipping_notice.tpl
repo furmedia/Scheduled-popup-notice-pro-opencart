@@ -1,4 +1,4 @@
-﻿<?php echo $header; ?><?php echo $column_left; ?>
+<?php echo $header; ?><?php echo $column_left; ?>
 <div id="content">
   <div class="page-header">
     <div class="container-fluid">
@@ -73,12 +73,12 @@
     var code=String(language&&language.code||'en-gb').toLowerCase().replace('_','-').split('-')[0];
     var content={
       en:{title:'Important announcement',message:'Our schedule changes between {start_date} and {end_date}.',submessage:'Normal service resumes after {end_date}.',thanks:'Thank you for your understanding!',email_message:'Important: our schedule changes between {start_date} and {end_date}.',button_text:'Learn more',countdown_label:'Time remaining'},
-      ro:{title:'AnunÈ› important',message:'Programul nostru se modificÄƒ Ã®n perioada {start_date} - {end_date}.',submessage:'Programul normal se reia dupÄƒ {end_date}.',thanks:'VÄƒ mulÈ›umim pentru Ã®nÈ›elegere!',email_message:'Important: programul nostru se modificÄƒ Ã®ntre {start_date} È™i {end_date}.',button_text:'AflÄƒ mai multe',countdown_label:'Timp rÄƒmas'},
-      de:{title:'Wichtige AnkÃ¼ndigung',message:'Unser Zeitplan Ã¤ndert sich vom {start_date} bis {end_date}.',submessage:'Nach dem {end_date} gilt wieder der normale Zeitplan.',thanks:'Vielen Dank fÃ¼r Ihr VerstÃ¤ndnis!',email_message:'Wichtig: Unser Zeitplan Ã¤ndert sich vom {start_date} bis {end_date}.',button_text:'Mehr erfahren',countdown_label:'Verbleibende Zeit'},
-      fr:{title:'Annonce importante',message:'Nos horaires changent du {start_date} au {end_date}.',submessage:'Le service normal reprend aprÃ¨s le {end_date}.',thanks:'Merci de votre comprÃ©hension !',email_message:'Important : nos horaires changent du {start_date} au {end_date}.',button_text:'En savoir plus',countdown_label:'Temps restant'},
-      es:{title:'Aviso importante',message:'Nuestro horario cambia del {start_date} al {end_date}.',submessage:'El servicio normal se reanuda despuÃ©s del {end_date}.',thanks:'Â¡Gracias por su comprensiÃ³n!',email_message:'Importante: nuestro horario cambia del {start_date} al {end_date}.',button_text:'MÃ¡s informaciÃ³n',countdown_label:'Tiempo restante'},
-      it:{title:'Avviso importante',message:'I nostri orari cambiano dal {start_date} al {end_date}.',submessage:'Il servizio normale riprende dopo il {end_date}.',thanks:'Grazie per la comprensione!',email_message:'Importante: i nostri orari cambiano dal {start_date} al {end_date}.',button_text:'Scopri di piÃ¹',countdown_label:'Tempo rimanente'},
-      pt:{title:'Aviso importante',message:'O nosso horÃ¡rio muda de {start_date} a {end_date}.',submessage:'O serviÃ§o normal recomeÃ§a apÃ³s {end_date}.',thanks:'Agradecemos a sua compreensÃ£o!',email_message:'Importante: o nosso horÃ¡rio muda de {start_date} a {end_date}.',button_text:'Saiba mais',countdown_label:'Tempo restante'}
+      ro:{title:'Anunț important',message:'Programul nostru se modifică în perioada {start_date} - {end_date}.',submessage:'Programul normal se reia după {end_date}.',thanks:'Vă mulțumim pentru înțelegere!',email_message:'Important: programul nostru se modifică între {start_date} și {end_date}.',button_text:'Află mai multe',countdown_label:'Timp rămas'},
+      de:{title:'Wichtige Ankündigung',message:'Unser Zeitplan ändert sich vom {start_date} bis {end_date}.',submessage:'Nach dem {end_date} gilt wieder der normale Zeitplan.',thanks:'Vielen Dank für Ihr Verständnis!',email_message:'Wichtig: Unser Zeitplan ändert sich vom {start_date} bis {end_date}.',button_text:'Mehr erfahren',countdown_label:'Verbleibende Zeit'},
+      fr:{title:'Annonce importante',message:'Nos horaires changent du {start_date} au {end_date}.',submessage:'Le service normal reprend après le {end_date}.',thanks:'Merci de votre compréhension !',email_message:'Important : nos horaires changent du {start_date} au {end_date}.',button_text:'En savoir plus',countdown_label:'Temps restant'},
+      es:{title:'Aviso importante',message:'Nuestro horario cambia del {start_date} al {end_date}.',submessage:'El servicio normal se reanuda después del {end_date}.',thanks:'¡Gracias por su comprensión!',email_message:'Importante: nuestro horario cambia del {start_date} al {end_date}.',button_text:'Más información',countdown_label:'Tiempo restante'},
+      it:{title:'Avviso importante',message:'I nostri orari cambiano dal {start_date} al {end_date}.',submessage:'Il servizio normale riprende dopo il {end_date}.',thanks:'Grazie per la comprensione!',email_message:'Importante: i nostri orari cambiano dal {start_date} al {end_date}.',button_text:'Scopri di più',countdown_label:'Tempo rimanente'},
+      pt:{title:'Aviso importante',message:'O nosso horário muda de {start_date} a {end_date}.',submessage:'O serviço normal recomeça após {end_date}.',thanks:'Agradecemos a sua compreensão!',email_message:'Importante: o nosso horário muda de {start_date} a {end_date}.',button_text:'Saiba mais',countdown_label:'Tempo restante'}
     };
     return content[code]||content.en;
   }

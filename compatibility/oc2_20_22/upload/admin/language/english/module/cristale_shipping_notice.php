@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Heading
 $_['heading_title'] = 'Scheduled Popup & Notice Pro';
 
