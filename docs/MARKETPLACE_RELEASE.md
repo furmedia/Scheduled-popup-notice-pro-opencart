@@ -3,7 +3,7 @@
 ## Product metadata
 
 - Product name: **Scheduled Popup & Notice Pro**
-- Release version: **2.0.3**
+- Release version: **2.0.4**
 - Author: **Furmedia**
 - License model requested for the listing: **USD 19 one-time, 12 months support**
 - Listing copy: `MARKETPLACE_LISTING.md`

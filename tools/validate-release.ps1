@@ -220,14 +220,14 @@ Write-Output '== XML and JSON manifests =='
 $xmlFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File -Filter 'install.xml'
 foreach ($file in $xmlFiles) {
     [xml]$xml = Get-Content -Raw -LiteralPath $file.FullName
-    if ($xml.modification.version -ne '2.0.3') {
+    if ($xml.modification.version -ne '2.0.4') {
         throw "Unexpected OCMOD version in $($file.FullName)"
     }
 }
 $jsonFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart4'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File -Filter 'install.json'
 foreach ($file in $jsonFiles) {
     $manifest = Get-Content -Raw -LiteralPath $file.FullName | ConvertFrom-Json
-    if ($manifest.version -ne '2.0.3') {
+    if ($manifest.version -ne '2.0.4') {
         throw "Unexpected OpenCart 4 manifest version in $($file.FullName)"
     }
 }

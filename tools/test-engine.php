@@ -84,6 +84,24 @@ $migrated = FurmediaScheduledPopupEngine::normalizeCampaign(
 );
 check($migrated['content']['1']['title'] === 'Anunț important', 'unchanged English placeholder content migrates to Romanian');
 
+$intermediateEnglish = $oldEnglish;
+$intermediateEnglish['content']['1'] = array(
+    'title' => 'Important announcement',
+    'message' => 'Use this space for your scheduled announcement.',
+    'submessage' => 'The popup automatically disappears after the end date.',
+    'thanks' => 'Thank you for your understanding!',
+    'email_message' => 'This message is added to order confirmation emails while the schedule is active.',
+    'button_text' => 'Learn more',
+    'countdown_label' => 'Time remaining'
+);
+$migratedIntermediate = FurmediaScheduledPopupEngine::normalizeCampaign(
+    $intermediateEnglish,
+    array(1),
+    array(1 => 'ro-ro')
+);
+check($migratedIntermediate['content']['1']['title'] === 'Anunț important', 'intermediate English placeholder content migrates to Romanian');
+check(strpos($migratedIntermediate['content']['1']['message'], '{store_name}') !== false, 'intermediate placeholder migration includes dynamic shortcodes');
+
 $customRomanian = $oldEnglish;
 $customRomanian['content']['1']['title'] = 'Mesajul meu';
 $preserved = FurmediaScheduledPopupEngine::normalizeCampaign(

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.4 - 2026-08-19
+
+- Migrates the intermediate English starter text to the localized language template.
+- Preserves custom campaign content while pre-filling Romanian installations correctly.
+
 ## 2.0.3 - 2026-08-19
 
 - Replaced the free-text timezone field with a grouped selector containing PHP-supported timezones and their current UTC offsets.

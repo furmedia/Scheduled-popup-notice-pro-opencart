@@ -4,7 +4,7 @@
  * Kept compatible with PHP 5.6 so the same source can serve OpenCart 2.x-4.x.
  */
 class FurmediaScheduledPopupEngine {
-    const VERSION = '2.0.3';
+    const VERSION = '2.0.4';
 
     public static function defaultContent($language_code = 'en') {
         $templates = array(
@@ -432,6 +432,15 @@ class FurmediaScheduledPopupEngine {
                 'submessage' => 'Normal service resumes after {end_date}.',
                 'thanks' => 'Thank you for your understanding!',
                 'email_message' => 'Important: our schedule changes between {start_date} and {end_date}.',
+                'button_text' => 'Learn more',
+                'countdown_label' => 'Time remaining'
+            ),
+            array(
+                'title' => 'Important announcement',
+                'message' => 'Use this space for your scheduled announcement.',
+                'submessage' => 'The popup automatically disappears after the end date.',
+                'thanks' => 'Thank you for your understanding!',
+                'email_message' => 'This message is added to order confirmation emails while the schedule is active.',
                 'button_text' => 'Learn more',
                 'countdown_label' => 'Time remaining'
             ),
