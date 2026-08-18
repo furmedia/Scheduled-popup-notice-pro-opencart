@@ -52,8 +52,8 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
         $data['clear_cache'] = $this->url->link($route . '.clearCache', $token, true);
         $data['autocomplete_url'] = $this->url->link($route . '.autocomplete', $token, true);
         $data['reset_stats_url'] = $this->url->link($route . '.resetStats', $token, true);
-        $data['autocomplete_url_b64'] = $this->base64Json($data['autocomplete_url']);
-        $data['reset_stats_url_b64'] = $this->base64Json($data['reset_stats_url']);
+        $data['autocomplete_url_b64'] = $this->base64Json(html_entity_decode($data['autocomplete_url'], ENT_QUOTES, 'UTF-8'));
+        $data['reset_stats_url_b64'] = $this->base64Json(html_entity_decode($data['reset_stats_url'], ENT_QUOTES, 'UTF-8'));
         $data['module_cristale_shipping_notice_status'] = isset($this->request->post['module_cristale_shipping_notice_status']) ? (int)$this->request->post['module_cristale_shipping_notice_status'] : (int)$this->config->get('module_cristale_shipping_notice_status');
         $data['campaigns_b64'] = $this->base64Json($campaigns);
         $data['languages_b64'] = $this->base64Json($languages);
