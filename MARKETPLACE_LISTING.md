@@ -17,7 +17,7 @@ When several campaigns are active, they are queued by priority and shown one at 
 - Up to 50 independent campaigns.
 - Internal campaign name, enabled status, and display priority.
 - One-time, weekly, or monthly recurrence with native calendar and time pickers.
-- Campaign timezone and optional recurrence end date.
+- Grouped timezone selector with current UTC offsets and optional recurrence end date.
 - Exclusive end-time logic for precise automatic expiration.
 - Separate popup and email copy for every enabled OpenCart storefront language, with editable localized starter copy.
 - Dynamic shortcodes for dates, times, remaining time, store name, campaign name, and year.
@@ -28,7 +28,8 @@ When several campaigns are active, they are queued by priority and shown one at 
 - Optional live countdown.
 - Configurable call-to-action button, URL, and same-tab/new-tab behavior.
 - Display on every page, selected categories, or selected products.
-- Category and product autocomplete in admin.
+- Recent-product suggestions and search by product name, model, SKU, or exact ID.
+- One-click Romanian and English content templates prefilled with dynamic shortcodes.
 - Anonymous impression, CTA click, and close statistics with CTR.
 - Session-level event deduplication and per-occurrence dismissal.
 - Optional order-confirmation email message using the same schedule, language, and product/category targeting rules.

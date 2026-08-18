@@ -96,7 +96,26 @@ class ControllerModuleCristaleShippingNotice extends Controller {
             'banner_submessage' => $this->config->get('module_cristale_shipping_notice_banner_submessage'),
             'email_message' => $this->config->get('module_cristale_shipping_notice_email_message')
         );
-        return FurmediaScheduledPopupEngine::decodeCampaigns($json, $language_ids, $legacy);
+        return FurmediaScheduledPopupEngine::decodeCampaigns($json, $language_ids, $legacy, $this->languageCodes($language_ids));
+    }
+
+    private function languageCodes($language_ids) {
+        $ids = array();
+        foreach ((array)$language_ids as $language_id) {
+            if ((int)$language_id > 0) {
+                $ids[] = (int)$language_id;
+            }
+        }
+        if (!$ids) {
+            return array();
+        }
+
+        $codes = array();
+        $query = $this->db->query("SELECT language_id, code FROM `" . DB_PREFIX . "language` WHERE language_id IN (" . implode(',', array_unique($ids)) . ")");
+        foreach ($query->rows as $row) {
+            $codes[(int)$row['language_id']] = (string)$row['code'];
+        }
+        return $codes;
     }
 
     private function publicCampaign($campaign, $occurrence, $now) {

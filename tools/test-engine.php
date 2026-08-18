@@ -67,6 +67,32 @@ $legacy = FurmediaScheduledPopupEngine::fromLegacy(array(1, 2), array(
 ));
 check($legacy['name'] === 'Imported campaign' && $legacy['content']['2']['email_message'] === 'Legacy email', 'legacy settings migrate to every enabled language');
 
+$localized = FurmediaScheduledPopupEngine::defaultCampaign(
+    array(1, 2),
+    array(1 => 'ro-ro', 2 => 'en-gb')
+);
+check($localized['content']['1']['title'] === 'Anunț important', 'Romanian starter content follows the language code');
+check(strpos($localized['content']['1']['message'], '{store_name}') !== false, 'Romanian starter content includes dynamic shortcodes');
+check($localized['content']['2']['title'] === 'Important announcement', 'English starter content follows the language code');
+check(strpos($localized['content']['2']['email_message'], '{start_time}') !== false, 'English starter email includes dynamic shortcodes');
+
+$oldEnglish = FurmediaScheduledPopupEngine::defaultCampaign(array(1));
+$migrated = FurmediaScheduledPopupEngine::normalizeCampaign(
+    $oldEnglish,
+    array(1),
+    array(1 => 'ro-ro')
+);
+check($migrated['content']['1']['title'] === 'Anunț important', 'unchanged English placeholder content migrates to Romanian');
+
+$customRomanian = $oldEnglish;
+$customRomanian['content']['1']['title'] = 'Mesajul meu';
+$preserved = FurmediaScheduledPopupEngine::normalizeCampaign(
+    $customRomanian,
+    array(1),
+    array(1 => 'ro-ro')
+);
+check($preserved['content']['1']['title'] === 'Mesajul meu', 'custom non-English content is preserved during normalization');
+
 $normalized = FurmediaScheduledPopupEngine::normalizeCampaign(array_merge($one, array(
     'accent_color' => 'javascript:red',
     'button_url' => 'javascript:alert(1)',

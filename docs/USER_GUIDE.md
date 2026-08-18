@@ -32,7 +32,7 @@ The module accepts up to 50 campaigns. After changing settings, use the main **S
 
 For each campaign set:
 
-- **Timezone**: for example `Europe/Bucharest`.
+- **Timezone**: choose a PHP-supported timezone from the grouped list. Every option includes its current UTC offset; for Romania choose `Europe/Bucharest`.
 - **Starts at**: first start date and time. Click the field or its calendar icon to use the visual date and time picker.
 - **Ends at**: first end date and time. The end is exclusive.
 - **Recurrence**: none, weekly, or monthly.
@@ -56,6 +56,8 @@ Each enabled storefront language has independent fields for:
 - order-confirmation email message.
 
 The current storefront language is selected automatically. For order email, the order's language is used. New campaigns start with editable localized copy for the seven bundled languages. The popup title and main message are required for every enabled storefront language; optional fields may be left empty when they should not be displayed.
+
+Use **Apply Romanian template** or **Apply English template** to replace the fields in the currently open language tab with ready-to-edit starter text. The templates already contain dynamic date, time, store-name, and remaining-days shortcodes. Applying a template changes only that language tab.
 
 Content is plain text. This prevents pasted HTML or scripts from breaking the store layout.
 
@@ -114,7 +116,7 @@ Choose one target mode:
 - **Selected categories**: category pages whose category ID was selected.
 - **Selected products**: product pages whose product ID was selected.
 
-Use autocomplete to add categories or products. Targeting also applies to the optional order email: at least one ordered product must match the selected product or belong to a selected category.
+For products, focus the search field to load recently modified suggestions, or search by product name, model, SKU, or exact numeric product ID. Select a result to add it as a chip; use the chip's remove button to deselect it. Targeting also applies to the optional order email: at least one ordered product must match the selected product or belong to a selected category.
 
 ## 9. Multiple campaigns and dismissal
 

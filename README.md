@@ -5,7 +5,7 @@ Scheduled Popup & Notice Pro is a campaign manager for timed storefront popups a
 ## Features
 
 - Up to 50 independent campaigns with status, internal name and priority.
-- One-time, weekly or monthly schedules with timezone, optional recurrence end, and native calendar/time pickers.
+- One-time, weekly or monthly schedules with a grouped timezone/UTC-offset selector, optional recurrence end, and native calendar/time pickers.
 - Automatic activation and exclusive expiration; no cron job is required.
 - Separate popup and email content for every enabled storefront language.
 - Dynamic date, time, countdown, store and campaign shortcodes.
@@ -14,7 +14,7 @@ Scheduled Popup & Notice Pro is a campaign manager for timed storefront popups a
 - Adjustable overlay opacity and page blur.
 - Optional live countdown.
 - Optional call-to-action button with URL and same-tab/new-tab behavior.
-- Display on all pages, selected categories or selected products.
+- Display on all pages, selected categories or selected products; product targeting includes recent suggestions and search by name, model, SKU, or ID.
 - Anonymous session-deduplicated impression, button-click and close statistics with CTR.
 - Responsive accessible dialog, visible close button, Escape support and session dismissal.
 - Multiple active campaigns are shown in priority order, one after another.
@@ -92,6 +92,8 @@ Do not uninstall the old module first. Upload the matching 2.0 package over it, 
 ## Languages
 
 Admin and storefront labels are included for English, Romanian, German, French, Spanish, Italian and Brazilian Portuguese. Both `ro-ro` and the legacy `romanian` locale directory are supplied. Campaign copy is entered separately for every enabled OpenCart language, and new campaigns receive editable starter copy in the matching language.
+
+The content editor also provides one-click Romanian and English starter templates. Both are prefilled with schedule and store shortcodes, so dates and times update from the campaign settings without rewriting the message.
 
 ## Limits and safety
 

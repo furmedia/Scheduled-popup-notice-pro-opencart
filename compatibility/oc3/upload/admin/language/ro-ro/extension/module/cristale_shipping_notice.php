@@ -76,6 +76,15 @@ $_['text_confirm_delete'] = 'Stergi aceasta campanie?';
 $_['text_new_campaign'] = 'Campanie noua';
 $_['text_open_same'] = 'Aceeasi fila';
 $_['text_open_new'] = 'Fila noua';
+$_['text_apply_romanian_template'] = 'Aplica modelul in romana';
+$_['text_apply_english_template'] = 'Aplica modelul in engleza';
+$_['text_template_help'] = 'Aplica un model gata de folosit, cu shortcode-uri, limbii selectate in acest moment.';
+$_['text_product_loading'] = 'Se incarca produsele...';
+$_['text_product_empty'] = 'Nu a fost gasit niciun produs.';
+$_['text_product_error'] = 'Produsele nu au putut fi incarcate. Incercati din nou.';
+$_['text_product_suggestions'] = 'Cand cautarea este goala sunt afisate produsele modificate recent.';
+$_['text_product_model'] = 'Model';
+$_['button_product_search'] = 'Cauta';
 
 $_['entry_campaign_name'] = 'Nume intern campanie';
 $_['entry_priority'] = 'Prioritate';
@@ -104,7 +113,7 @@ $_['entry_blur'] = 'Blur fundal (px)';
 $_['entry_target_type'] = 'Afiseaza pe';
 $_['entry_categories'] = 'Categorii';
 $_['entry_products'] = 'Produse';
-$_['placeholder_product_search'] = 'Scrie minimum 2 caractere pentru a cauta un produs...';
+$_['placeholder_product_search'] = 'Cauta dupa nume, model, SKU sau ID produs...';
 
 $_['error_campaign_limit'] = 'Trebuie sa pastrezi intre 1 si 50 de campanii.';
 $_['error_campaign_name'] = 'Campania %d are nevoie de un nume intern.';

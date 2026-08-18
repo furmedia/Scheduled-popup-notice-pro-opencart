@@ -4,24 +4,83 @@
  * Kept compatible with PHP 5.6 so the same source can serve OpenCart 2.x-4.x.
  */
 class FurmediaScheduledPopupEngine {
-    const VERSION = '2.0.2';
+    const VERSION = '2.0.3';
 
-    public static function defaultContent() {
-        return array(
-            'title' => 'Important announcement',
-            'message' => 'Our schedule changes between {start_date} and {end_date}.',
-            'submessage' => 'Normal service resumes after {end_date}.',
-            'thanks' => 'Thank you for your understanding!',
-            'email_message' => 'Important: our schedule changes between {start_date} and {end_date}.',
-            'button_text' => 'Learn more',
-            'countdown_label' => 'Time remaining'
+    public static function defaultContent($language_code = 'en') {
+        $templates = array(
+            'en' => array(
+                'title' => 'Important announcement',
+                'message' => '{store_name}: schedule update from {start_date}, {start_time} to {end_date}, {end_time}.',
+                'submessage' => 'Normal service resumes after {end_date}. {days_remaining} day(s) remaining.',
+                'thanks' => 'Thank you for your understanding!',
+                'email_message' => 'Important: {store_name} has a schedule update from {start_date}, {start_time} to {end_date}, {end_time}. Normal service resumes after this period.',
+                'button_text' => 'Learn more',
+                'countdown_label' => 'Time remaining'
+            ),
+            'ro' => array(
+                'title' => 'Anunț important',
+                'message' => '{store_name}: program modificat din {start_date}, ora {start_time}, până în {end_date}, ora {end_time}.',
+                'submessage' => 'Programul normal se reia după {end_date}. Mai sunt {days_remaining} zile.',
+                'thanks' => 'Vă mulțumim pentru înțelegere!',
+                'email_message' => 'Important: {store_name} are program modificat din {start_date}, ora {start_time}, până în {end_date}, ora {end_time}. Programul normal se reia după această perioadă.',
+                'button_text' => 'Află mai multe',
+                'countdown_label' => 'Timp rămas'
+            ),
+            'de' => array(
+                'title' => 'Wichtige Ankündigung',
+                'message' => '{store_name}: geänderter Zeitplan vom {start_date}, {start_time} bis {end_date}, {end_time}.',
+                'submessage' => 'Nach dem {end_date} gilt wieder der normale Zeitplan. Noch {days_remaining} Tag(e).',
+                'thanks' => 'Vielen Dank für Ihr Verständnis!',
+                'email_message' => 'Wichtig: Bei {store_name} gilt vom {start_date}, {start_time} bis {end_date}, {end_time} ein geänderter Zeitplan. Danach gilt wieder der normale Zeitplan.',
+                'button_text' => 'Mehr erfahren',
+                'countdown_label' => 'Verbleibende Zeit'
+            ),
+            'fr' => array(
+                'title' => 'Annonce importante',
+                'message' => '{store_name} : horaires modifiés du {start_date} à {start_time} au {end_date} à {end_time}.',
+                'submessage' => 'Le service normal reprend après le {end_date}. Il reste {days_remaining} jour(s).',
+                'thanks' => 'Merci de votre compréhension !',
+                'email_message' => 'Important : {store_name} applique des horaires modifiés du {start_date} à {start_time} au {end_date} à {end_time}. Le service normal reprend ensuite.',
+                'button_text' => 'En savoir plus',
+                'countdown_label' => 'Temps restant'
+            ),
+            'es' => array(
+                'title' => 'Aviso importante',
+                'message' => '{store_name}: horario modificado desde {start_date}, {start_time}, hasta {end_date}, {end_time}.',
+                'submessage' => 'El servicio normal se reanuda después del {end_date}. Quedan {days_remaining} día(s).',
+                'thanks' => '¡Gracias por su comprensión!',
+                'email_message' => 'Importante: {store_name} tendrá un horario modificado desde {start_date}, {start_time}, hasta {end_date}, {end_time}. Después se reanudará el servicio normal.',
+                'button_text' => 'Más información',
+                'countdown_label' => 'Tiempo restante'
+            ),
+            'it' => array(
+                'title' => 'Avviso importante',
+                'message' => '{store_name}: orario modificato dal {start_date}, {start_time}, al {end_date}, {end_time}.',
+                'submessage' => 'Il servizio normale riprende dopo il {end_date}. Mancano {days_remaining} giorno/i.',
+                'thanks' => 'Grazie per la comprensione!',
+                'email_message' => 'Importante: {store_name} avrà un orario modificato dal {start_date}, {start_time}, al {end_date}, {end_time}. In seguito riprenderà il servizio normale.',
+                'button_text' => 'Scopri di più',
+                'countdown_label' => 'Tempo rimanente'
+            ),
+            'pt' => array(
+                'title' => 'Aviso importante',
+                'message' => '{store_name}: horário alterado de {start_date}, {start_time}, até {end_date}, {end_time}.',
+                'submessage' => 'O serviço normal recomeça após {end_date}. Faltam {days_remaining} dia(s).',
+                'thanks' => 'Agradecemos a sua compreensão!',
+                'email_message' => 'Importante: {store_name} terá um horário alterado de {start_date}, {start_time}, até {end_date}, {end_time}. Depois, o serviço normal será retomado.',
+                'button_text' => 'Saiba mais',
+                'countdown_label' => 'Tempo restante'
+            )
         );
+
+        $prefix = self::languagePrefix($language_code);
+        return isset($templates[$prefix]) ? $templates[$prefix] : $templates['en'];
     }
 
-    public static function defaultCampaign($language_ids) {
+    public static function defaultCampaign($language_ids, $language_codes = array()) {
         $content = array();
         foreach ((array)$language_ids as $language_id) {
-            $content[(string)(int)$language_id] = self::defaultContent();
+            $content[(string)(int)$language_id] = self::defaultContent(self::languageCode($language_id, $language_codes));
         }
 
         return array(
@@ -61,21 +120,21 @@ class FurmediaScheduledPopupEngine {
         return 'spn_' . str_replace('.', '', uniqid('', true));
     }
 
-    public static function decodeCampaigns($json, $language_ids, $legacy) {
+    public static function decodeCampaigns($json, $language_ids, $legacy, $language_codes = array()) {
         $campaigns = json_decode((string)$json, true);
         if (!is_array($campaigns) || !$campaigns) {
-            $campaigns = array(self::fromLegacy($language_ids, $legacy));
+            $campaigns = array(self::fromLegacy($language_ids, $legacy, $language_codes));
         }
 
         $normalized = array();
         foreach ($campaigns as $campaign) {
             if (is_array($campaign)) {
-                $normalized[] = self::normalizeCampaign($campaign, $language_ids);
+                $normalized[] = self::normalizeCampaign($campaign, $language_ids, $language_codes);
             }
         }
 
         if (!$normalized) {
-            $normalized[] = self::defaultCampaign($language_ids);
+            $normalized[] = self::defaultCampaign($language_ids, $language_codes);
         }
 
         usort($normalized, array(__CLASS__, 'sortByPriority'));
@@ -86,8 +145,8 @@ class FurmediaScheduledPopupEngine {
         return json_encode(array_values((array)$campaigns), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
-    public static function fromLegacy($language_ids, $legacy) {
-        $campaign = self::defaultCampaign($language_ids);
+    public static function fromLegacy($language_ids, $legacy, $language_codes = array()) {
+        $campaign = self::defaultCampaign($language_ids, $language_codes);
         $campaign['name'] = 'Imported campaign';
         $campaign['status'] = !empty($legacy['status']) ? 1 : 0;
         foreach (array('timezone', 'starts_at', 'ends_at') as $key) {
@@ -112,8 +171,8 @@ class FurmediaScheduledPopupEngine {
         return $campaign;
     }
 
-    public static function normalizeCampaign($campaign, $language_ids) {
-        $defaults = self::defaultCampaign($language_ids);
+    public static function normalizeCampaign($campaign, $language_ids, $language_codes = array()) {
+        $defaults = self::defaultCampaign($language_ids, $language_codes);
         $result = array_merge($defaults, (array)$campaign);
 
         $result['id'] = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)$result['id']);
@@ -151,7 +210,12 @@ class FurmediaScheduledPopupEngine {
         foreach ((array)$language_ids as $language_id) {
             $key = (string)(int)$language_id;
             $content = isset($incoming[$key]) && is_array($incoming[$key]) ? $incoming[$key] : array();
-            $content = array_merge(self::defaultContent(), $content);
+            $language_code = self::languageCode($language_id, $language_codes);
+            $localized_defaults = self::defaultContent($language_code);
+            if (self::languagePrefix($language_code) !== 'en' && self::isEnglishPlaceholder($content)) {
+                $content = array();
+            }
+            $content = array_merge($localized_defaults, $content);
             $result['content'][$key] = array(
                 'title' => self::plain($content['title'], 180),
                 'message' => self::plain($content['message'], 1000),
@@ -336,6 +400,57 @@ class FurmediaScheduledPopupEngine {
             }
         }
         return $result;
+    }
+
+    private static function languageCode($language_id, $language_codes) {
+        $numeric_key = (int)$language_id;
+        $string_key = (string)$numeric_key;
+        if (isset($language_codes[$numeric_key])) {
+            return (string)$language_codes[$numeric_key];
+        }
+        if (isset($language_codes[$string_key])) {
+            return (string)$language_codes[$string_key];
+        }
+        return 'en';
+    }
+
+    private static function languagePrefix($language_code) {
+        $language_code = strtolower(str_replace('_', '-', trim((string)$language_code)));
+        $parts = explode('-', $language_code);
+        return $parts[0] !== '' ? $parts[0] : 'en';
+    }
+
+    private static function isEnglishPlaceholder($content) {
+        if (!$content) {
+            return false;
+        }
+
+        $templates = array(
+            array(
+                'title' => 'Important announcement',
+                'message' => 'Our schedule changes between {start_date} and {end_date}.',
+                'submessage' => 'Normal service resumes after {end_date}.',
+                'thanks' => 'Thank you for your understanding!',
+                'email_message' => 'Important: our schedule changes between {start_date} and {end_date}.',
+                'button_text' => 'Learn more',
+                'countdown_label' => 'Time remaining'
+            ),
+            self::defaultContent('en')
+        );
+
+        foreach ($templates as $template) {
+            $matches = true;
+            foreach ($template as $key => $value) {
+                if (isset($content[$key]) && (string)$content[$key] !== (string)$value) {
+                    $matches = false;
+                    break;
+                }
+            }
+            if ($matches) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static function plain($value, $length) {

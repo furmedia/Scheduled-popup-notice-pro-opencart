@@ -14,12 +14,13 @@ No OCMOD refresh is required. The first install is disabled and cannot unexpecte
 ## Main features
 
 - Up to 50 campaigns, priorities, and sequential display.
-- One-time, weekly, and monthly schedules with timezone.
+- One-time, weekly, and monthly schedules with a grouped timezone and UTC-offset selector.
 - Separate campaign content for every enabled storefront language.
 - Dynamic date/time shortcodes.
 - Custom image, presets, colors, overlay, blur, and live preview.
 - Countdown and configurable CTA.
-- All-page, category, and product targeting.
+- All-page, category, and product targeting with recent suggestions and name/model/SKU/ID search.
+- Ready-made Romanian and English templates prefilled with dynamic shortcodes.
 - Anonymous aggregate impressions, clicks, closes, and CTR.
 - Optional targeted message in standard new-order emails.
 - Safe cache clear and 1.x settings migration.

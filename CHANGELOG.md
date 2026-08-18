@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.3 - 2026-08-19
+
+- Replaced the free-text timezone field with a grouped selector containing PHP-supported timezones and their current UTC offsets.
+- Added recent-product suggestions and searchable targeting by product name, model, SKU, or exact product ID.
+- Added ready-to-use Romanian and English content templates containing dynamic schedule and store shortcodes.
+- Localized new-campaign starter content for all bundled languages and migrated unchanged English placeholders in non-English language fields.
+
 ## 2.0.2 - 2026-08-19
 
 - Replaced plain schedule date fields with native calendar and time pickers.

@@ -157,8 +157,22 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
         return \FurmediaScheduledPopupEngine::decodeCampaigns(
             (string)$this->config->get('module_cristale_shipping_notice_campaigns_json'),
             $language_ids,
-            $legacy
+            $legacy,
+            $this->languageCodes($language_ids)
         );
+    }
+
+    private function languageCodes(array $language_ids): array {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $language_ids), static fn(int $id): bool => $id > 0)));
+        if (!$ids) {
+            return [];
+        }
+
+        $codes = [];
+        foreach ($this->db->query("SELECT language_id, code FROM `" . DB_PREFIX . "language` WHERE language_id IN (" . implode(',', $ids) . ")")->rows as $row) {
+            $codes[(int)$row['language_id']] = (string)$row['code'];
+        }
+        return $codes;
     }
 
     private function publicCampaign(array $campaign, array $occurrence, \DateTime $now): array {

@@ -22,13 +22,15 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
 
         $languages = $this->getLanguages();
         $language_ids = $this->languageIds($languages);
-        $campaigns = $this->getCampaigns($language_ids);
+        $language_codes = $this->languageCodes($languages);
+        $campaigns = $this->getCampaigns($language_ids, $language_codes);
 
         if ($this->request->server['REQUEST_METHOD'] == 'POST') {
             $campaigns = FurmediaScheduledPopupEngine::decodeCampaigns(
                 isset($this->request->post['module_cristale_shipping_notice_campaigns_json']) ? html_entity_decode($this->request->post['module_cristale_shipping_notice_campaigns_json'], ENT_QUOTES, 'UTF-8') : '',
                 $language_ids,
-                array()
+                array(),
+                $language_codes
             );
             $campaigns = $this->processUploads($campaigns);
 
@@ -72,6 +74,7 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
         $data['campaigns_b64'] = $this->base64Json($campaigns);
         $data['languages_b64'] = $this->base64Json($languages);
         $data['categories_b64'] = $this->base64Json($this->getCategories());
+        $data['timezones_b64'] = $this->base64Json($this->getTimezones());
         $data['stats_b64'] = $this->base64Json($this->getStats());
         $data['ui_b64'] = $this->base64Json($this->adminUi());
         $data['catalog_image_url'] = $this->catalogUrl() . 'image/';
@@ -87,12 +90,28 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
         $json = array();
         if ($this->user->hasPermission('access', 'extension/module/cristale_shipping_notice')) {
             $filter = isset($this->request->get['filter_name']) ? trim($this->request->get['filter_name']) : '';
-            $language_id = (int)$this->config->get('config_language_id');
+            $language_id = $this->storeLanguageId();
+            $where = "pd.language_id = '" . (int)$language_id . "'";
+            $order = 'p.date_modified DESC, p.product_id DESC';
             if ($filter !== '') {
-                $query = $this->db->query("SELECT p.product_id, pd.name, p.model FROM `" . DB_PREFIX . "product` p LEFT JOIN `" . DB_PREFIX . "product_description` pd ON (p.product_id = pd.product_id) WHERE pd.language_id = '" . $language_id . "' AND (pd.name LIKE '%" . $this->db->escape($filter) . "%' OR p.model LIKE '%" . $this->db->escape($filter) . "%') ORDER BY pd.name ASC LIMIT 20");
-                foreach ($query->rows as $row) {
-                    $json[] = array('product_id' => (int)$row['product_id'], 'name' => html_entity_decode($row['name'], ENT_QUOTES, 'UTF-8'), 'model' => $row['model']);
+                $escaped = $this->db->escape($filter);
+                $where .= " AND (pd.name LIKE '%" . $escaped . "%' OR p.model LIKE '%" . $escaped . "%' OR p.sku LIKE '%" . $escaped . "%'";
+                if (ctype_digit($filter)) {
+                    $where .= " OR p.product_id = '" . (int)$filter . "'";
                 }
+                $where .= ')';
+                $order = "CASE WHEN pd.name = '" . $escaped . "' OR p.model = '" . $escaped . "' OR p.sku = '" . $escaped . "' THEN 0 ELSE 1 END, pd.name ASC";
+            }
+            $query = $this->db->query("SELECT p.product_id, pd.name, p.model, p.sku, p.quantity, p.status FROM `" . DB_PREFIX . "product` p LEFT JOIN `" . DB_PREFIX . "product_description` pd ON (p.product_id = pd.product_id) WHERE " . $where . " ORDER BY " . $order . " LIMIT 30");
+            foreach ($query->rows as $row) {
+                $json[] = array(
+                    'product_id' => (int)$row['product_id'],
+                    'name' => html_entity_decode($row['name'], ENT_QUOTES, 'UTF-8'),
+                    'model' => $row['model'],
+                    'sku' => $row['sku'],
+                    'quantity' => (int)$row['quantity'],
+                    'status' => (int)$row['status']
+                );
             }
         }
         $this->response->addHeader('Content-Type: application/json');
@@ -139,13 +158,13 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
         }
         if (empty($existing['module_cristale_shipping_notice_campaigns_json'])) {
             $languages = $this->getLanguages();
-            $campaigns = array(FurmediaScheduledPopupEngine::fromLegacy($this->languageIds($languages), $this->legacySettings()));
+            $campaigns = array(FurmediaScheduledPopupEngine::fromLegacy($this->languageIds($languages), $this->legacySettings(), $this->languageCodes($languages)));
             $existing['module_cristale_shipping_notice_campaigns_json'] = FurmediaScheduledPopupEngine::encodeCampaigns($campaigns);
         }
         $this->model_setting_setting->editSetting('module_cristale_shipping_notice', $existing);
         $this->createStatsTable();
         $this->db->query("DELETE FROM `" . DB_PREFIX . "modification` WHERE `code` = 'cristale_shipping_notice'");
-        $this->db->query("INSERT INTO `" . DB_PREFIX . "modification` SET `extension_install_id` = '0', `name` = '" . $this->db->escape($this->language->get('heading_title')) . "', `code` = 'cristale_shipping_notice', `author` = 'Furmedia', `version` = '2.0.2', `link` = 'https://github.com/furmedia/Scheduled-popup-notice-pro-opencart', `xml` = '" . $this->db->escape($this->getModificationXml()) . "', `status` = '1', `date_added` = NOW()");
+        $this->db->query("INSERT INTO `" . DB_PREFIX . "modification` SET `extension_install_id` = '0', `name` = '" . $this->db->escape($this->language->get('heading_title')) . "', `code` = 'cristale_shipping_notice', `author` = 'Furmedia', `version` = '2.0.3', `link` = 'https://github.com/furmedia/Scheduled-popup-notice-pro-opencart', `xml` = '" . $this->db->escape($this->getModificationXml()) . "', `status` = '1', `date_added` = NOW()");
     }
 
     public function uninstall() {
@@ -167,7 +186,10 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
             $this->error['warning'] = $this->language->get('error_campaign_limit');
             return false;
         }
-        $identifiers = DateTimeZone::listIdentifiers();
+        $identifiers = DateTimeZone::listIdentifiers(DateTimeZone::ALL_WITH_BC);
+        if (!in_array('UTC', $identifiers, true)) {
+            $identifiers[] = 'UTC';
+        }
         foreach ($campaigns as $index => $campaign) {
             $number = $index + 1;
             if ($campaign['name'] === '') {
@@ -207,9 +229,9 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
         return empty($this->error['warning']);
     }
 
-    private function getCampaigns($language_ids) {
+    private function getCampaigns($language_ids, $language_codes) {
         $json = $this->config->get('module_cristale_shipping_notice_campaigns_json');
-        return FurmediaScheduledPopupEngine::decodeCampaigns($json, $language_ids, $this->legacySettings());
+        return FurmediaScheduledPopupEngine::decodeCampaigns($json, $language_ids, $this->legacySettings(), $language_codes);
     }
 
     private function legacySettings() {
@@ -366,8 +388,68 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
         return $ids;
     }
 
-    private function getCategories() {
+    private function languageCodes($languages) {
+        $codes = array();
+        foreach ($languages as $language) {
+            $codes[(int)$language['language_id']] = (string)$language['code'];
+        }
+        return $codes;
+    }
+
+    private function storeLanguageId() {
         $language_id = (int)$this->config->get('config_language_id');
+        if ($language_id > 0) {
+            return $language_id;
+        }
+
+        $language_code = (string)$this->config->get('config_language');
+        if ($language_code !== '') {
+            $query = $this->db->query("SELECT language_id FROM `" . DB_PREFIX . "language` WHERE code = '" . $this->db->escape($language_code) . "' LIMIT 1");
+            if (!empty($query->row['language_id'])) {
+                return (int)$query->row['language_id'];
+            }
+        }
+
+        $query = $this->db->query("SELECT language_id FROM `" . DB_PREFIX . "language` WHERE status = '1' ORDER BY sort_order, language_id LIMIT 1");
+        return !empty($query->row['language_id']) ? (int)$query->row['language_id'] : 1;
+    }
+
+    private function getTimezones() {
+        $identifiers = DateTimeZone::listIdentifiers(DateTimeZone::ALL_WITH_BC);
+        if (!in_array('UTC', $identifiers, true)) {
+            array_unshift($identifiers, 'UTC');
+        }
+
+        $groups = array();
+        $now = new DateTime('now', new DateTimeZone('UTC'));
+        foreach ($identifiers as $identifier) {
+            try {
+                $timezone = new DateTimeZone($identifier);
+                $offset = $timezone->getOffset($now);
+            } catch (Exception $e) {
+                continue;
+            }
+            $sign = $offset < 0 ? '-' : '+';
+            $absolute = abs($offset);
+            $offset_label = sprintf('UTC%s%02d:%02d', $sign, floor($absolute / 3600), floor(($absolute % 3600) / 60));
+            $parts = explode('/', $identifier, 2);
+            $group = count($parts) > 1 ? $parts[0] : 'General';
+            if (!isset($groups[$group])) {
+                $groups[$group] = array();
+            }
+            $groups[$group][] = array('value' => $identifier, 'label' => '(' . $offset_label . ') ' . str_replace('_', ' ', $identifier));
+        }
+
+        ksort($groups, SORT_NATURAL | SORT_FLAG_CASE);
+        $result = array();
+        foreach ($groups as $label => $zones) {
+            $result[] = array('label' => $label, 'zones' => $zones);
+        }
+        return $result;
+    }
+
+    private function getCategories() {
+        $language_id = $this->storeLanguageId();
         $query = $this->db->query("SELECT c.category_id, cd.name FROM `" . DB_PREFIX . "category` c LEFT JOIN `" . DB_PREFIX . "category_description` cd ON (c.category_id = cd.category_id) WHERE cd.language_id = '" . $language_id . "' ORDER BY cd.name");
         $result = array();
         foreach ($query->rows as $row) {
@@ -416,13 +498,18 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
             'entry_preset', 'text_preset_elegant', 'text_preset_minimal', 'text_preset_bold', 'entry_accent_color', 'entry_background_color', 'entry_text_color',
             'entry_button_color', 'entry_overlay_color', 'entry_overlay_opacity', 'entry_blur', 'entry_target_type', 'text_target_all', 'text_target_categories',
             'text_target_products', 'entry_categories', 'entry_products', 'placeholder_product_search', 'text_impressions', 'text_clicks', 'text_closes', 'text_ctr', 'text_reset_stats',
-            'text_preview', 'text_shortcodes', 'text_shortcode_help', 'text_upload_help', 'text_no_campaigns', 'text_confirm_delete', 'text_new_campaign', 'text_open_same', 'text_open_new'
+            'text_preview', 'text_shortcodes', 'text_shortcode_help', 'text_upload_help', 'text_no_campaigns', 'text_confirm_delete', 'text_new_campaign', 'text_open_same', 'text_open_new',
+            'text_apply_romanian_template', 'text_apply_english_template', 'text_template_help', 'text_product_loading', 'text_product_empty', 'text_product_error', 'text_product_suggestions', 'text_product_model', 'button_product_search'
         );
         $ui = array();
         foreach ($keys as $key) {
             $ui[$key] = $this->language->get($key);
         }
         $ui['shortcodes'] = array('{start_date}', '{start_time}', '{end_date}', '{end_time}', '{days_remaining}', '{hours_remaining}', '{countdown}', '{store_name}', '{campaign_name}', '{year}');
+        $ui['content_templates'] = array(
+            'ro' => FurmediaScheduledPopupEngine::defaultContent('ro'),
+            'en' => FurmediaScheduledPopupEngine::defaultContent('en')
+        );
         return $ui;
     }
 
@@ -483,7 +570,7 @@ class ControllerExtensionModuleCristaleShippingNotice extends Controller {
     private function getModificationXml() {
         return '<?xml version="1.0" encoding="utf-8"?>
 <modification>
-  <name>Scheduled Popup &amp; Notice Pro</name><code>cristale_shipping_notice</code><version>2.0.2</version><author>Furmedia</author><link>https://github.com/furmedia/Scheduled-popup-notice-pro-opencart</link>
+  <name>Scheduled Popup &amp; Notice Pro</name><code>cristale_shipping_notice</code><version>2.0.3</version><author>Furmedia</author><link>https://github.com/furmedia/Scheduled-popup-notice-pro-opencart</link>
   <file path="catalog/controller/common/footer.php"><operation error="skip"><search><![CDATA[$data[\'scripts\'] = $this->document->getScripts(\'footer\');]]></search><add position="before"><![CDATA[$data[\'cristale_shipping_notice\'] = $this->load->controller(\'extension/module/cristale_shipping_notice\');]]></add></operation></file>
   <file path="catalog/view/theme/*/template/common/footer.twig"><operation error="skip"><search><![CDATA[</body>]]></search><add position="before"><![CDATA[{% if cristale_shipping_notice %}{{ cristale_shipping_notice }}{% endif %}]]></add></operation></file>
   <file path="catalog/controller/mail/order.php"><operation error="skip"><search><![CDATA[$data[\'text_greeting\'] = sprintf($language->get(\'text_greeting\'), $order_info[\'store_name\']);]]></search><add position="after"><![CDATA[$cristale_shipping_notice_email = $this->load->controller(\'extension/module/cristale_shipping_notice/getEmailMessage\', $order_info); if ($cristale_shipping_notice_email) { $data[\'text_greeting\'] .= "\n\n" . $cristale_shipping_notice_email; }]]></add></operation></file>

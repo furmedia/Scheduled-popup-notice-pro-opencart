@@ -11,13 +11,15 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
         $this->load->model('setting/setting');
         $languages = $this->getLanguages();
         $language_ids = array_column($languages, 'language_id');
-        $campaigns = $this->campaigns($language_ids);
+        $language_codes = $this->languageCodes($languages);
+        $campaigns = $this->campaigns($language_ids, $language_codes);
 
         if ($this->request->server['REQUEST_METHOD'] === 'POST') {
             $campaigns = \FurmediaScheduledPopupEngine::decodeCampaigns(
                 html_entity_decode((string)($this->request->post['module_cristale_shipping_notice_campaigns_json'] ?? ''), ENT_QUOTES, 'UTF-8'),
                 $language_ids,
-                []
+                [],
+                $language_codes
             );
             $campaigns = $this->processUploads($campaigns);
             if ($this->validate($campaigns, $language_ids)) {
@@ -54,6 +56,7 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
         $data['campaigns_b64'] = $this->base64Json($campaigns);
         $data['languages_b64'] = $this->base64Json($languages);
         $data['categories_b64'] = $this->base64Json($this->getCategories());
+        $data['timezones_b64'] = $this->base64Json($this->getTimezones());
         $data['stats_b64'] = $this->base64Json($this->getStats());
         $data['ui_b64'] = $this->base64Json($this->adminUi());
         $catalog = defined('HTTPS_CATALOG') ? HTTPS_CATALOG : HTTP_CATALOG;
@@ -69,12 +72,28 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
         $json = [];
         if ($this->user->hasPermission('access', 'extension/furmedia_scheduled_popup/module/scheduled_popup')) {
             $filter = trim((string)($this->request->get['filter_name'] ?? ''));
+            $language_id = $this->storeLanguageId();
+            $where = "pd.language_id = '" . $language_id . "'";
+            $order = 'p.date_modified DESC, p.product_id DESC';
             if ($filter !== '') {
-                $language_id = (int)$this->config->get('config_language_id');
-                $query = $this->db->query("SELECT p.product_id, pd.name, p.model FROM `" . DB_PREFIX . "product` p LEFT JOIN `" . DB_PREFIX . "product_description` pd ON (p.product_id = pd.product_id) WHERE pd.language_id = '" . $language_id . "' AND (pd.name LIKE '%" . $this->db->escape($filter) . "%' OR p.model LIKE '%" . $this->db->escape($filter) . "%') ORDER BY pd.name ASC LIMIT 20");
-                foreach ($query->rows as $row) {
-                    $json[] = ['product_id' => (int)$row['product_id'], 'name' => html_entity_decode($row['name'], ENT_QUOTES, 'UTF-8'), 'model' => $row['model']];
+                $escaped = $this->db->escape($filter);
+                $where .= " AND (pd.name LIKE '%" . $escaped . "%' OR p.model LIKE '%" . $escaped . "%' OR p.sku LIKE '%" . $escaped . "%'";
+                if (ctype_digit($filter)) {
+                    $where .= " OR p.product_id = '" . (int)$filter . "'";
                 }
+                $where .= ')';
+                $order = "CASE WHEN pd.name = '" . $escaped . "' OR p.model = '" . $escaped . "' OR p.sku = '" . $escaped . "' THEN 0 ELSE 1 END, pd.name ASC";
+            }
+            $query = $this->db->query("SELECT p.product_id, pd.name, p.model, p.sku, p.quantity, p.status FROM `" . DB_PREFIX . "product` p LEFT JOIN `" . DB_PREFIX . "product_description` pd ON (p.product_id = pd.product_id) WHERE " . $where . " ORDER BY " . $order . " LIMIT 30");
+            foreach ($query->rows as $row) {
+                $json[] = [
+                    'product_id' => (int)$row['product_id'],
+                    'name' => html_entity_decode($row['name'], ENT_QUOTES, 'UTF-8'),
+                    'model' => $row['model'],
+                    'sku' => $row['sku'],
+                    'quantity' => (int)$row['quantity'],
+                    'status' => (int)$row['status']
+                ];
             }
         }
         $this->response->addHeader('Content-Type: application/json');
@@ -117,7 +136,7 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
         if (empty($existing['module_cristale_shipping_notice_campaigns_json'])) {
             $languages = $this->getLanguages();
             $legacy = $this->legacySettings();
-            $existing['module_cristale_shipping_notice_campaigns_json'] = \FurmediaScheduledPopupEngine::encodeCampaigns([\FurmediaScheduledPopupEngine::fromLegacy(array_column($languages, 'language_id'), $legacy)]);
+            $existing['module_cristale_shipping_notice_campaigns_json'] = \FurmediaScheduledPopupEngine::encodeCampaigns([\FurmediaScheduledPopupEngine::fromLegacy(array_column($languages, 'language_id'), $legacy, $this->languageCodes($languages))]);
         }
         $this->model_setting_setting->editSetting('module_cristale_shipping_notice', $existing);
         $this->createStatsTable();
@@ -147,10 +166,12 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
             $this->error['warning'] = $this->language->get('error_campaign_limit');
             return false;
         }
+        $timezones = \DateTimeZone::listIdentifiers(\DateTimeZone::ALL_WITH_BC);
+        if (!in_array('UTC', $timezones, true)) $timezones[] = 'UTC';
         foreach ($campaigns as $index => $campaign) {
             $number = $index + 1;
             if (!$campaign['name']) return $this->campaignError('error_campaign_name', $number);
-            if (!in_array($campaign['timezone'], \DateTimeZone::listIdentifiers(), true)) return $this->campaignError('error_campaign_timezone', $number);
+            if (!in_array($campaign['timezone'], $timezones, true)) return $this->campaignError('error_campaign_timezone', $number);
             $start = $this->parseDate($campaign['starts_at'], $campaign['timezone']);
             $end = $this->parseDate($campaign['ends_at'], $campaign['timezone']);
             if (!$start || !$end || $end <= $start) return $this->campaignError('error_campaign_dates', $number);
@@ -169,8 +190,8 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
         return false;
     }
 
-    private function campaigns(array $language_ids): array {
-        return \FurmediaScheduledPopupEngine::decodeCampaigns((string)$this->config->get('module_cristale_shipping_notice_campaigns_json'), $language_ids, $this->legacySettings());
+    private function campaigns(array $language_ids, array $language_codes = []): array {
+        return \FurmediaScheduledPopupEngine::decodeCampaigns((string)$this->config->get('module_cristale_shipping_notice_campaigns_json'), $language_ids, $this->legacySettings(), $language_codes);
     }
 
     private function legacySettings(): array {
@@ -294,8 +315,65 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
         return array_map(static fn(array $row): array => ['language_id' => (int)$row['language_id'], 'name' => $row['name'], 'code' => $row['code']], $this->db->query("SELECT language_id, name, code FROM `" . DB_PREFIX . "language` WHERE status = '1' ORDER BY sort_order, name")->rows);
     }
 
-    private function getCategories(): array {
+    private function languageCodes(array $languages): array {
+        $codes = [];
+        foreach ($languages as $language) {
+            $codes[(int)$language['language_id']] = (string)$language['code'];
+        }
+        return $codes;
+    }
+
+    private function storeLanguageId(): int {
         $language_id = (int)$this->config->get('config_language_id');
+        if ($language_id > 0) {
+            return $language_id;
+        }
+
+        $language_code = (string)$this->config->get('config_language');
+        if ($language_code !== '') {
+            $query = $this->db->query("SELECT language_id FROM `" . DB_PREFIX . "language` WHERE code = '" . $this->db->escape($language_code) . "' LIMIT 1");
+            if (!empty($query->row['language_id'])) {
+                return (int)$query->row['language_id'];
+            }
+        }
+
+        $query = $this->db->query("SELECT language_id FROM `" . DB_PREFIX . "language` WHERE status = '1' ORDER BY sort_order, language_id LIMIT 1");
+        return !empty($query->row['language_id']) ? (int)$query->row['language_id'] : 1;
+    }
+
+    private function getTimezones(): array {
+        $identifiers = \DateTimeZone::listIdentifiers(\DateTimeZone::ALL_WITH_BC);
+        if (!in_array('UTC', $identifiers, true)) {
+            array_unshift($identifiers, 'UTC');
+        }
+
+        $groups = [];
+        $now = new \DateTime('now', new \DateTimeZone('UTC'));
+        foreach ($identifiers as $identifier) {
+            try {
+                $timezone = new \DateTimeZone($identifier);
+                $offset = $timezone->getOffset($now);
+            } catch (\Throwable) {
+                continue;
+            }
+            $sign = $offset < 0 ? '-' : '+';
+            $absolute = abs($offset);
+            $offset_label = sprintf('UTC%s%02d:%02d', $sign, floor($absolute / 3600), floor(($absolute % 3600) / 60));
+            $parts = explode('/', $identifier, 2);
+            $group = count($parts) > 1 ? $parts[0] : 'General';
+            $groups[$group] ??= [];
+            $groups[$group][] = ['value' => $identifier, 'label' => '(' . $offset_label . ') ' . str_replace('_', ' ', $identifier)];
+        }
+        ksort($groups, SORT_NATURAL | SORT_FLAG_CASE);
+        $result = [];
+        foreach ($groups as $label => $zones) {
+            $result[] = ['label' => $label, 'zones' => $zones];
+        }
+        return $result;
+    }
+
+    private function getCategories(): array {
+        $language_id = $this->storeLanguageId();
         return array_map(static fn(array $row): array => ['category_id' => (int)$row['category_id'], 'name' => html_entity_decode($row['name'], ENT_QUOTES, 'UTF-8')], $this->db->query("SELECT c.category_id, cd.name FROM `" . DB_PREFIX . "category` c LEFT JOIN `" . DB_PREFIX . "category_description` cd ON (c.category_id = cd.category_id) WHERE cd.language_id = '" . $language_id . "' ORDER BY cd.name")->rows);
     }
 
@@ -320,10 +398,14 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
     }
 
     private function adminUi(): array {
-        $keys = ['text_add_campaign','text_duplicate','text_delete','text_campaign','text_schedule','text_content','text_design','text_targeting','text_statistics','entry_status','entry_campaign_name','entry_priority','entry_timezone','entry_starts_at','entry_ends_at','entry_recurrence','entry_recurrence_until','entry_date_format','entry_time_format','text_none','text_weekly','text_monthly','entry_title','entry_message','entry_submessage','entry_thanks','entry_email_message','entry_button_text','entry_button_url','entry_button_target','entry_countdown','entry_countdown_label','entry_image','text_remove_image','entry_preset','text_preset_elegant','text_preset_minimal','text_preset_bold','entry_accent_color','entry_background_color','entry_text_color','entry_button_color','entry_overlay_color','entry_overlay_opacity','entry_blur','entry_target_type','text_target_all','text_target_categories','text_target_products','entry_categories','entry_products','placeholder_product_search','text_impressions','text_clicks','text_closes','text_ctr','text_reset_stats','text_preview','text_shortcodes','text_shortcode_help','text_upload_help','text_no_campaigns','text_confirm_delete','text_new_campaign','text_open_same','text_open_new'];
+        $keys = ['text_add_campaign','text_duplicate','text_delete','text_campaign','text_schedule','text_content','text_design','text_targeting','text_statistics','entry_status','entry_campaign_name','entry_priority','entry_timezone','entry_starts_at','entry_ends_at','entry_recurrence','entry_recurrence_until','entry_date_format','entry_time_format','text_none','text_weekly','text_monthly','entry_title','entry_message','entry_submessage','entry_thanks','entry_email_message','entry_button_text','entry_button_url','entry_button_target','entry_countdown','entry_countdown_label','entry_image','text_remove_image','entry_preset','text_preset_elegant','text_preset_minimal','text_preset_bold','entry_accent_color','entry_background_color','entry_text_color','entry_button_color','entry_overlay_color','entry_overlay_opacity','entry_blur','entry_target_type','text_target_all','text_target_categories','text_target_products','entry_categories','entry_products','placeholder_product_search','text_impressions','text_clicks','text_closes','text_ctr','text_reset_stats','text_preview','text_shortcodes','text_shortcode_help','text_upload_help','text_no_campaigns','text_confirm_delete','text_new_campaign','text_open_same','text_open_new','text_apply_romanian_template','text_apply_english_template','text_template_help','text_product_loading','text_product_empty','text_product_error','text_product_suggestions','text_product_model','button_product_search'];
         $ui = [];
         foreach ($keys as $key) $ui[$key] = $this->language->get($key);
         $ui['shortcodes'] = ['{start_date}','{start_time}','{end_date}','{end_time}','{days_remaining}','{hours_remaining}','{countdown}','{store_name}','{campaign_name}','{year}'];
+        $ui['content_templates'] = [
+            'ro' => \FurmediaScheduledPopupEngine::defaultContent('ro'),
+            'en' => \FurmediaScheduledPopupEngine::defaultContent('en')
+        ];
         return $ui;
     }
 

@@ -76,6 +76,15 @@ $_['text_confirm_delete'] = 'Delete this campaign?';
 $_['text_new_campaign'] = 'New campaign';
 $_['text_open_same'] = 'Same tab';
 $_['text_open_new'] = 'New tab';
+$_['text_apply_romanian_template'] = 'Apply Romanian template';
+$_['text_apply_english_template'] = 'Apply English template';
+$_['text_template_help'] = 'Applies a ready-to-use shortcode template to the currently selected language.';
+$_['text_product_loading'] = 'Loading products...';
+$_['text_product_empty'] = 'No products matched your search.';
+$_['text_product_error'] = 'Products could not be loaded. Please try again.';
+$_['text_product_suggestions'] = 'Recent products are shown when the search field is empty.';
+$_['text_product_model'] = 'Model';
+$_['button_product_search'] = 'Search';
 
 $_['entry_campaign_name'] = 'Internal campaign name';
 $_['entry_priority'] = 'Priority';
@@ -104,7 +113,7 @@ $_['entry_blur'] = 'Background blur (px)';
 $_['entry_target_type'] = 'Display on';
 $_['entry_categories'] = 'Categories';
 $_['entry_products'] = 'Products';
-$_['placeholder_product_search'] = 'Type at least 2 characters to find a product...';
+$_['placeholder_product_search'] = 'Search by name, model, SKU or product ID...';
 
 $_['error_campaign_limit'] = 'You must keep between 1 and 50 campaigns.';
 $_['error_campaign_name'] = 'Campaign %d needs an internal name.';
