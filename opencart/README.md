@@ -1,36 +1,32 @@
-# Scheduled Popup & Notice Pro
+# Scheduled Popup & Notice Pro 2.0 - OpenCart 3
 
-Scheduled Popup & Notice Pro is an OpenCart 3.x extension for timed storefront popups and optional order-confirmation messages.
+This package contains the OpenCart 3 OCMOD/Twig adapter.
 
-## Features
+## Install
 
-- Start and end date/time with timezone support.
-- Automatic expiration using an exclusive end date.
-- Centered responsive popup with overlay, optional page blur, lazy-loaded background image, keyboard-friendly close button, and session-level dismissal.
-- Editable title, main text, submessage, and order email message.
-- Email injection runs only while the schedule is active.
-- Safe cache-clear and homepage warm-up action in admin; it does not delete carts, orders, customers, or sessions.
-- Admin interface translations for English, Romanian, German, Spanish, French, Italian, and Brazilian Portuguese.
-- OpenCart 3.x OCMOD package with no external PHP dependencies.
-
-## Compatibility
-
-- OpenCart 3.0.x, tested against 3.0.3.8.
-- PHP 7.4+.
-- Journal-compatible when the active theme uses the standard OpenCart footer controller/template.
-
-## Installation
-
-1. Upload `dist/scheduled_popup_notice_pro.ocmod.zip` through **Extensions → Installer**.
-2. Open **Extensions → Modifications** and click **Refresh**.
-3. Open **Extensions → Extensions → Modules**.
+1. Upload this `.ocmod.zip` through **Extensions > Installer**.
+2. Open **Extensions > Modifications** and click **Refresh**.
+3. Open **Extensions > Extensions > Modules**.
 4. Install and edit **Scheduled Popup & Notice Pro**.
-5. Set the status, timezone, schedule, and messages.
+5. Enable the module, configure at least one campaign, and save.
 
-The package is disabled on first install and contains an expired demo schedule so it cannot unexpectedly appear on a live store.
+The first install is disabled and cannot unexpectedly display a live popup.
 
-## Publishing notes
+## Main features
 
-The popup text is intentionally stored as configurable content rather than hard-coded translations. This lets merchants write the announcement in any storefront language. The admin controls are translated for the included locales.
+- Up to 50 campaigns, priorities, and sequential display.
+- One-time, weekly, and monthly schedules with timezone.
+- Separate campaign content for every enabled storefront language.
+- Dynamic date/time shortcodes.
+- Custom image, presets, colors, overlay, blur, and live preview.
+- Countdown and configurable CTA.
+- All-page, category, and product targeting.
+- Anonymous aggregate impressions, clicks, closes, and CTR.
+- Optional targeted message in standard new-order emails.
+- Safe cache clear and 1.x settings migration.
 
-The package does not include Cristale-semipretioase.ro branding, credentials, domains, customer data, or site-specific campaign text.
+## Upgrade from 1.x
+
+Do not uninstall the old version. Upload 2.0 over it, refresh Modifications, open the module, and save once. Review the Imported campaign before enabling it.
+
+The package contains no store credentials, customer data, domain, branding, or enabled campaign.

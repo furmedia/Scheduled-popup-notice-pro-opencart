@@ -2,14 +2,14 @@
 <modification>
   <name>Scheduled Popup &amp; Notice Pro</name>
   <code>cristale_shipping_notice</code>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
   <author>Furmedia</author>
-  <link>https://github.com/furmedia</link>
+  <link>https://github.com/furmedia/scheduled-popup-notice-pro</link>
 
   <file path="catalog/controller/common/footer.php">
     <operation error="skip">
-      <search><![CDATA[$data['scripts'] = $this->document->getScripts('footer');]]></search>
-      <add position="before"><![CDATA[
+      <search><![CDATA[$data['powered'] = sprintf($this->language->get('text_powered'), $this->config->get('config_name'), date('Y', time()));]]></search>
+      <add position="after"><![CDATA[
         $data['cristale_shipping_notice'] = $this->load->controller('extension/module/cristale_shipping_notice');
       ]]></add>
     </operation>
@@ -28,7 +28,7 @@
     <operation error="skip">
       <search><![CDATA[$data['text_greeting'] = sprintf($language->get('text_new_greeting'), $order_info['store_name']);]]></search>
       <add position="after"><![CDATA[
-            $cristale_shipping_notice_email = $this->load->controller('extension/module/cristale_shipping_notice/getEmailMessage');
+            $cristale_shipping_notice_email = $this->load->controller('extension/module/cristale_shipping_notice/getEmailMessage', $order_info);
 
             if ($cristale_shipping_notice_email) {
                 $data['text_greeting'] .= "\n\n" . $cristale_shipping_notice_email;

@@ -16,120 +16,99 @@
   </div>
   <div class="container-fluid">
     <?php if ($error_warning) { ?>
-    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> <?php echo $error_warning; ?>
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> <?php echo $error_warning; ?><button type="button" class="close" data-dismiss="alert">&times;</button></div>
     <?php } ?>
     <?php if ($success) { ?>
-    <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> <?php echo $success; ?>
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
+    <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> <?php echo $success; ?><button type="button" class="close" data-dismiss="alert">&times;</button></div>
     <?php } ?>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-truck"></i> <?php echo $text_edit; ?></h3>
-      </div>
+
+    <div class="panel panel-default spn-admin">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-calendar-check-o"></i> <?php echo $text_edit; ?></h3></div>
       <div class="panel-body">
         <div class="alert alert-info"><i class="fa fa-info-circle"></i> <?php echo $text_signature; ?></div>
-        <div class="well">
-          <h4 style="margin-top:0;"><i class="fa fa-bolt"></i> <?php echo $text_performance_tools; ?></h4>
-          <p><?php echo $text_performance_note; ?></p>
-          <a href="<?php echo $clear_cache; ?>" data-toggle="tooltip" title="<?php echo $button_clear_cache; ?>" class="btn btn-warning"><i class="fa fa-refresh"></i> <?php echo $button_clear_cache; ?></a>
-        </div>
-        <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
-          <div class="form-group">
-            <label class="col-sm-2 control-label"><?php echo $entry_banner_preview; ?></label>
-            <div class="col-sm-10">
-              <div style="position:relative;display:flex;align-items:center;justify-content:center;max-width:760px;min-height:560px;padding:36px;border:1px solid #ddd;border-radius:8px;background:rgba(37,24,42,.12);">
-                <div style="position:relative;width:520px;max-width:100%;overflow:hidden;border:1px solid rgba(119,64,112,.2);border-radius:18px;background:#fffafc;box-shadow:0 22px 60px rgba(62,35,67,.24);text-align:center;">
-                  <div style="position:absolute;right:12px;top:12px;z-index:3;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border:3px solid #fff;border-radius:999px;background:#e21d2f;box-shadow:0 8px 20px rgba(126,18,31,.35);color:#fff;font-size:30px;font-weight:700;line-height:1;">&times;</div>
-                  <div style="height:140px;overflow:hidden;position:relative;">
-                    <img src="<?php echo $banner_preview; ?>" alt="" style="display:block;width:100%;height:100%;object-fit:cover;object-position:center;">
-                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0),#fffafc 96%);"></div>
-                  </div>
-                  <div style="position:relative;z-index:2;margin-top:-24px;padding:0 38px 28px;">
-                    <div style="display:inline-flex;align-items:center;gap:12px;min-height:64px;padding:9px 24px 9px 12px;border-radius:999px;background:linear-gradient(135deg,#462348,#64305d);box-shadow:0 10px 24px rgba(70,35,72,.22);color:#fff;">
-                      <span style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:999px;background:#ead2dc;font-size:30px;">ðŸšš</span>
-                      <strong style="font-size:26px;line-height:1;text-transform:uppercase;"><?php echo $module_cristale_shipping_notice_banner_title; ?></strong>
-                    </div>
-                    <div style="margin-top:18px;color:#6f3a68;font-size:27px;font-weight:700;line-height:1.24;text-transform:uppercase;"><?php echo $module_cristale_shipping_notice_banner_message; ?></div>
-                    <div style="height:2px;width:80%;max-width:360px;margin:14px auto;background:linear-gradient(90deg,transparent,#d6aebf,transparent);"></div>
-                    <div style="color:#2f2934;font-size:23px;font-weight:600;line-height:1.24;"><?php echo $module_cristale_shipping_notice_banner_submessage; ?></div>
-                    <div style="margin:20px -38px -28px;padding:15px 24px;background:linear-gradient(135deg,#7b3d73,#8b4a7e);color:#fff;font-size:21px;font-style:italic;"><?php echo $text_preview_thanks; ?></div>
-                  </div>
-                </div>
-              </div>
-              <p class="help-block"><?php echo $text_banner_image_note; ?></p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-status"><?php echo $entry_status; ?></label>
-            <div class="col-sm-10">
-              <select name="module_cristale_shipping_notice_status" id="input-status" class="form-control">
-                <?php if ($module_cristale_shipping_notice_status) { ?>
-                <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
-                <option value="0"><?php echo $text_disabled; ?></option>
-                <?php } else { ?>
-                <option value="1"><?php echo $text_enabled; ?></option>
-                <option value="0" selected="selected"><?php echo $text_disabled; ?></option>
-                <?php } ?>
-              </select>
-            </div>
-          </div>
-          <div class="form-group<?php if ($error_timezone) { ?> has-error<?php } ?>">
-            <label class="col-sm-2 control-label" for="input-timezone"><?php echo $entry_timezone; ?></label>
-            <div class="col-sm-10">
-              <input type="text" name="module_cristale_shipping_notice_timezone" value="<?php echo $module_cristale_shipping_notice_timezone; ?>" placeholder="Europe/Bucharest" id="input-timezone" class="form-control" />
-              <?php if ($error_timezone) { ?>
-              <div class="text-danger"><?php echo $error_timezone; ?></div>
+        <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-module">
+          <div class="spn-global-bar">
+            <label for="spn-global-status" class="control-label">Status</label>
+            <select name="module_cristale_shipping_notice_status" id="spn-global-status" class="form-control">
+              <?php if ($module_cristale_shipping_notice_status) { ?>
+              <option value="1" selected="selected"><?php echo $text_enabled; ?></option><option value="0"><?php echo $text_disabled; ?></option>
+              <?php } else { ?>
+              <option value="1"><?php echo $text_enabled; ?></option><option value="0" selected="selected"><?php echo $text_disabled; ?></option>
               <?php } ?>
+            </select>
+            <div class="spn-global-actions">
+              <button type="button" id="spn-add" class="btn btn-success"><i class="fa fa-plus"></i> <span></span></button>
+              <a href="<?php echo $clear_cache; ?>" class="btn btn-warning"><i class="fa fa-refresh"></i> <?php echo $button_clear_cache; ?></a>
             </div>
           </div>
-          <div class="form-group<?php if ($error_starts_at) { ?> has-error<?php } ?>">
-            <label class="col-sm-2 control-label" for="input-starts-at"><span data-toggle="tooltip" title="<?php echo $help_datetime; ?>"><?php echo $entry_starts_at; ?></span></label>
-            <div class="col-sm-10">
-              <input type="text" name="module_cristale_shipping_notice_starts_at" value="<?php echo $module_cristale_shipping_notice_starts_at; ?>" placeholder="2026-01-01 00:00:00" id="input-starts-at" class="form-control" />
-              <?php if ($error_starts_at) { ?>
-              <div class="text-danger"><?php echo $error_starts_at; ?></div>
-              <?php } ?>
-            </div>
-          </div>
-          <div class="form-group<?php if ($error_ends_at) { ?> has-error<?php } ?>">
-            <label class="col-sm-2 control-label" for="input-ends-at"><span data-toggle="tooltip" title="<?php echo $help_ends_at; ?>"><?php echo $entry_ends_at; ?></span></label>
-            <div class="col-sm-10">
-              <input type="text" name="module_cristale_shipping_notice_ends_at" value="<?php echo $module_cristale_shipping_notice_ends_at; ?>" placeholder="2026-01-02 00:00:00" id="input-ends-at" class="form-control" />
-              <?php if ($error_ends_at) { ?>
-              <div class="text-danger"><?php echo $error_ends_at; ?></div>
-              <?php } ?>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-banner-title"><?php echo $entry_banner_title; ?></label>
-            <div class="col-sm-10">
-              <input type="text" name="module_cristale_shipping_notice_banner_title" value="<?php echo $module_cristale_shipping_notice_banner_title; ?>" id="input-banner-title" class="form-control" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-banner-message"><?php echo $entry_banner_message; ?></label>
-            <div class="col-sm-10">
-              <textarea name="module_cristale_shipping_notice_banner_message" rows="3" id="input-banner-message" class="form-control"><?php echo $module_cristale_shipping_notice_banner_message; ?></textarea>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-banner-submessage"><?php echo $entry_banner_submessage; ?></label>
-            <div class="col-sm-10">
-              <textarea name="module_cristale_shipping_notice_banner_submessage" rows="3" id="input-banner-submessage" class="form-control"><?php echo $module_cristale_shipping_notice_banner_submessage; ?></textarea>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-email-message"><span data-toggle="tooltip" title="<?php echo $help_email_message; ?>"><?php echo $entry_email_message; ?></span></label>
-            <div class="col-sm-10">
-              <textarea name="module_cristale_shipping_notice_email_message" rows="5" id="input-email-message" class="form-control"><?php echo $module_cristale_shipping_notice_email_message; ?></textarea>
-            </div>
+          <textarea name="module_cristale_shipping_notice_campaigns_json" id="spn-json" hidden></textarea>
+          <div class="spn-layout">
+            <aside id="spn-campaign-list" class="spn-sidebar"></aside>
+            <main id="spn-campaign-panels" class="spn-main"></main>
           </div>
         </form>
       </div>
     </div>
   </div>
 </div>
+
+<style>
+.spn-admin{--spn-accent:#67315f}.spn-global-bar{display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:16px;background:#f5f7fa;border:1px solid #dfe3e8}.spn-global-bar>select{width:180px}.spn-global-actions{display:flex;gap:8px;margin-left:auto}.spn-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px}.spn-sidebar{border:1px solid #dfe3e8;background:#f8fafc;min-height:640px}.spn-campaign-link{display:flex;width:100%;align-items:center;gap:8px;padding:13px 12px;border:0;border-bottom:1px solid #e3e7eb;background:transparent;text-align:left}.spn-campaign-link.active{background:#fff;border-left:4px solid var(--spn-accent);padding-left:8px}.spn-campaign-link strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.spn-dot{width:9px;height:9px;border-radius:50%;background:#9aa4ad;flex:none}.spn-dot.on{background:#2fb36d}.spn-main{min-width:0}.spn-campaign{display:none}.spn-campaign.active{display:block}.spn-campaign-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}.spn-campaign-header h3{margin:0;flex:1}.spn-tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid #dfe3e8;margin-bottom:18px}.spn-tab{border:1px solid #dfe3e8;border-bottom:0;background:#f5f7fa;padding:10px 14px}.spn-tab.active{background:#fff;color:#1976d2;font-weight:600}.spn-section{display:none}.spn-section.active{display:block}.spn-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}.spn-field.full{grid-column:1/-1}.spn-field label{display:block;font-weight:600;margin-bottom:6px}.spn-field .form-control{width:100%}.spn-language-tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}.spn-language-tab{border:1px solid #ccd3da;background:#f5f7fa;padding:7px 12px}.spn-language-tab.active{background:#1976d2;color:#fff}.spn-language-panel{display:none}.spn-language-panel.active{display:block}.spn-design-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,520px);gap:24px}.spn-preview-wrap{position:sticky;top:10px;padding:24px;background:#e8eaed;min-height:430px;display:flex;align-items:center;justify-content:center}.spn-preview{width:420px;max-width:100%;overflow:hidden;border-radius:10px;background:#fffafc;box-shadow:0 18px 42px rgba(40,24,45,.22);text-align:center;position:relative}.spn-preview-close{position:absolute;right:10px;top:10px;width:38px;height:38px;border:3px solid #fff;border-radius:50%;background:#e21d2f;color:#fff;font-size:26px;line-height:30px;z-index:2}.spn-preview-image{height:120px;background-size:cover;background-position:center}.spn-preview-content{padding:18px 24px 22px}.spn-preview-title{display:inline-block;padding:9px 17px;border-radius:30px;background:#713568;color:#fff;font-size:19px;font-weight:700;text-transform:uppercase}.spn-preview-message{font-size:22px;font-weight:700;margin:16px 0 10px}.spn-preview-sub{font-size:17px}.spn-preview-thanks{margin:16px -24px -22px;padding:12px;background:#713568;color:#fff;font-style:italic}.spn-preview-cta{display:inline-block;margin-top:13px;padding:10px 18px;color:#fff}.spn-shortcodes{display:flex;flex-wrap:wrap;gap:6px}.spn-shortcode{font-family:monospace;border:1px solid #ccd3da;background:#f5f7fa;padding:5px 8px;cursor:pointer}.spn-category-list{max-height:360px;overflow:auto;border:1px solid #dfe3e8;padding:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.spn-product-results{position:absolute;z-index:20;width:100%;background:#fff;border:1px solid #ccd3da;box-shadow:0 6px 18px rgba(0,0,0,.12)}.spn-product-result{display:block;width:100%;border:0;border-bottom:1px solid #eee;background:#fff;padding:8px;text-align:left}.spn-product-picker{position:relative}.spn-chip{display:inline-flex;align-items:center;gap:7px;margin:6px 6px 0 0;padding:6px 9px;background:#edf2f7;border:1px solid #d8e0e8}.spn-chip button{border:0;background:transparent;color:#c62828}.spn-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:12px}.spn-stat{padding:20px;border:1px solid #dfe3e8;background:#f8fafc;text-align:center}.spn-stat strong{display:block;font-size:28px}.spn-target-box{display:none;margin-top:14px}.spn-target-box.active{display:block}.spn-help{color:#6b7785;font-size:12px;margin-top:5px}.spn-danger{color:#c62828}.spn-image-preview{max-width:260px;max-height:140px;display:block;margin:8px 0;border:1px solid #ddd}.spn-range-line{display:flex;align-items:center;gap:10px}.spn-range-line input{flex:1}.spn-range-value{min-width:42px;text-align:right}.spn-empty{padding:50px;text-align:center;color:#6b7785}
+@media(max-width:991px){.spn-layout{grid-template-columns:1fr}.spn-sidebar{min-height:0;display:flex;overflow:auto}.spn-campaign-link{min-width:190px;border-right:1px solid #e3e7eb}.spn-design-grid{grid-template-columns:1fr}.spn-preview-wrap{position:static}.spn-stat-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.spn-global-bar{align-items:stretch;flex-direction:column}.spn-global-bar>select{width:100%}.spn-global-actions{margin-left:0;flex-wrap:wrap}.spn-grid{grid-template-columns:1fr}.spn-field.full{grid-column:auto}.spn-category-list{grid-template-columns:1fr}.spn-stat-grid{grid-template-columns:1fr}.spn-tabs{overflow:auto;flex-wrap:nowrap}.spn-tab{white-space:nowrap}}
+</style>
+
+<script>
+(function(){
+  'use strict';
+  function decode(value){try{return JSON.parse(decodeURIComponent(escape(atob(value))))}catch(error){return JSON.parse(atob(value))}}
+  function e(value){return String(value==null?'':value).replace(/[&<>'"]/g,function(char){return{'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]})}
+  function id(){return 'spn_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+  var campaigns=decode('<?php echo $campaigns_b64; ?>'),languages=decode('<?php echo $languages_b64; ?>'),categories=decode('<?php echo $categories_b64; ?>'),stats=decode('<?php echo $stats_b64; ?>'),ui=decode('<?php echo $ui_b64; ?>');
+  var list=document.getElementById('spn-campaign-list'),panels=document.getElementById('spn-campaign-panels'),json=document.getElementById('spn-json'),active=0,lastContentInput=null;
+  var imageBase='<?php echo $catalog_image_url; ?>',defaultImage='<?php echo $default_image_url; ?>',autocompleteUrl='<?php echo $autocomplete_url; ?>',resetStatsUrl='<?php echo $reset_stats_url; ?>';
+  document.querySelector('#spn-add span').textContent=ui.text_add_campaign;
+
+  function baseContent(language){
+    var code=String(language&&language.code||'en-gb').toLowerCase().replace('_','-').split('-')[0];
+    var content={
+      en:{title:'Important announcement',message:'Our schedule changes between {start_date} and {end_date}.',submessage:'Normal service resumes after {end_date}.',thanks:'Thank you for your understanding!',email_message:'Important: our schedule changes between {start_date} and {end_date}.',button_text:'Learn more',countdown_label:'Time remaining'},
+      ro:{title:'AnunÈ› important',message:'Programul nostru se modificÄƒ Ã®n perioada {start_date} - {end_date}.',submessage:'Programul normal se reia dupÄƒ {end_date}.',thanks:'VÄƒ mulÈ›umim pentru Ã®nÈ›elegere!',email_message:'Important: programul nostru se modificÄƒ Ã®ntre {start_date} È™i {end_date}.',button_text:'AflÄƒ mai multe',countdown_label:'Timp rÄƒmas'},
+      de:{title:'Wichtige AnkÃ¼ndigung',message:'Unser Zeitplan Ã¤ndert sich vom {start_date} bis {end_date}.',submessage:'Nach dem {end_date} gilt wieder der normale Zeitplan.',thanks:'Vielen Dank fÃ¼r Ihr VerstÃ¤ndnis!',email_message:'Wichtig: Unser Zeitplan Ã¤ndert sich vom {start_date} bis {end_date}.',button_text:'Mehr erfahren',countdown_label:'Verbleibende Zeit'},
+      fr:{title:'Annonce importante',message:'Nos horaires changent du {start_date} au {end_date}.',submessage:'Le service normal reprend aprÃ¨s le {end_date}.',thanks:'Merci de votre comprÃ©hension !',email_message:'Important : nos horaires changent du {start_date} au {end_date}.',button_text:'En savoir plus',countdown_label:'Temps restant'},
+      es:{title:'Aviso importante',message:'Nuestro horario cambia del {start_date} al {end_date}.',submessage:'El servicio normal se reanuda despuÃ©s del {end_date}.',thanks:'Â¡Gracias por su comprensiÃ³n!',email_message:'Importante: nuestro horario cambia del {start_date} al {end_date}.',button_text:'MÃ¡s informaciÃ³n',countdown_label:'Tiempo restante'},
+      it:{title:'Avviso importante',message:'I nostri orari cambiano dal {start_date} al {end_date}.',submessage:'Il servizio normale riprende dopo il {end_date}.',thanks:'Grazie per la comprensione!',email_message:'Importante: i nostri orari cambiano dal {start_date} al {end_date}.',button_text:'Scopri di piÃ¹',countdown_label:'Tempo rimanente'},
+      pt:{title:'Aviso importante',message:'O nosso horÃ¡rio muda de {start_date} a {end_date}.',submessage:'O serviÃ§o normal recomeÃ§a apÃ³s {end_date}.',thanks:'Agradecemos a sua compreensÃ£o!',email_message:'Importante: o nosso horÃ¡rio muda de {start_date} a {end_date}.',button_text:'Saiba mais',countdown_label:'Tempo restante'}
+    };
+    return content[code]||content.en;
+  }
+  function fresh(){var content={};languages.forEach(function(l){content[String(l.language_id)]=baseContent(l)});var now=new Date(),tomorrow=new Date(now.getTime()+86400000),timezone='UTC';try{timezone=Intl.DateTimeFormat().resolvedOptions().timeZone||timezone}catch(error){}function pad(value){return value<10?'0'+value:String(value)}function stamp(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' 00:00:00'}return{id:id(),name:ui.text_new_campaign,status:1,priority:10,timezone:timezone,starts_at:stamp(now),ends_at:stamp(tomorrow),recurrence:'none',recurrence_until:'',date_format:'d.m.Y',time_format:'H:i',image:'',remove_image:0,preset:'elegant',accent_color:'#713568',background_color:'#fffafc',text_color:'#2f2934',button_color:'#e21d2f',overlay_color:'#25182a',overlay_opacity:42,blur:3,countdown:0,button_url:'',button_target:'_self',target_type:'all',target_categories:[],target_products:[],target_product_labels:{},content:content}}
+  function option(value,label,current){return'<option value="'+e(value)+'"'+(String(value)===String(current)?' selected':'')+'>'+e(label)+'</option>'}
+  function field(label,name,value,type,extra){return'<div class="spn-field'+(extra&&extra.full?' full':'')+'"><label>'+e(label)+'</label><input class="form-control" type="'+(type||'text')+'" data-field="'+e(name)+'" value="'+e(value)+'"'+(extra&&extra.min!=null?' min="'+extra.min+'"':'')+(extra&&extra.max!=null?' max="'+extra.max+'"':'')+'></div>'}
+  function checkbox(label,name,value){return'<div class="spn-field"><label><input type="checkbox" data-field="'+e(name)+'" value="1"'+(value?' checked':'')+'> '+e(label)+'</label></div>'}
+  function sectionButton(key,label,index){return'<button type="button" class="spn-tab'+(index===0?' active':'')+'" data-section="'+key+'">'+e(label)+'</button>'}
+  function languageFields(c){var html='<div class="spn-language-tabs">';languages.forEach(function(l,i){html+='<button type="button" class="spn-language-tab'+(i===0?' active':'')+'" data-language="'+l.language_id+'">'+e(l.name)+'</button>'});html+='</div>';languages.forEach(function(l,i){var x=c.content[String(l.language_id)]||baseContent(l);html+='<div class="spn-language-panel'+(i===0?' active':'')+'" data-language-panel="'+l.language_id+'"><div class="spn-grid">'+contentInput(ui.entry_title,'title',x.title,l.language_id,1)+contentInput(ui.entry_message,'message',x.message,l.language_id,3)+contentInput(ui.entry_submessage,'submessage',x.submessage,l.language_id,3)+contentInput(ui.entry_thanks,'thanks',x.thanks,l.language_id,2)+contentInput(ui.entry_email_message,'email_message',x.email_message,l.language_id,5)+contentInput(ui.entry_button_text,'button_text',x.button_text,l.language_id,1)+contentInput(ui.entry_countdown_label,'countdown_label',x.countdown_label,l.language_id,1)+'</div></div>'});return html}
+  function contentInput(label,name,value,language,rows){return'<div class="spn-field'+(rows>1?' full':'')+'"><label>'+e(label)+'</label>'+(rows>1?'<textarea class="form-control" rows="'+rows+'" data-language-id="'+language+'" data-content-field="'+name+'">'+e(value)+'</textarea>':'<input class="form-control" data-language-id="'+language+'" data-content-field="'+name+'" value="'+e(value)+'">')+'</div>'}
+  function categoryList(c){var selected={};(c.target_categories||[]).forEach(function(v){selected[String(v)]=true});return'<div class="spn-category-list">'+categories.map(function(x){return'<label><input type="checkbox" data-category-id="'+x.category_id+'"'+(selected[String(x.category_id)]?' checked':'')+'> '+e(x.name)+'</label>'}).join('')+'</div>'}
+  function stat(c,key){var s=stats[c.id]||{impression:0,click:0,close:0},value=key==='ctr'?(s.impression?((s.click/s.impression)*100).toFixed(2)+'%':'0%'):(s[key]||0);return'<div class="spn-stat"><strong>'+e(value)+'</strong><span>'+e(key==='impression'?ui.text_impressions:key==='click'?ui.text_clicks:key==='close'?ui.text_closes:ui.text_ctr)+'</span></div>'}
+  function campaignHtml(c,index){var img=c.image?imageBase+c.image:defaultImage;return'<article class="spn-campaign'+(index===active?' active':'')+'" data-index="'+index+'">'+
+    '<div class="spn-campaign-header"><h3>'+e(c.name)+'</h3><button type="button" class="btn btn-default spn-duplicate"><i class="fa fa-copy"></i> '+e(ui.text_duplicate)+'</button><button type="button" class="btn btn-danger spn-delete"><i class="fa fa-trash"></i> '+e(ui.text_delete)+'</button></div>'+
+    '<div class="spn-tabs">'+sectionButton('schedule',ui.text_schedule,0)+sectionButton('content',ui.text_content)+sectionButton('design',ui.text_design)+sectionButton('targeting',ui.text_targeting)+sectionButton('statistics',ui.text_statistics)+'</div>'+
+    '<section class="spn-section active" data-section-panel="schedule"><div class="spn-grid">'+field(ui.entry_campaign_name,'name',c.name)+checkbox(ui.entry_status,'status',c.status)+field(ui.entry_priority,'priority',c.priority,'number',{min:-9999,max:9999})+field(ui.entry_timezone,'timezone',c.timezone)+field(ui.entry_starts_at,'starts_at',c.starts_at)+field(ui.entry_ends_at,'ends_at',c.ends_at)+'<div class="spn-field"><label>'+e(ui.entry_recurrence)+'</label><select class="form-control" data-field="recurrence">'+option('none',ui.text_none,c.recurrence)+option('weekly',ui.text_weekly,c.recurrence)+option('monthly',ui.text_monthly,c.recurrence)+'</select></div>'+field(ui.entry_recurrence_until,'recurrence_until',c.recurrence_until)+field(ui.entry_date_format,'date_format',c.date_format)+field(ui.entry_time_format,'time_format',c.time_format)+'</div></section>'+
+    '<section class="spn-section" data-section-panel="content">'+languageFields(c)+'<hr><h4>'+e(ui.text_shortcodes)+'</h4><p class="spn-help">'+e(ui.text_shortcode_help)+'</p><div class="spn-shortcodes">'+ui.shortcodes.map(function(x){return'<button type="button" class="spn-shortcode" title="Copy">'+e(x)+'</button>'}).join('')+'</div></section>'+
+    '<section class="spn-section" data-section-panel="design"><div class="spn-design-grid"><div><div class="spn-grid"><div class="spn-field full"><label>'+e(ui.entry_image)+'</label><img class="spn-image-preview" src="'+e(img)+'" alt=""><input type="file" class="form-control spn-image-input" name="campaign_image_'+e(c.id)+'" accept="image/jpeg,image/png,image/webp"><p class="spn-help">'+e(ui.text_upload_help)+'</p><label><input type="checkbox" data-field="remove_image" value="1"'+(c.remove_image?' checked':'')+'> '+e(ui.text_remove_image)+'</label></div><div class="spn-field"><label>'+e(ui.entry_preset)+'</label><select class="form-control" data-field="preset">'+option('elegant',ui.text_preset_elegant,c.preset)+option('minimal',ui.text_preset_minimal,c.preset)+option('bold',ui.text_preset_bold,c.preset)+'</select></div>'+field(ui.entry_accent_color,'accent_color',c.accent_color,'color')+field(ui.entry_background_color,'background_color',c.background_color,'color')+field(ui.entry_text_color,'text_color',c.text_color,'color')+field(ui.entry_button_color,'button_color',c.button_color,'color')+field(ui.entry_overlay_color,'overlay_color',c.overlay_color,'color')+range(ui.entry_overlay_opacity,'overlay_opacity',c.overlay_opacity,0,90)+range(ui.entry_blur,'blur',c.blur,0,12)+checkbox(ui.entry_countdown,'countdown',c.countdown)+field(ui.entry_button_url,'button_url',c.button_url)+selectTarget(ui.entry_button_target,'button_target',c.button_target,[["_self",ui.text_open_same],["_blank",ui.text_open_new]])+'</div></div><div class="spn-preview-wrap"><div class="spn-preview" data-preview><span class="spn-preview-close">&times;</span><div class="spn-preview-image" style="background-image:url(&quot;'+e(img)+'&quot;)"></div><div class="spn-preview-content"><div class="spn-preview-title"></div><div class="spn-preview-message"></div><div class="spn-preview-sub"></div><div class="spn-preview-countdown"></div><span class="spn-preview-cta"></span><div class="spn-preview-thanks"></div></div></div></div></div></section>'+
+    '<section class="spn-section" data-section-panel="targeting"><div class="spn-field"><label>'+e(ui.entry_target_type)+'</label><select class="form-control" data-field="target_type">'+option('all',ui.text_target_all,c.target_type)+option('categories',ui.text_target_categories,c.target_type)+option('products',ui.text_target_products,c.target_type)+'</select></div><div class="spn-target-box'+(c.target_type==='categories'?' active':'')+'" data-target="categories"><h4>'+e(ui.entry_categories)+'</h4>'+categoryList(c)+'</div><div class="spn-target-box'+(c.target_type==='products'?' active':'')+'" data-target="products"><h4>'+e(ui.entry_products)+'</h4><div class="spn-product-picker"><input class="form-control spn-product-search" placeholder="'+e(ui.placeholder_product_search)+'"><div class="spn-product-results" hidden></div></div><div class="spn-product-chips"></div></div></section>'+
+    '<section class="spn-section" data-section-panel="statistics"><div class="spn-stat-grid">'+stat(c,'impression')+stat(c,'click')+stat(c,'close')+stat(c,'ctr')+'</div><p style="margin-top:16px"><a class="btn btn-danger" href="'+e(resetStatsUrl+(resetStatsUrl.indexOf('?')>=0?'&':'?')+'campaign_id='+encodeURIComponent(c.id))+'"><i class="fa fa-eraser"></i> '+e(ui.text_reset_stats)+'</a></p></section></article>'}
+  function range(label,name,value,min,max){return'<div class="spn-field"><label>'+e(label)+'</label><div class="spn-range-line"><input type="range" data-field="'+name+'" value="'+e(value)+'" min="'+min+'" max="'+max+'"><span class="spn-range-value">'+e(value)+'</span></div></div>'}
+  function selectTarget(label,name,current,items){return'<div class="spn-field"><label>'+e(label)+'</label><select class="form-control" data-field="'+name+'">'+items.map(function(x){return option(x[0],x[1],current)}).join('')+'</select></div>'}
+  function render(){list.innerHTML=campaigns.map(function(c,i){return'<button type="button" class="spn-campaign-link'+(i===active?' active':'')+'" data-select="'+i+'"><span class="spn-dot'+(c.status?' on':'')+'"></span><strong>'+e(c.name)+'</strong></button>'}).join('');panels.innerHTML=campaigns.length?campaigns.map(campaignHtml).join(''):'<div class="spn-empty">'+e(ui.text_no_campaigns)+'</div>';bind();sync()}
+  function bind(){document.querySelectorAll('[data-select]').forEach(function(button){button.onclick=function(){active=Number(button.dataset.select);document.querySelectorAll('.spn-campaign-link,.spn-campaign').forEach(function(x){x.classList.remove('active')});button.classList.add('active');document.querySelector('.spn-campaign[data-index="'+active+'"]').classList.add('active')}});document.querySelectorAll('.spn-campaign').forEach(bindCampaign)}
+  function bindCampaign(panel){var index=Number(panel.dataset.index),c=campaigns[index];panel.querySelectorAll('.spn-tab').forEach(function(tab){tab.onclick=function(){panel.querySelectorAll('.spn-tab,.spn-section').forEach(function(x){x.classList.remove('active')});tab.classList.add('active');panel.querySelector('[data-section-panel="'+tab.dataset.section+'"]').classList.add('active')}});panel.querySelectorAll('.spn-language-tab').forEach(function(tab){tab.onclick=function(){panel.querySelectorAll('.spn-language-tab,.spn-language-panel').forEach(function(x){x.classList.remove('active')});tab.classList.add('active');panel.querySelector('[data-language-panel="'+tab.dataset.language+'"]').classList.add('active');lastContentInput=null}});panel.querySelectorAll('[data-field]').forEach(function(input){input.oninput=input.onchange=function(){var name=input.dataset.field;c[name]=input.type==='checkbox'?(input.checked?1:0):input.type==='number'||input.type==='range'?Number(input.value):input.value;if(name==='name'){panel.querySelector('h3').textContent=c.name;list.querySelector('[data-select="'+index+'"] strong').textContent=c.name}if(name==='status'){list.querySelector('[data-select="'+index+'"] .spn-dot').classList.toggle('on',!!c.status)}if(input.type==='range')input.nextElementSibling.textContent=input.value;if(name==='target_type'){panel.querySelectorAll('.spn-target-box').forEach(function(x){x.classList.toggle('active',x.dataset.target===c.target_type)})}preview(panel,c);sync()}});panel.querySelectorAll('[data-content-field]').forEach(function(input){input.onfocus=function(){lastContentInput=input};input.oninput=function(){c.content[String(input.dataset.languageId)][input.dataset.contentField]=input.value;preview(panel,c);sync()}});panel.querySelectorAll('[data-category-id]').forEach(function(input){input.onchange=function(){var value=Number(input.dataset.categoryId),set=new Set((c.target_categories||[]).map(Number));input.checked?set.add(value):set.delete(value);c.target_categories=Array.from(set);sync()}});panel.querySelector('.spn-duplicate').onclick=function(){var copy=JSON.parse(JSON.stringify(c));copy.id=id();copy.name=c.name+' - '+ui.text_duplicate;campaigns.splice(index+1,0,copy);active=index+1;render()};panel.querySelector('.spn-delete').onclick=function(){if(confirm(ui.text_confirm_delete)){campaigns.splice(index,1);active=Math.max(0,Math.min(active,campaigns.length-1));render()}};panel.querySelectorAll('.spn-shortcode').forEach(function(button){button.onclick=function(){var target=lastContentInput;if(!target||!panel.contains(target))target=panel.querySelector('.spn-language-panel.active [data-content-field]');if(target){var start=typeof target.selectionStart==='number'?target.selectionStart:target.value.length,end=typeof target.selectionEnd==='number'?target.selectionEnd:start,token=button.textContent;target.value=target.value.slice(0,start)+token+target.value.slice(end);c.content[String(target.dataset.languageId)][target.dataset.contentField]=target.value;target.focus();if(target.setSelectionRange)target.setSelectionRange(start+token.length,start+token.length);preview(panel,c);sync()}else if(navigator.clipboard){navigator.clipboard.writeText(button.textContent)}}});var file=panel.querySelector('.spn-image-input');file.onchange=function(){if(file.files&&file.files[0]){panel.querySelector('.spn-image-preview').src=URL.createObjectURL(file.files[0]);panel.querySelector('.spn-preview-image').style.backgroundImage='url("'+URL.createObjectURL(file.files[0])+'")'}};bindProducts(panel,c);preview(panel,c)}
+  function bindProducts(panel,c){renderProducts(panel,c);var search=panel.querySelector('.spn-product-search'),results=panel.querySelector('.spn-product-results'),timer;search.oninput=function(){clearTimeout(timer);if(search.value.trim().length<2){results.hidden=true;return}timer=setTimeout(function(){fetch(autocompleteUrl+(autocompleteUrl.indexOf('?')>=0?'&':'?')+'filter_name='+encodeURIComponent(search.value),{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(items){results.innerHTML=items.map(function(x){return'<button type="button" class="spn-product-result" data-product-id="'+x.product_id+'" data-product-name="'+e(x.name)+'">'+e(x.name)+' <small>'+e(x.model)+'</small></button>'}).join('');results.hidden=!items.length;results.querySelectorAll('button').forEach(function(button){button.onclick=function(){var productId=Number(button.dataset.productId);if(c.target_products.indexOf(productId)<0)c.target_products.push(productId);c.target_product_labels[String(productId)]=button.dataset.productName;results.hidden=true;search.value='';renderProducts(panel,c);sync()}})})},250)}}
+  function renderProducts(panel,c){var box=panel.querySelector('.spn-product-chips');if(!box)return;box.innerHTML=(c.target_products||[]).map(function(productId){return'<span class="spn-chip">'+e(c.target_product_labels[String(productId)]||('#'+productId))+'<button type="button" data-remove-product="'+productId+'">&times;</button></span>'}).join('');box.querySelectorAll('button').forEach(function(button){button.onclick=function(){var productId=Number(button.dataset.removeProduct);c.target_products=c.target_products.filter(function(x){return Number(x)!==productId});delete c.target_product_labels[String(productId)];renderProducts(panel,c);sync()}})}
+  function preview(panel,c){var p=panel.querySelector('[data-preview]');if(!p)return;var lang=languages[0],x=c.content[String(lang.language_id)]||baseContent(lang);p.style.backgroundColor=c.background_color;p.style.color=c.text_color;p.style.borderRadius=c.preset==='minimal'?'0':c.preset==='bold'?'4px':'10px';p.querySelector('.spn-preview-title').textContent=x.title;p.querySelector('.spn-preview-title').style.background=c.accent_color;p.querySelector('.spn-preview-message').textContent=x.message;p.querySelector('.spn-preview-message').style.color=c.text_color;p.querySelector('.spn-preview-sub').textContent=x.submessage;p.querySelector('.spn-preview-countdown').textContent=c.countdown?x.countdown_label+': 02:14:35':'';var cta=p.querySelector('.spn-preview-cta');cta.textContent=c.button_url?x.button_text:'';cta.style.background=c.button_color;cta.style.display=c.button_url?'inline-block':'none';p.querySelector('.spn-preview-thanks').textContent=x.thanks;p.querySelector('.spn-preview-thanks').style.background=c.accent_color}
+  function sync(){json.value=JSON.stringify(campaigns)}
+  document.getElementById('spn-add').onclick=function(){campaigns.push(fresh());active=campaigns.length-1;render()};document.getElementById('form-module').addEventListener('submit',sync);render();
+})();
+</script>
 <?php echo $footer; ?>

@@ -2,9 +2,9 @@
 <modification>
   <name>Scheduled Popup &amp; Notice Pro</name>
   <code>cristale_shipping_notice</code>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
   <author>Furmedia</author>
-  <link>https://github.com/furmedia</link>
+  <link>https://github.com/furmedia/scheduled-popup-notice-pro</link>
 
   <file path="catalog/controller/common/footer.php">
     <operation error="skip">
@@ -28,7 +28,7 @@
     <operation error="skip">
       <search><![CDATA[$data['text_greeting'] = sprintf($language->get('text_greeting'), $order_info['store_name']);]]></search>
       <add position="after"><![CDATA[
-            $cristale_shipping_notice_email = $this->load->controller('extension/module/cristale_shipping_notice/getEmailMessage');
+            $cristale_shipping_notice_email = $this->load->controller('extension/module/cristale_shipping_notice/getEmailMessage', $order_info);
 
             if ($cristale_shipping_notice_email) {
                 $data['text_greeting'] .= "\n\n" . $cristale_shipping_notice_email;
