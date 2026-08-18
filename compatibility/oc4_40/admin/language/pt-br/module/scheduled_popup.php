@@ -112,4 +112,3 @@ $_['error_campaign_recurrence'] = 'A campanha %d tem uma data final de recorrên
 $_['error_campaign_target'] = 'A campanha %d deve ter pelo menos um destino selecionado.';
 $_['error_campaign_content'] = 'A campanha %d precisa de título e mensagem principal em cada idioma ativo.';
 $_['error_upload'] = 'A imagem deve ser um arquivo JPG, PNG ou WebP válido de até 5 MB.';
-

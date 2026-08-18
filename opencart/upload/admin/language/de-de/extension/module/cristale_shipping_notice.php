@@ -112,4 +112,3 @@ $_['error_campaign_recurrence'] = 'Kampagne %d hat ein ungültiges Wiederholungs
 $_['error_campaign_target'] = 'Kampagne %d benötigt mindestens ein ausgewähltes Ziel.';
 $_['error_campaign_content'] = 'Kampagne %d benötigt Titel und Hauptnachricht in jeder aktiven Sprache.';
 $_['error_upload'] = 'Das Kampagnenbild muss eine gültige JPG-, PNG- oder WebP-Datei bis 5 MB sein.';
-
