@@ -183,6 +183,17 @@ foreach ($file in $legacyFiles) {
 }
 Write-Output "Legacy PHP files checked: $($legacyFiles.Count)"
 
+Write-Output '== Storefront image payload =='
+$defaultWebp = Join-Path $RepositoryRoot 'opencart\upload\catalog\view\theme\default\image\cristale_shipping_notice\shipping-notice-background.webp'
+if (-not (Test-Path -LiteralPath $defaultWebp) -or (Get-Item -LiteralPath $defaultWebp).Length -gt 102400) {
+    throw 'The built-in storefront WebP is missing or exceeds 100 KB.'
+}
+$legacyPngFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File -Filter 'shipping-notice-background.png'
+if ($legacyPngFiles.Count -gt 0) {
+    throw "Unused legacy popup PNG found: $($legacyPngFiles.FullName -join ', ')"
+}
+Write-Output "Built-in WebP: $((Get-Item -LiteralPath $defaultWebp).Length) bytes; legacy PNG files: 0"
+
 Write-Output '== Engine behavior =='
 & $php.Source (Join-Path $RepositoryRoot 'tools\test-engine.php')
 if ($LASTEXITCODE -ne 0) {
@@ -193,14 +204,14 @@ Write-Output '== XML and JSON manifests =='
 $xmlFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File -Filter 'install.xml'
 foreach ($file in $xmlFiles) {
     [xml]$xml = Get-Content -Raw -LiteralPath $file.FullName
-    if ($xml.modification.version -ne '2.0.0') {
+    if ($xml.modification.version -ne '2.0.1') {
         throw "Unexpected OCMOD version in $($file.FullName)"
     }
 }
 $jsonFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart4'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File -Filter 'install.json'
 foreach ($file in $jsonFiles) {
     $manifest = Get-Content -Raw -LiteralPath $file.FullName | ConvertFrom-Json
-    if ($manifest.version -ne '2.0.0') {
+    if ($manifest.version -ne '2.0.1') {
         throw "Unexpected OpenCart 4 manifest version in $($file.FullName)"
     }
 }

@@ -9,7 +9,7 @@ Scheduled Popup & Notice Pro is a campaign manager for timed storefront popups a
 - Automatic activation and exclusive expiration; no cron job is required.
 - Separate popup and email content for every enabled storefront language.
 - Dynamic date, time, countdown, store and campaign shortcodes.
-- Custom JPG, PNG or WebP campaign image upload, up to 5 MB.
+- Custom JPG, PNG or WebP campaign image upload, automatically resized and converted to WebP when supported by the server.
 - Elegant, Minimal and Bold presets plus editable accent, background, text, button and overlay colors.
 - Adjustable overlay opacity and page blur.
 - Optional live countdown.
@@ -96,7 +96,8 @@ Admin and storefront labels are included for English, Romanian, German, French, 
 ## Limits and safety
 
 - 1-50 campaigns per module configuration.
-- Custom images: JPG, PNG or WebP, maximum 5 MB.
+- Custom images: JPG, PNG or WebP, maximum 5 MB and 20 megapixels.
+- Servers with GD/WebP support automatically resize uploads to fit within 1280 x 960 and encode them as quality-82 WebP; compatible servers without WebP retain the validated original format.
 - Uploaded campaign images are restricted to `image/catalog/scheduled-popup-notice/`.
 - Popup content is plain text and rendered with DOM text nodes.
 - Custom colors are validated as six-digit hexadecimal values.

@@ -16,7 +16,7 @@ This archive is built specifically for OpenCart 3.0.x. Do not install it on anot
 - One-time, weekly, and monthly schedules with timezone.
 - Per-language popup and order-email content.
 - Dynamic schedule shortcodes.
-- Custom image upload, design presets, colors, overlay, and blur.
+- Custom image upload with automatic WebP optimization, design presets, colors, overlay, and blur.
 - Countdown, configurable CTA, category/product targeting, and aggregate statistics.
 - Safe cache clear and automatic migration from 1.x settings.
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.1 - 2026-08-18
+
+- Added automatic campaign-image resizing to a maximum of 1280 x 960 and quality-82 WebP encoding when supported by GD.
+- Added a compatibility fallback that preserves the validated original image on servers without WebP encoding support.
+- Added a 20-megapixel upload safety limit and collision-resistant image filenames.
+- Removed an unused 1 MB legacy PNG from all storefront packages; the built-in 20 KB WebP remains unchanged.
+
 ## 2.0.0 - 2026-08-18
 
 - Added management for up to 50 simultaneous campaigns.
@@ -7,7 +14,7 @@
 - Added one-time, weekly, and monthly schedules with timezone and optional recurrence end.
 - Added per-language title, main text, secondary text, footer, countdown label, CTA text, and order-email message.
 - Added dynamic date, time, remaining-time, store, campaign, and year shortcodes with curly-brace and square-bracket syntax.
-- Added campaign-specific JPG, PNG, and WebP image upload from admin.
+- Added campaign-specific JPG, PNG, and WebP image upload from admin, with automatic resizing and WebP optimization when supported by the server.
 - Added Elegant, Minimal, and Bold presets plus editable colors, overlay opacity, and blur.
 - Added an optional live countdown.
 - Added configurable CTA URL and same-tab/new-tab behavior.

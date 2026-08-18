@@ -86,7 +86,7 @@ With recurrence, the dates change automatically for every occurrence.
 
 ## 6. Image and design
 
-Choose the built-in artwork or upload a JPG, PNG, or WebP image up to 5 MB. Uploaded files are stored under `image/catalog/scheduled-popup-notice/`.
+Choose the built-in artwork or upload a JPG, PNG, or WebP image up to 5 MB and 20 megapixels. On servers with GD/WebP support, uploads are resized to fit within 1280 x 960 and encoded as quality-82 WebP. If WebP encoding is unavailable, the validated original format is retained. Uploaded files are stored under `image/catalog/scheduled-popup-notice/`.
 
 Choose Elegant, Minimal, or Bold as a starting preset, then edit:
 

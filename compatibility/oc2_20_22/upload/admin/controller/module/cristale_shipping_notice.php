@@ -145,7 +145,7 @@ class ControllerModuleCristaleShippingNotice extends Controller {
         $this->model_setting_setting->editSetting('module_cristale_shipping_notice', $existing);
         $this->createStatsTable();
         $this->db->query("DELETE FROM `" . DB_PREFIX . "modification` WHERE `code` = 'cristale_shipping_notice'");
-        $this->db->query("INSERT INTO `" . DB_PREFIX . "modification` SET `name` = '" . $this->db->escape($this->language->get('heading_title')) . "', `code` = 'cristale_shipping_notice', `author` = 'Furmedia', `version` = '2.0.0', `link` = 'https://github.com/furmedia/Scheduled-popup-notice-pro-opencart', `xml` = '" . $this->db->escape($this->getModificationXml()) . "', `status` = '1', `date_added` = NOW()");
+        $this->db->query("INSERT INTO `" . DB_PREFIX . "modification` SET `name` = '" . $this->db->escape($this->language->get('heading_title')) . "', `code` = 'cristale_shipping_notice', `author` = 'Furmedia', `version` = '2.0.1', `link` = 'https://github.com/furmedia/Scheduled-popup-notice-pro-opencart', `xml` = '" . $this->db->escape($this->getModificationXml()) . "', `status` = '1', `date_added` = NOW()");
     }
 
     public function uninstall() {
@@ -240,7 +240,7 @@ class ControllerModuleCristaleShippingNotice extends Controller {
             $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
             $image_info = @getimagesize($file['tmp_name']);
             $mimes = array('image/jpeg' => array('jpg', 'jpeg'), 'image/png' => array('png'), 'image/webp' => array('webp'));
-            if (!$image_info || !isset($mimes[$image_info['mime']]) || !in_array($extension, $mimes[$image_info['mime']], true)) {
+            if (!$image_info || !isset($mimes[$image_info['mime']]) || !in_array($extension, $mimes[$image_info['mime']], true) || $image_info[0] < 1 || $image_info[1] < 1 || $image_info[0] > 10000 || $image_info[1] > 10000 || ($image_info[0] * $image_info[1]) > 20000000) {
                 $this->error['warning'] = $this->language->get('error_upload');
                 continue;
             }
@@ -249,8 +249,9 @@ class ControllerModuleCristaleShippingNotice extends Controller {
                 $this->error['warning'] = $this->language->get('error_upload');
                 continue;
             }
-            $filename = $campaign['id'] . '-' . time() . '.' . $extension;
-            if (!@move_uploaded_file($file['tmp_name'], $directory . DIRECTORY_SEPARATOR . $filename)) {
+            $basename = $campaign['id'] . '-' . date('YmdHis') . '-' . mt_rand(1000, 9999);
+            $filename = $this->storeCampaignImage($file['tmp_name'], $image_info['mime'], $image_info[0], $image_info[1], $directory, $basename, $extension);
+            if (!$filename) {
                 $this->error['warning'] = $this->language->get('error_upload');
                 continue;
             }
@@ -259,6 +260,81 @@ class ControllerModuleCristaleShippingNotice extends Controller {
             $campaigns[$index]['remove_image'] = 0;
         }
         return $campaigns;
+    }
+
+    private function storeCampaignImage($temporary, $mime, $width, $height, $directory, $basename, $fallback_extension) {
+        $webp_path = $directory . DIRECTORY_SEPARATOR . $basename . '.webp';
+        $loaders = array('image/jpeg' => 'imagecreatefromjpeg', 'image/png' => 'imagecreatefrompng', 'image/webp' => 'imagecreatefromwebp');
+        $can_optimize = function_exists('imagewebp') && function_exists('imagecreatetruecolor') && isset($loaders[$mime]) && function_exists($loaders[$mime]);
+
+        if ($can_optimize) {
+            return $this->createOptimizedWebp($temporary, $mime, $width, $height, $webp_path) ? $basename . '.webp' : '';
+        }
+
+        $filename = $basename . '.' . $fallback_extension;
+        if (@move_uploaded_file($temporary, $directory . DIRECTORY_SEPARATOR . $filename)) {
+            return $filename;
+        }
+
+        return '';
+    }
+
+    private function createOptimizedWebp($source_path, $mime, $width, $height, $destination_path) {
+        if (!function_exists('imagewebp') || !function_exists('imagecreatetruecolor')) {
+            return false;
+        }
+
+        $loaders = array(
+            'image/jpeg' => 'imagecreatefromjpeg',
+            'image/png' => 'imagecreatefrompng',
+            'image/webp' => 'imagecreatefromwebp'
+        );
+
+        if (!isset($loaders[$mime]) || !function_exists($loaders[$mime])) {
+            return false;
+        }
+
+        $width = (int)$width;
+        $height = (int)$height;
+        if ($width < 1 || $height < 1 || $width > 10000 || $height > 10000 || ($width * $height) > 20000000) {
+            return false;
+        }
+
+        $source = @call_user_func($loaders[$mime], $source_path);
+        if (!$source) {
+            return false;
+        }
+
+        $scale = min(1, 1280 / $width, 960 / $height);
+        $target_width = max(1, (int)round($width * $scale));
+        $target_height = max(1, (int)round($height * $scale));
+        $target = @imagecreatetruecolor($target_width, $target_height);
+
+        if (!$target) {
+            @imagedestroy($source);
+            return false;
+        }
+
+        @imagealphablending($target, false);
+        @imagesavealpha($target, true);
+        $transparent = @imagecolorallocatealpha($target, 0, 0, 0, 127);
+        if ($transparent !== false) {
+            @imagefilledrectangle($target, 0, 0, $target_width, $target_height, $transparent);
+        }
+
+        $copied = @imagecopyresampled($target, $source, 0, 0, 0, 0, $target_width, $target_height, $width, $height);
+        $saved = $copied ? @imagewebp($target, $destination_path, 82) : false;
+        @imagedestroy($target);
+        @imagedestroy($source);
+
+        if (!$saved || !is_file($destination_path)) {
+            if (is_file($destination_path)) {
+                @unlink($destination_path);
+            }
+            return false;
+        }
+
+        return true;
     }
 
     private function deleteCampaignImage($relative) {
@@ -407,7 +483,7 @@ class ControllerModuleCristaleShippingNotice extends Controller {
     private function getModificationXml() {
         return '<?xml version="1.0" encoding="utf-8"?>
 <modification>
-  <name>Scheduled Popup &amp; Notice Pro</name><code>cristale_shipping_notice</code><version>2.0.0</version><author>Furmedia</author><link>https://github.com/furmedia/Scheduled-popup-notice-pro-opencart</link>
+  <name>Scheduled Popup &amp; Notice Pro</name><code>cristale_shipping_notice</code><version>2.0.1</version><author>Furmedia</author><link>https://github.com/furmedia/Scheduled-popup-notice-pro-opencart</link>
   <file path="catalog/controller/common/footer.php"><operation error="skip"><search><![CDATA[$data[\'powered\'] = sprintf($this->language->get(\'text_powered\'), $this->config->get(\'config_name\'), date(\'Y\', time()));]]></search><add position="after"><![CDATA[$data[\'cristale_shipping_notice\'] = $this->load->controller(\'module/cristale_shipping_notice\');]]></add></operation></file>
   <file path="catalog/view/theme/*/template/common/footer.tpl"><operation error="skip"><search><![CDATA[</body>]]></search><add position="before"><![CDATA[<?php if ($cristale_shipping_notice) { echo $cristale_shipping_notice; } ?>]]></add></operation></file>
   <file path="catalog/model/checkout/order.php"><operation error="skip"><search><![CDATA[$data[\'text_greeting\'] = sprintf($language->get(\'text_new_greeting\'), $order_info[\'store_name\']);]]></search><add position="after"><![CDATA[$cristale_shipping_notice_email = $this->load->controller(\'module/cristale_shipping_notice/getEmailMessage\', $order_info); if ($cristale_shipping_notice_email) { $data[\'text_greeting\'] .= "\n\n" . $cristale_shipping_notice_email; }]]></add></operation></file>

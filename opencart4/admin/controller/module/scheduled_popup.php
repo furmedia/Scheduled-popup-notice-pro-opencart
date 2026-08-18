@@ -196,12 +196,18 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
             $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
             $info = @getimagesize($file['tmp_name']);
             $mimes = ['image/jpeg' => ['jpg', 'jpeg'], 'image/png' => ['png'], 'image/webp' => ['webp']];
-            if ($file['error'] !== UPLOAD_ERR_OK || $file['size'] > 5242880 || !$info || !isset($mimes[$info['mime']]) || !in_array($extension, $mimes[$info['mime']], true)) {
+            if ($file['error'] !== UPLOAD_ERR_OK || $file['size'] > 5242880 || !$info || !isset($mimes[$info['mime']]) || !in_array($extension, $mimes[$info['mime']], true) || $info[0] < 1 || $info[1] < 1 || $info[0] > 10000 || $info[1] > 10000 || ($info[0] * $info[1]) > 20000000) {
                 $this->error['warning'] = $this->language->get('error_upload');
                 continue;
             }
             $directory = rtrim(DIR_IMAGE, '/\\') . '/catalog/scheduled-popup-notice';
-            if ((!is_dir($directory) && !@mkdir($directory, 0755, true)) || !@move_uploaded_file($file['tmp_name'], $directory . '/' . ($filename = $campaign['id'] . '-' . time() . '.' . $extension))) {
+            if (!is_dir($directory) && !@mkdir($directory, 0755, true)) {
+                $this->error['warning'] = $this->language->get('error_upload');
+                continue;
+            }
+            $basename = $campaign['id'] . '-' . date('YmdHis') . '-' . mt_rand(1000, 9999);
+            $filename = $this->storeImage($file['tmp_name'], $info['mime'], (int)$info[0], (int)$info[1], $directory, $basename, $extension);
+            if ($filename === '') {
                 $this->error['warning'] = $this->language->get('error_upload');
                 continue;
             }
@@ -210,6 +216,71 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
             $campaigns[$index]['remove_image'] = 0;
         }
         return $campaigns;
+    }
+
+    private function storeImage(string $temporary, string $mime, int $width, int $height, string $directory, string $basename, string $fallback_extension): string {
+        $webp_path = $directory . '/' . $basename . '.webp';
+        $loaders = ['image/jpeg' => 'imagecreatefromjpeg', 'image/png' => 'imagecreatefrompng', 'image/webp' => 'imagecreatefromwebp'];
+        $can_optimize = function_exists('imagewebp') && function_exists('imagecreatetruecolor') && isset($loaders[$mime]) && function_exists($loaders[$mime]);
+        if ($can_optimize) {
+            return $this->createOptimizedWebp($temporary, $mime, $width, $height, $webp_path) ? $basename . '.webp' : '';
+        }
+
+        $filename = $basename . '.' . $fallback_extension;
+        return @move_uploaded_file($temporary, $directory . '/' . $filename) ? $filename : '';
+    }
+
+    private function createOptimizedWebp(string $source_path, string $mime, int $width, int $height, string $destination_path): bool {
+        if (!function_exists('imagewebp') || !function_exists('imagecreatetruecolor')) {
+            return false;
+        }
+
+        $loaders = [
+            'image/jpeg' => 'imagecreatefromjpeg',
+            'image/png' => 'imagecreatefrompng',
+            'image/webp' => 'imagecreatefromwebp'
+        ];
+        if (!isset($loaders[$mime]) || !function_exists($loaders[$mime])) {
+            return false;
+        }
+        if ($width < 1 || $height < 1 || $width > 10000 || $height > 10000 || ($width * $height) > 20000000) {
+            return false;
+        }
+
+        $source = @call_user_func($loaders[$mime], $source_path);
+        if (!$source) {
+            return false;
+        }
+
+        $scale = min(1, 1280 / $width, 960 / $height);
+        $target_width = max(1, (int)round($width * $scale));
+        $target_height = max(1, (int)round($height * $scale));
+        $target = @imagecreatetruecolor($target_width, $target_height);
+        if (!$target) {
+            @imagedestroy($source);
+            return false;
+        }
+
+        @imagealphablending($target, false);
+        @imagesavealpha($target, true);
+        $transparent = @imagecolorallocatealpha($target, 0, 0, 0, 127);
+        if ($transparent !== false) {
+            @imagefilledrectangle($target, 0, 0, $target_width, $target_height, $transparent);
+        }
+
+        $copied = @imagecopyresampled($target, $source, 0, 0, 0, 0, $target_width, $target_height, $width, $height);
+        $saved = $copied ? @imagewebp($target, $destination_path, 82) : false;
+        @imagedestroy($target);
+        @imagedestroy($source);
+
+        if (!$saved || !is_file($destination_path)) {
+            if (is_file($destination_path)) {
+                @unlink($destination_path);
+            }
+            return false;
+        }
+
+        return true;
     }
 
     private function deleteImage(string $relative): void {

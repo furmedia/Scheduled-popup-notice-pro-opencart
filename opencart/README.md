@@ -18,7 +18,7 @@ The first install is disabled and cannot unexpectedly display a live popup.
 - One-time, weekly, and monthly schedules with timezone.
 - Separate campaign content for every enabled storefront language.
 - Dynamic date/time shortcodes.
-- Custom image, presets, colors, overlay, blur, and live preview.
+- Custom image upload with automatic WebP optimization, presets, colors, overlay, blur, and live preview.
 - Countdown and configurable CTA.
 - All-page, category, and product targeting.
 - Anonymous aggregate impressions, clicks, closes, and CTR.

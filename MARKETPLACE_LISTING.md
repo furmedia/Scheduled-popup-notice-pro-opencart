@@ -21,7 +21,7 @@ When several campaigns are active, they are queued by priority and shown one at 
 - Exclusive end-time logic for precise automatic expiration.
 - Separate popup and email copy for every enabled OpenCart storefront language, with editable localized starter copy.
 - Dynamic shortcodes for dates, times, remaining time, store name, campaign name, and year.
-- Custom JPG, PNG, or WebP image upload from admin, up to 5 MB.
+- Custom JPG, PNG, or WebP image upload from admin, up to 5 MB and 20 megapixels, with automatic resizing and WebP optimization when supported by the server.
 - Elegant, Minimal, and Bold visual presets.
 - Editable accent, background, text, button, and overlay colors.
 - Adjustable overlay opacity and page blur.
@@ -88,7 +88,7 @@ Install only the archive matching the target OpenCart generation. OpenCart 2 and
 - No SaaS account, cron service, tracking provider, or external PHP library is required.
 - Statistics are aggregate counters by campaign, event type, and date.
 - No IP address, email address, customer ID, or browser fingerprint is stored by the statistics feature.
-- Uploaded campaign images remain in the store's own image directory.
+- Uploaded campaign images remain in the store's own image directory; servers with GD/WebP support resize them to fit within 1280 x 960 and encode quality-82 WebP automatically.
 
 ## Upgrade notes
 

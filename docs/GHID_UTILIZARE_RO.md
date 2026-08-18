@@ -84,7 +84,7 @@ La repetarea săptămânală sau lunară, datele din text se actualizează singu
 
 ## 6. Imagine și design
 
-Poți folosi imaginea inclusă sau poți încărca JPG, PNG ori WebP de maximum 5 MB. Imaginile încărcate sunt păstrate în `image/catalog/scheduled-popup-notice/`.
+Poți folosi imaginea inclusă sau poți încărca JPG, PNG ori WebP de maximum 5 MB și 20 megapixeli. Pe serverele cu GD/WebP, imaginea este redimensionată automat la maximum 1280 x 960 și salvată WebP la calitatea 82. Dacă serverul nu poate genera WebP, modulul păstrează formatul original valid. Imaginile încărcate sunt păstrate în `image/catalog/scheduled-popup-notice/`.
 
 Ai trei stiluri de pornire: Elegant, Minimal și Bold. Apoi poți modifica accentul, fundalul, culoarea textului, culoarea butonului, culoarea și opacitatea fundalului exterior, precum și intensitatea blurului paginii.
 
