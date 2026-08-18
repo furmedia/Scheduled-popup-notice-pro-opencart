@@ -33,7 +33,7 @@ Folosește butoanele **Adaugă**, **Clonează** și **Șterge**. Dacă sunt acti
 
 ## 3. Programare și repetare
 
-Configurează fusul orar, data de început și data de sfârșit. Momentul de sfârșit este exclusiv: la ora exactă a expirării campania nu mai este activă.
+Configurează fusul orar, data de început și data de sfârșit. Apasă câmpul sau pictograma calendar pentru a alege vizual data și ora. Momentul de sfârșit este exclusiv: la ora exactă a expirării campania nu mai este activă.
 
 Tipurile de repetare sunt:
 

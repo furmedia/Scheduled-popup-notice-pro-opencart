@@ -1,4 +1,4 @@
-# Scheduled Popup & Notice Pro 2.0 - OpenCart 3.0.x
+﻿# Scheduled Popup & Notice Pro 2.0 - OpenCart 3.0.x
 
 This archive is built specifically for OpenCart 3.0.x. Do not install it on another OpenCart generation.
 
@@ -14,6 +14,7 @@ This archive is built specifically for OpenCart 3.0.x. Do not install it on anot
 
 - Up to 50 simultaneous campaigns with priority and sequential display.
 - One-time, weekly, and monthly schedules with timezone.
+- Native calendar and time pickers for all campaign date fields.
 - Per-language popup and order-email content.
 - Dynamic schedule shortcodes.
 - Custom image upload with automatic WebP optimization, design presets, colors, overlay, and blur.

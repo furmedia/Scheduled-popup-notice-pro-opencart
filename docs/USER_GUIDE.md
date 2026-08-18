@@ -33,7 +33,7 @@ The module accepts up to 50 campaigns. After changing settings, use the main **S
 For each campaign set:
 
 - **Timezone**: for example `Europe/Bucharest`.
-- **Starts at**: first start date and time.
+- **Starts at**: first start date and time. Click the field or its calendar icon to use the visual date and time picker.
 - **Ends at**: first end date and time. The end is exclusive.
 - **Recurrence**: none, weekly, or monthly.
 - **Repeat until**: optional final date/time for recurring campaigns.

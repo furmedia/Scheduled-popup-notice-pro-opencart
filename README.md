@@ -5,7 +5,7 @@ Scheduled Popup & Notice Pro is a campaign manager for timed storefront popups a
 ## Features
 
 - Up to 50 independent campaigns with status, internal name and priority.
-- One-time, weekly or monthly schedules with timezone and optional recurrence end.
+- One-time, weekly or monthly schedules with timezone, optional recurrence end, and native calendar/time pickers.
 - Automatic activation and exclusive expiration; no cron job is required.
 - Separate popup and email content for every enabled storefront language.
 - Dynamic date, time, countdown, store and campaign shortcodes.

@@ -140,6 +140,22 @@ foreach ($name in @('oc4_40', 'oc4_41')) {
     }
 }
 
+$calendarTemplates = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'compatibility') -Recurse -File | Where-Object {
+    $_.FullName -match '[\\/]admin[\\/]view[\\/]template[\\/]' -and $_.Name -in @('cristale_shipping_notice.tpl', 'cristale_shipping_notice.twig', 'scheduled_popup.twig')
+}
+if ($calendarTemplates.Count -ne 6) {
+    throw "Expected six version-specific admin templates, found $($calendarTemplates.Count)."
+}
+foreach ($templateFile in $calendarTemplates) {
+    $templateSource = Get-Content -Raw -LiteralPath $templateFile.FullName
+    foreach ($marker in @('type="datetime-local"', 'data-datetime-field="1"', 'input.showPicker')) {
+        if (-not $templateSource.Contains($marker)) {
+            throw "Calendar picker marker '$marker' is missing from $($templateFile.FullName)"
+        }
+    }
+}
+Write-Output "Calendar-enabled admin templates: $($calendarTemplates.Count)"
+
 $installableFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart'), (Join-Path $RepositoryRoot 'opencart4'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File | Where-Object { $_.Extension -in @('.php', '.twig', '.tpl', '.xml', '.json', '.md') }
 foreach ($file in $installableFiles) {
     $sourceText = Get-Content -Raw -LiteralPath $file.FullName
@@ -204,14 +220,14 @@ Write-Output '== XML and JSON manifests =='
 $xmlFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File -Filter 'install.xml'
 foreach ($file in $xmlFiles) {
     [xml]$xml = Get-Content -Raw -LiteralPath $file.FullName
-    if ($xml.modification.version -ne '2.0.1') {
+    if ($xml.modification.version -ne '2.0.2') {
         throw "Unexpected OCMOD version in $($file.FullName)"
     }
 }
 $jsonFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart4'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File -Filter 'install.json'
 foreach ($file in $jsonFiles) {
     $manifest = Get-Content -Raw -LiteralPath $file.FullName | ConvertFrom-Json
-    if ($manifest.version -ne '2.0.1') {
+    if ($manifest.version -ne '2.0.2') {
         throw "Unexpected OpenCart 4 manifest version in $($file.FullName)"
     }
 }

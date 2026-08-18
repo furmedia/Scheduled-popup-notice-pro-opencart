@@ -4,7 +4,7 @@
  * Kept compatible with PHP 5.6 so the same source can serve OpenCart 2.x-4.x.
  */
 class FurmediaScheduledPopupEngine {
-    const VERSION = '2.0.1';
+    const VERSION = '2.0.2';
 
     public static function defaultContent() {
         return array(

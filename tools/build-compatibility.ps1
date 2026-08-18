@@ -57,6 +57,7 @@ $install
 
 - Up to 50 simultaneous campaigns with priority and sequential display.
 - One-time, weekly, and monthly schedules with timezone.
+- Native calendar and time pickers for all campaign date fields.
 - Per-language popup and order-email content.
 - Dynamic schedule shortcodes.
 - Custom image upload with automatic WebP optimization, design presets, colors, overlay, and blur.
@@ -106,6 +107,7 @@ function Convert-AdminTwigToOpenCart4($path) {
         'fa fa-exclamation-circle' = 'fa-solid fa-circle-exclamation'
         'fa fa-check-circle' = 'fa-solid fa-circle-check'
         'fa fa-calendar-check-o' = 'fa-regular fa-calendar-check'
+        'fa fa-calendar' = 'fa-regular fa-calendar'
         'fa fa-info-circle' = 'fa-solid fa-circle-info'
         'fa fa-plus' = 'fa-solid fa-plus'
         'fa fa-refresh' = 'fa-solid fa-arrows-rotate'
@@ -222,8 +224,8 @@ $data[\'powered\'] = sprintf($this->language->get(\'text_powered\'), $this->conf
                 New-Item -ItemType Directory -Force -Path $to | Out-Null
                 $aliasPath = Join-Path $to 'cristale_shipping_notice.php'
                 Copy-Item -LiteralPath $from -Destination $aliasPath -Force
-                $aliasContent = Get-Content -Raw -LiteralPath $aliasPath
-                Set-Content -LiteralPath $aliasPath -Value $aliasContent.TrimEnd() -Encoding UTF8
+                $aliasContent = [System.IO.File]::ReadAllText($aliasPath, [System.Text.Encoding]::UTF8).TrimEnd("`r", "`n") + "`n"
+                [System.IO.File]::WriteAllText($aliasPath, $aliasContent, (New-Object System.Text.UTF8Encoding($false)))
             }
         }
     }

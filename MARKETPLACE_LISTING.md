@@ -16,7 +16,7 @@ When several campaigns are active, they are queued by priority and shown one at 
 
 - Up to 50 independent campaigns.
 - Internal campaign name, enabled status, and display priority.
-- One-time, weekly, or monthly recurrence.
+- One-time, weekly, or monthly recurrence with native calendar and time pickers.
 - Campaign timezone and optional recurrence end date.
 - Exclusive end-time logic for precise automatic expiration.
 - Separate popup and email copy for every enabled OpenCart storefront language, with editable localized starter copy.

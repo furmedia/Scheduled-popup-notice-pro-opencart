@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.2 - 2026-08-19
+
+- Replaced plain schedule date fields with native calendar and time pickers.
+- Added accessible calendar icon buttons that open the picker when supported by the browser.
+- Preserved the OpenCart storage format automatically, including compatibility with existing campaign dates.
+
 ## 2.0.1 - 2026-08-18
 
 - Added automatic campaign-image resizing to a maximum of 1280 x 960 and quality-82 WebP encoding when supported by GD.
