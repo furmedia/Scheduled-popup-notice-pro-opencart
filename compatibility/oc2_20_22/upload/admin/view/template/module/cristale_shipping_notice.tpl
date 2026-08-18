@@ -66,7 +66,7 @@
   function id(){return 'spn_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
   var campaigns=decode('<?php echo $campaigns_b64; ?>'),languages=decode('<?php echo $languages_b64; ?>'),categories=decode('<?php echo $categories_b64; ?>'),timezones=decode('<?php echo $timezones_b64; ?>'),stats=decode('<?php echo $stats_b64; ?>'),ui=decode('<?php echo $ui_b64; ?>');
   var list=document.getElementById('spn-campaign-list'),panels=document.getElementById('spn-campaign-panels'),json=document.getElementById('spn-json'),active=0,lastContentInput=null;
-  var imageBase='<?php echo $catalog_image_url; ?>',defaultImage='<?php echo $default_image_url; ?>',autocompleteUrl='<?php echo $autocomplete_url; ?>',resetStatsUrl='<?php echo $reset_stats_url; ?>';
+  var imageBase='<?php echo $catalog_image_url; ?>',defaultImage='<?php echo $default_image_url; ?>',autocompleteUrl=decode('<?php echo $autocomplete_url_b64; ?>'),resetStatsUrl=decode('<?php echo $reset_stats_url_b64; ?>');
   document.querySelector('#spn-add span').textContent=ui.text_add_campaign;
 
   function baseContent(language){

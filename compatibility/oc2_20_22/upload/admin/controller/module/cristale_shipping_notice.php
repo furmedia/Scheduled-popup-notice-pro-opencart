@@ -67,6 +67,8 @@ class ControllerModuleCristaleShippingNotice extends Controller {
         $data['clear_cache'] = $this->url->link('module/cristale_shipping_notice/clearCache', $token, true);
         $data['autocomplete_url'] = $this->url->link('module/cristale_shipping_notice/autocomplete', $token, true);
         $data['reset_stats_url'] = $this->url->link('module/cristale_shipping_notice/resetStats', $token, true);
+        $data['autocomplete_url_b64'] = $this->base64Json($data['autocomplete_url']);
+        $data['reset_stats_url_b64'] = $this->base64Json($data['reset_stats_url']);
 
         $data['module_cristale_shipping_notice_status'] = isset($this->request->post['module_cristale_shipping_notice_status'])
             ? (int)$this->request->post['module_cristale_shipping_notice_status']
