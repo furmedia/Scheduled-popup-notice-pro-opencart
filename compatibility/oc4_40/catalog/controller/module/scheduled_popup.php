@@ -104,8 +104,17 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
                 continue;
             }
 
+            if (empty($campaign['email_enabled'])) {
+                continue;
+            }
+
             $content = $this->content($campaign, $language_id);
-            $message = \FurmediaScheduledPopupEngine::replaceShortcodes($content['email_message'], $campaign, $occurrence, $store_name, $now);
+            $email_text = trim((string)$content['email_message']);
+            if ($email_text === '') {
+                $email_parts = [$content['title'], $content['message'], $content['submessage'], $content['thanks']];
+                $email_text = trim(implode("\n\n", array_filter($email_parts)));
+            }
+            $message = \FurmediaScheduledPopupEngine::replaceShortcodes($email_text, $campaign, $occurrence, $store_name, $now);
             if (trim($message) !== '') {
                 $messages[] = trim($message);
             }
@@ -202,7 +211,25 @@ class ScheduledPopup extends \Opencart\System\Engine\Controller {
             'countdown' => !empty($campaign['countdown']) ? 1 : 0,
             'countdown_end' => $occurrence['end']->format(\DateTime::ATOM),
             'button_url' => $campaign['button_url'],
-            'button_target' => $campaign['button_target']
+            'button_target' => $campaign['button_target'],
+            'trigger' => $campaign['trigger'],
+            'trigger_delay' => (int)$campaign['trigger_delay'],
+            'trigger_selector' => $campaign['trigger_selector'],
+            'trigger_scroll_depth' => (int)$campaign['trigger_scroll_depth'],
+            'auto_close_seconds' => (int)$campaign['auto_close_seconds'],
+            'position' => $campaign['position'],
+            'popup_width_desktop' => (int)$campaign['popup_width_desktop'],
+            'popup_width_laptop' => (int)$campaign['popup_width_laptop'],
+            'popup_width_tablet' => (int)$campaign['popup_width_tablet'],
+            'popup_width_mobile' => (int)$campaign['popup_width_mobile'],
+            'popup_height_desktop' => (int)$campaign['popup_height_desktop'],
+            'popup_height_laptop' => (int)$campaign['popup_height_laptop'],
+            'popup_height_tablet' => (int)$campaign['popup_height_tablet'],
+            'popup_height_mobile' => (int)$campaign['popup_height_mobile'],
+            'breakpoint_mobile' => (int)$campaign['breakpoint_mobile'],
+            'breakpoint_tablet' => (int)$campaign['breakpoint_tablet'],
+            'breakpoint_laptop' => (int)$campaign['breakpoint_laptop'],
+            'devices' => $campaign['devices']
         ];
     }
 

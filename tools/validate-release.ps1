@@ -148,15 +148,143 @@ if ($calendarTemplates.Count -ne 6) {
 }
 foreach ($templateFile in $calendarTemplates) {
     $templateSource = Get-Content -Raw -LiteralPath $templateFile.FullName
-    foreach ($marker in @('type="datetime-local"', 'data-datetime-field="1"', 'input.showPicker')) {
+    foreach ($marker in @('type="date"', 'type="time"', 'data-date-part=', 'data-time-part=', 'text_time_optional')) {
         if (-not $templateSource.Contains($marker)) {
-            throw "Calendar picker marker '$marker' is missing from $($templateFile.FullName)"
+            throw "Separated date/time marker '$marker' is missing from $($templateFile.FullName)"
+        }
+    }
+    foreach ($forbiddenMarker in @('type="datetime-local"', 'data-datetime-field="1"')) {
+        if ($templateSource.Contains($forbiddenMarker)) {
+            throw "Combined required date/time control '$forbiddenMarker' returned in $($templateFile.FullName)"
         }
     }
 }
-Write-Output "Calendar-enabled admin templates: $($calendarTemplates.Count)"
+Write-Output "Separated date/optional-time admin templates: $($calendarTemplates.Count)"
 
-$installableFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart'), (Join-Path $RepositoryRoot 'opencart4'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File | Where-Object { $_.Extension -in @('.php', '.twig', '.tpl', '.xml', '.json', '.md') }
+Write-Output '== Order email and Save and Stay safeguards =='
+$emailVariantRoots = @(Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'compatibility') -Directory | Where-Object { $_.Name -match '^(oc2_|oc3(?:$|_)|oc4_)' } | Sort-Object Name)
+if ($emailVariantRoots.Count -ne 6) {
+    throw "Expected six email-enabled compatibility variants, found $($emailVariantRoots.Count)."
+}
+
+foreach ($variantRoot in $emailVariantRoots) {
+    $engineFiles = @(Get-ChildItem -LiteralPath $variantRoot.FullName -Recurse -File -Filter 'furmedia_scheduled_popup.php')
+    $catalogControllers = @(Get-ChildItem -LiteralPath $variantRoot.FullName -Recurse -File | Where-Object {
+        $_.FullName -match '[\\/]catalog[\\/]controller[\\/]' -and $_.Name -in @('cristale_shipping_notice.php', 'scheduled_popup.php')
+    })
+    $adminControllers = @(Get-ChildItem -LiteralPath $variantRoot.FullName -Recurse -File | Where-Object {
+        $_.FullName -match '[\\/]admin[\\/]controller[\\/]' -and $_.Name -in @('cristale_shipping_notice.php', 'scheduled_popup.php')
+    })
+    $adminTemplates = @(Get-ChildItem -LiteralPath $variantRoot.FullName -Recurse -File | Where-Object {
+        $_.FullName -match '[\\/]admin[\\/]view[\\/]template[\\/]' -and $_.Name -in @('cristale_shipping_notice.tpl', 'cristale_shipping_notice.twig', 'scheduled_popup.twig')
+    })
+    $catalogTemplates = @(Get-ChildItem -LiteralPath $variantRoot.FullName -Recurse -File | Where-Object {
+        $_.FullName -match '[\\/]catalog[\\/]view[\\/]' -and $_.Name -in @('cristale_shipping_notice.tpl', 'cristale_shipping_notice.twig', 'scheduled_popup.twig')
+    })
+
+    if ($engineFiles.Count -ne 1 -or $catalogControllers.Count -ne 1 -or $adminControllers.Count -ne 1 -or $adminTemplates.Count -ne 1 -or $catalogTemplates.Count -ne 1) {
+        throw "Incomplete email/UI source set in $($variantRoot.Name)."
+    }
+
+    $engineText = Get-Content -Raw -LiteralPath $engineFiles[0].FullName
+    $catalogText = Get-Content -Raw -LiteralPath $catalogControllers[0].FullName
+    $adminText = Get-Content -Raw -LiteralPath $adminControllers[0].FullName
+    $templateText = Get-Content -Raw -LiteralPath $adminTemplates[0].FullName
+    $catalogTemplateText = Get-Content -Raw -LiteralPath $catalogTemplates[0].FullName
+
+    foreach ($marker in @('''email_enabled'' => 1', '$result[''email_enabled'']')) {
+        if (-not $engineText.Contains($marker)) {
+            throw "Email campaign normalization is missing '$marker' in $($variantRoot.Name)."
+        }
+    }
+    foreach ($marker in @('''starts_at_time'' => ''''', '''ends_at_time'' => ''''', 'dateTimeWithOptionalTime', '''devices'' => array(''desktop'', ''tablet'', ''mobile'')', 'private static function devices')) {
+        if (-not $engineText.Contains($marker)) {
+            throw "Campaign normalization support is missing '$marker' in $($variantRoot.Name)."
+        }
+    }
+    foreach ($marker in @('''popup_width_laptop'' => 520', '$result[''breakpoint_laptop'']')) {
+        if (-not $engineText.Contains($marker)) {
+            throw "Responsive campaign normalization is missing '$marker' in $($variantRoot.Name)."
+        }
+    }
+    foreach ($marker in @('function getEmailMessage', 'empty($campaign[''email_enabled''])', '$email_parts')) {
+        if (-not $catalogText.Contains($marker)) {
+            throw "Order email handler is missing '$marker' in $($variantRoot.Name)."
+        }
+    }
+    foreach ($marker in @('entry_email_enabled', 'button_save_stay', 'entry_devices', 'error_campaign_devices', 'text_responsive_studio', 'entry_breakpoint_laptop')) {
+        if (-not $adminText.Contains($marker)) {
+            throw "Admin controller is missing '$marker' in $($variantRoot.Name)."
+        }
+    }
+    foreach ($marker in @('checkbox(ui.entry_email_enabled', 'text_email_enabled_help', 'name="save_stay"', 'button_save_stay', 'data-device=', 'text_device_help', 'responsiveStudio(c)', 'data-preview-profile=')) {
+        if (-not $templateText.Contains($marker)) {
+            throw "Admin template is missing '$marker' in $($variantRoot.Name)."
+        }
+    }
+    if ($templateText.Contains('margin:-28px') -or $catalogTemplateText.Contains('margin:-28px') -or $catalogTemplateText.Contains('margin-top:-') -or -not $templateText.Contains('margin:0 auto;') -or -not $catalogTemplateText.Contains('margin:0 auto;')) {
+        throw "Popup title still overlaps the hero banner in $($variantRoot.Name)."
+    }
+    foreach ($marker in @('function currentDevice()', 'function currentProfile(campaign)', 'campaign.devices', 'allowedDevices.indexOf(device)', 'show(next)', '--spn-dialog-width', 'popup_width_', 'transform:translate(-50%,-50%)')) {
+        if (-not $catalogTemplateText.Contains($marker)) {
+            throw "Storefront device/display marker '$marker' is missing in $($variantRoot.Name)."
+        }
+    }
+    if ($catalogTemplateText.Contains('if (queue.length === 0 && !activeCampaign)')) {
+        throw "Single-campaign queue regression returned in $($variantRoot.Name)."
+    }
+    if ($variantRoot.Name -match '^(oc2_|oc3)') {
+        foreach ($marker in @('fa-solid ', 'fa-regular ')) {
+            if ($templateText.Contains($marker)) {
+                throw "Legacy admin template contains an incompatible Font Awesome class '$marker' in $($variantRoot.Name)."
+            }
+        }
+    }
+    else {
+        foreach ($marker in @('fa-solid fa-floppy-disk', 'fa-solid fa-check', 'fa-solid fa-upload', 'fa-solid fa-download')) {
+            if (-not $templateText.Contains($marker)) {
+                throw "OpenCart 4 admin template is missing '$marker' in $($variantRoot.Name)."
+            }
+        }
+    }
+
+    $manifestPath = Join-Path $variantRoot.FullName 'install.xml'
+    if (Test-Path -LiteralPath $manifestPath) {
+        $manifestText = Get-Content -Raw -LiteralPath $manifestPath
+        foreach ($marker in @('getEmailMessage', 'data-furmedia-scheduled-popup-email')) {
+            if (-not $manifestText.Contains($marker)) {
+                throw "Legacy order email OCMOD hook is missing '$marker' in $($variantRoot.Name)."
+            }
+        }
+    }
+    else {
+        foreach ($marker in @('catalog/view/mail/order_invoice/after', 'catalog/view/mail/order_add/after', 'mailInvoiceAfter')) {
+            if (-not $adminText.Contains($marker)) {
+                throw "OpenCart 4 order email event is missing '$marker' in $($variantRoot.Name)."
+            }
+        }
+        if (-not $catalogText.Contains('data-furmedia-scheduled-popup-email')) {
+            throw "OpenCart 4 visual order email banner is missing in $($variantRoot.Name)."
+        }
+    }
+
+    $adminLanguageFiles = @(Get-ChildItem -LiteralPath $variantRoot.FullName -Recurse -File | Where-Object {
+        $_.FullName -match '[\\/]admin[\\/]language[\\/]' -and $_.Name -in @('cristale_shipping_notice.php', 'scheduled_popup.php')
+    })
+    foreach ($languageFile in $adminLanguageFiles) {
+        $languageText = Get-Content -Raw -LiteralPath $languageFile.FullName
+        foreach ($marker in @('button_save_stay', 'entry_email_enabled', 'text_email_enabled_help')) {
+            if (-not $languageText.Contains($marker)) {
+                throw "Admin language file is missing '$marker': $($languageFile.FullName)"
+            }
+        }
+    }
+}
+Write-Output "Order-email and Save-and-Stay variants checked: $($emailVariantRoots.Count)"
+
+$installableFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart'), (Join-Path $RepositoryRoot 'opencart4'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File | Where-Object {
+    $_.Extension -in @('.php', '.twig', '.tpl', '.xml', '.json', '.md') -and $_.FullName -notmatch '[\\/]graphify-out[\\/]'
+}
 foreach ($file in $installableFiles) {
     $sourceText = Get-Content -Raw -LiteralPath $file.FullName
     if ($sourceText -match 'cristale-semipretioase\.ro|24\s*[\-–]\s*29\s+iunie|2026-06-30') {
@@ -220,14 +348,14 @@ Write-Output '== XML and JSON manifests =='
 $xmlFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File -Filter 'install.xml'
 foreach ($file in $xmlFiles) {
     [xml]$xml = Get-Content -Raw -LiteralPath $file.FullName
-    if ($xml.modification.version -ne '2.0.4') {
+    if ($xml.modification.version -ne '2.0.9') {
         throw "Unexpected OCMOD version in $($file.FullName)"
     }
 }
 $jsonFiles = Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'opencart4'), (Join-Path $RepositoryRoot 'compatibility') -Recurse -File -Filter 'install.json'
 foreach ($file in $jsonFiles) {
     $manifest = Get-Content -Raw -LiteralPath $file.FullName | ConvertFrom-Json
-    if ($manifest.version -ne '2.0.4') {
+    if ($manifest.version -ne '2.0.9') {
         throw "Unexpected OpenCart 4 manifest version in $($file.FullName)"
     }
 }

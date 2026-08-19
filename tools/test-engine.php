@@ -38,6 +38,11 @@ $active = FurmediaScheduledPopupEngine::activeOccurrence($monthly, new DateTime(
 check($active !== false, 'monthly recurrence clamps to the final day of a shorter month');
 check($active['start']->format('Y-m-d H:i:s') === '2026-02-28 10:00:00', 'monthly clamped date is correct');
 
+$yearly = campaign('2024-02-29 10:00:00', '2024-02-29 12:00:00', 'yearly');
+$active = FurmediaScheduledPopupEngine::activeOccurrence($yearly, new DateTime('2025-02-28 10:30:00', new DateTimeZone('Europe/Bucharest')));
+check($active !== false, 'yearly recurrence supports leap-day campaigns');
+check($active['start']->format('Y-m-d H:i:s') === '2025-02-28 10:00:00', 'yearly recurrence clamps leap day in non-leap years');
+
 $monthly['recurrence_until'] = '2026-02-28 10:15:00';
 check(FurmediaScheduledPopupEngine::activeOccurrence($monthly, new DateTime('2026-02-28 10:15:00', new DateTimeZone('Europe/Bucharest'))) === false, 'recurrence end is exclusive');
 
@@ -72,6 +77,39 @@ $localized = FurmediaScheduledPopupEngine::defaultCampaign(
     array(1 => 'ro-ro', 2 => 'en-gb')
 );
 check($localized['content']['1']['title'] === 'Anunț important', 'Romanian starter content follows the language code');
+
+$all_day = FurmediaScheduledPopupEngine::defaultCampaign(array(1), array(1 => 'en-gb'));
+$all_day['status'] = 1;
+$all_day['timezone'] = 'Europe/Bucharest';
+$all_day['starts_at'] = '2026-08-20 09:30:00';
+$all_day['ends_at'] = '2026-08-24 10:15:00';
+$all_day['starts_at_time'] = '';
+$all_day['ends_at_time'] = '';
+$all_day = FurmediaScheduledPopupEngine::normalizeCampaign($all_day, array(1), array(1 => 'en-gb'));
+check($all_day['starts_at'] === '2026-08-20 00:00:00' && $all_day['ends_at'] === '2026-08-24 23:59:59', 'blank optional times cover the complete selected dates');
+check(FurmediaScheduledPopupEngine::activeOccurrence($all_day, new DateTime('2026-08-24 23:30:00', new DateTimeZone('Europe/Bucharest'))) !== false, 'date-only campaign remains active through the final selected day');
+
+$legacy_time = campaign('2026-08-20 09:30:00', '2026-08-24 10:15:00', 'none');
+unset($legacy_time['starts_at_time'], $legacy_time['ends_at_time']);
+$legacy_time = FurmediaScheduledPopupEngine::normalizeCampaign($legacy_time, array(1, 2));
+check($legacy_time['starts_at_time'] === '09:30' && $legacy_time['ends_at_time'] === '10:15', 'existing campaigns preserve their previously saved times');
+
+$device_targeted = FurmediaScheduledPopupEngine::defaultCampaign(array(1));
+check($device_targeted['devices'] === array('desktop', 'tablet', 'mobile'), 'new and existing campaigns target every device by default');
+$device_targeted['devices'] = array('mobile', 'invalid', 'desktop', 'mobile');
+$device_targeted = FurmediaScheduledPopupEngine::normalizeCampaign($device_targeted, array(1));
+check($device_targeted['devices'] === array('mobile', 'desktop'), 'device targeting removes invalid and duplicate values');
+$responsive = FurmediaScheduledPopupEngine::defaultCampaign(array(1));
+check($responsive['popup_width_laptop'] === 520 && $responsive['breakpoint_laptop'] === 1440, 'responsive profiles have backward-compatible defaults');
+$responsive['popup_width_mobile'] = 10;
+$responsive['popup_width_desktop'] = 9000;
+$responsive['popup_height_tablet'] = 200;
+$responsive['breakpoint_mobile'] = 850;
+$responsive['breakpoint_tablet'] = 700;
+$responsive['breakpoint_laptop'] = 800;
+$responsive = FurmediaScheduledPopupEngine::normalizeCampaign($responsive, array(1));
+check($responsive['popup_width_mobile'] === 240 && $responsive['popup_width_desktop'] === 1600 && $responsive['popup_height_tablet'] === 98, 'responsive popup dimensions are clamped to safe limits');
+check($responsive['breakpoint_mobile'] < $responsive['breakpoint_tablet'] && $responsive['breakpoint_tablet'] < $responsive['breakpoint_laptop'], 'responsive breakpoints remain strictly ordered');
 check(strpos($localized['content']['1']['message'], '{store_name}') !== false, 'Romanian starter content includes dynamic shortcodes');
 check($localized['content']['2']['title'] === 'Important announcement', 'English starter content follows the language code');
 check(strpos($localized['content']['2']['email_message'], '{start_time}') !== false, 'English starter email includes dynamic shortcodes');

@@ -1,4 +1,4 @@
-﻿# Scheduled Popup & Notice Pro 2.0 - OpenCart 2.3.x
+# Scheduled Popup & Notice Pro 2.0 - OpenCart 2.3.x
 
 This archive is built specifically for OpenCart 2.3.x. Do not install it on another OpenCart generation.
 

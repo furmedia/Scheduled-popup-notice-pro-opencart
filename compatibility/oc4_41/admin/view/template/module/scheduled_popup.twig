@@ -1,8 +1,9 @@
-﻿{{ header }}{{ column_left }}
+{{ header }}{{ column_left }}
 <div id="content">
   <div class="page-header">
     <div class="container-fluid">
       <div class="float-end">
+        <button type="submit" name="save_stay" value="1" form="form-module" data-bs-toggle="tooltip" title="{{ button_save_stay }}" class="btn btn-success"><i class="fa-solid fa-save"></i> {{ button_save_stay }}</button>
         <button type="submit" form="form-module" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-save"></i></button>
         <a href="{{ cancel }}" data-bs-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a>
       </div>
@@ -41,7 +42,35 @@
               <a href="{{ clear_cache }}" class="btn btn-warning"><i class="fa-solid fa-arrows-rotate"></i> {{ button_clear_cache }}</a>
             </div>
           </div>
+
+          <div class="spn-template-manager">
+            <label class="control-label">{{ text_template_library }}</label>
+            <div class="spn-template-toolbar">
+              <select id="spn-template-select" class="form-control"></select>
+              <input id="spn-template-name" class="form-control" type="text" placeholder="{{ text_template_name }}">
+              <button type="button" id="spn-template-save" class="btn btn-light"><i class="fa-solid fa-floppy-disk"></i> {{ text_template_save }}</button>
+              <button type="button" id="spn-template-apply" class="btn btn-primary"><i class="fa-solid fa-check"></i> {{ text_template_apply }}</button>
+              <button type="button" id="spn-template-delete" class="btn btn-danger"><i class="fa-solid fa-trash"></i> {{ text_template_delete }}</button>
+              <button type="button" id="spn-template-import" class="btn btn-light"><i class="fa-solid fa-upload"></i> {{ text_template_import }}</button>
+              <button type="button" id="spn-template-export" class="btn btn-light"><i class="fa-solid fa-download"></i> {{ text_template_export }}</button>
+            </div>
+            <input id="spn-template-import-file" type="file" accept="application/json" hidden>
+            <p id="spn-template-help" class="spn-help">{{ text_template_help }}</p>
+            <div class="spn-holiday-manager">
+              <label class="control-label">Sărbători de stat / zile libere (template predefinit)</label>
+              <div id="spn-holiday-list" class="spn-holiday-list"></div>
+              <div class="spn-holiday-controls">
+                <input id="spn-holiday-year" class="form-control" type="number" min="2020" value="">
+                <button type="button" id="spn-holiday-apply" class="btn btn-info">Aplică pe campania curentă</button>
+                <button type="button" id="spn-holiday-create" class="btn btn-success">Creează campanii pentru sărbători selectate</button>
+              </div>
+              <p id="spn-holiday-help" class="spn-help"></p>
+            </div>
+          </div>
+
           <textarea name="module_cristale_shipping_notice_campaigns_json" id="spn-json" hidden></textarea>
+          <textarea name="module_cristale_shipping_notice_templates_json" id="spn-templates" hidden></textarea>
+
           <div class="spn-layout">
             <aside id="spn-campaign-list" class="spn-sidebar"></aside>
             <main id="spn-campaign-panels" class="spn-main"></main>
@@ -53,67 +82,1211 @@
 </div>
 
 <style>
-.spn-admin{--spn-accent:#67315f}.spn-global-bar{display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:16px;background:#f5f7fa;border:1px solid #dfe3e8}.spn-global-bar>select{width:180px}.spn-global-actions{display:flex;gap:8px;margin-left:auto}.spn-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px}.spn-sidebar{border:1px solid #dfe3e8;background:#f8fafc;min-height:640px}.spn-campaign-link{display:flex;width:100%;align-items:center;gap:8px;padding:13px 12px;border:0;border-bottom:1px solid #e3e7eb;background:transparent;text-align:left}.spn-campaign-link.active{background:#fff;border-left:4px solid var(--spn-accent);padding-left:8px}.spn-campaign-link strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.spn-dot{width:9px;height:9px;border-radius:50%;background:#9aa4ad;flex:none}.spn-dot.on{background:#2fb36d}.spn-main{min-width:0}.spn-campaign{display:none}.spn-campaign.active{display:block}.spn-campaign-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}.spn-campaign-header h3{margin:0;flex:1}.spn-tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid #dfe3e8;margin-bottom:18px}.spn-tab{border:1px solid #dfe3e8;border-bottom:0;background:#f5f7fa;padding:10px 14px}.spn-tab.active{background:#fff;color:#1976d2;font-weight:600}.spn-section{display:none}.spn-section.active{display:block}.spn-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}.spn-field.full{grid-column:1/-1}.spn-field label{display:block;font-weight:600;margin-bottom:6px}.spn-field .form-control{width:100%}.spn-datetime-control{display:flex;align-items:stretch}.spn-datetime-control .form-control{min-width:0;flex:1}.spn-calendar-button{width:42px;flex:0 0 42px;border:1px solid #ccd3da;border-left:0;background:#f5f7fa;color:#34495e}.spn-calendar-button:hover,.spn-calendar-button:focus{background:#e8edf2;color:#1976d2;outline:0}.spn-language-tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}.spn-language-tab{border:1px solid #ccd3da;background:#f5f7fa;padding:7px 12px}.spn-language-tab.active{background:#1976d2;color:#fff}.spn-language-panel{display:none}.spn-language-panel.active{display:block}.spn-template-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;margin-bottom:14px;background:#f8fafc;border:1px solid #dfe3e8}.spn-template-tools .spn-help{margin:0 0 0 4px}.spn-design-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,520px);gap:24px}.spn-preview-wrap{position:sticky;top:10px;padding:24px;background:#e8eaed;min-height:430px;display:flex;align-items:center;justify-content:center}.spn-preview{width:420px;max-width:100%;overflow:hidden;border-radius:10px;background:#fffafc;box-shadow:0 18px 42px rgba(40,24,45,.22);text-align:center;position:relative}.spn-preview-close{position:absolute;right:10px;top:10px;width:38px;height:38px;border:3px solid #fff;border-radius:50%;background:#e21d2f;color:#fff;font-size:26px;line-height:30px;z-index:2}.spn-preview-image{height:120px;background-size:cover;background-position:center}.spn-preview-content{padding:18px 24px 22px}.spn-preview-title{display:inline-block;padding:9px 17px;border-radius:30px;background:#713568;color:#fff;font-size:19px;font-weight:700;text-transform:uppercase}.spn-preview-message{font-size:22px;font-weight:700;margin:16px 0 10px}.spn-preview-sub{font-size:17px}.spn-preview-thanks{margin:16px -24px -22px;padding:12px;background:#713568;color:#fff;font-style:italic}.spn-preview-cta{display:inline-block;margin-top:13px;padding:10px 18px;color:#fff}.spn-shortcodes{display:flex;flex-wrap:wrap;gap:6px}.spn-shortcode{font-family:monospace;border:1px solid #ccd3da;background:#f5f7fa;padding:5px 8px;cursor:pointer}.spn-category-list{max-height:360px;overflow:auto;border:1px solid #dfe3e8;padding:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.spn-product-toolbar{display:flex;align-items:stretch}.spn-product-toolbar .spn-product-search{min-width:0;flex:1}.spn-product-toolbar .btn{flex:none}.spn-product-results{position:absolute;z-index:20;width:100%;max-height:340px;overflow:auto;background:#fff;border:1px solid #ccd3da;box-shadow:0 6px 18px rgba(0,0,0,.12)}.spn-product-result{display:block;width:100%;border:0;border-bottom:1px solid #eee;background:#fff;padding:9px 10px;text-align:left}.spn-product-result:hover,.spn-product-result:focus{background:#f1f7fd}.spn-product-result small{display:block;color:#6b7785;margin-top:2px}.spn-product-picker{position:relative}.spn-product-status{min-height:18px}.spn-chip{display:inline-flex;align-items:center;gap:7px;margin:6px 6px 0 0;padding:6px 9px;background:#edf2f7;border:1px solid #d8e0e8}.spn-chip button{border:0;background:transparent;color:#c62828}.spn-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:12px}.spn-stat{padding:20px;border:1px solid #dfe3e8;background:#f8fafc;text-align:center}.spn-stat strong{display:block;font-size:28px}.spn-target-box{display:none;margin-top:14px}.spn-target-box.active{display:block}.spn-help{color:#6b7785;font-size:12px;margin-top:5px}.spn-danger{color:#c62828}.spn-image-preview{max-width:260px;max-height:140px;display:block;margin:8px 0;border:1px solid #ddd}.spn-range-line{display:flex;align-items:center;gap:10px}.spn-range-line input{flex:1}.spn-range-value{min-width:42px;text-align:right}.spn-empty{padding:50px;text-align:center;color:#6b7785}
-@media(max-width:991px){.spn-layout{grid-template-columns:1fr}.spn-sidebar{min-height:0;display:flex;overflow:auto}.spn-campaign-link{min-width:190px;border-right:1px solid #e3e7eb}.spn-design-grid{grid-template-columns:1fr}.spn-preview-wrap{position:static}.spn-stat-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.spn-global-bar{align-items:stretch;flex-direction:column}.spn-global-bar>select{width:100%}.spn-global-actions{margin-left:0;flex-wrap:wrap}.spn-grid{grid-template-columns:1fr}.spn-field.full{grid-column:auto}.spn-category-list{grid-template-columns:1fr}.spn-stat-grid{grid-template-columns:1fr}.spn-tabs{overflow:auto;flex-wrap:nowrap}.spn-tab{white-space:nowrap}}
+.spn-admin { --spn-accent:#67315f; }
+.spn-global-bar { display:flex; align-items:center; gap:12px; padding:14px; margin-bottom:16px; background:#f5f7fa; border:1px solid #dfe3e8; }
+.spn-global-bar > select { width:180px; }
+.spn-global-actions { display:flex; gap:8px; margin-left:auto; }
+.spn-template-manager { margin: 0 0 18px; padding: 14px; border:1px solid #d9dfe5; background:#f8fafd; }
+.spn-template-toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; margin-top:8px; }
+.spn-template-toolbar .form-control { min-width:160px; }
+.spn-template-toolbar input { flex: 1; min-width:190px; }
+.spn-holiday-manager { margin-top: 12px; padding: 12px; border:1px dashed #c9d4de; background:#fbfcfe; }
+.spn-holiday-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; max-height:180px; overflow:auto; border:1px solid #dfe3e8; padding:10px; margin:10px 0 8px; background:#fff; }
+.spn-holiday-item { display:flex; align-items:center; gap:8px; }
+.spn-holiday-item input { margin: 0; }
+.spn-holiday-controls { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; }
+.spn-holiday-controls .form-control { width:130px; min-width:130px; }
+.spn-layout { display:grid; grid-template-columns:280px minmax(0,1fr); gap:18px; }
+.spn-sidebar { border:1px solid #dfe3e8; background:#f8fafc; min-height:640px; }
+.spn-campaign-link { display:flex; width:100%; align-items:center; gap:8px; padding:13px 12px; border:0; border-bottom:1px solid #e3e7eb; background:transparent; text-align:left; }
+.spn-campaign-link.active { background:#fff; border-left:4px solid var(--spn-accent); padding-left:8px; }
+.spn-campaign-link strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.spn-dot { width:9px; height:9px; border-radius:50%; background:#9aa4ad; flex:none; }
+.spn-dot.on { background:#2fb36d; }
+.spn-main { min-width:0; }
+.spn-campaign { display:none; }
+.spn-campaign.active { display:block; }
+.spn-campaign-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.spn-campaign-header h3 { margin:0; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.spn-tabs { display:flex; flex-wrap:wrap; gap:4px; border-bottom:1px solid #dfe3e8; margin-bottom:18px; }
+.spn-tab { border:1px solid #dfe3e8; border-bottom:0; background:#f5f7fa; padding:10px 14px; }
+.spn-tab.active { background:#fff; color:#1976d2; font-weight:600; }
+.spn-section { display:none; }
+.spn-section.active { display:block; }
+.spn-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px 18px; }
+.spn-field.full { grid-column:1/-1; }
+.spn-field label { display:block; font-weight:600; margin-bottom:6px; }
+.spn-field .form-control { width:100%; }
+.spn-range-line { display:flex; align-items:center; gap:10px; }
+.spn-range-line input { flex:1; }
+.spn-range-value { min-width:42px; text-align:right; }
+.spn-datetime-control { display:grid; grid-template-columns:minmax(0,1fr) minmax(120px,.62fr); gap:8px; }
+.spn-datetime-part { min-width:0; }
+.spn-datetime-part .form-control { min-width:0; width:100%; }
+.spn-datetime-caption { display:block; margin:0 0 4px; color:#6b7785; font-size:12px; font-weight:600; }
+.spn-language-tabs { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
+.spn-language-tab { border:1px solid #ccd3da; background:#f5f7fa; padding:7px 12px; }
+.spn-language-tab.active { background:#1976d2; color:#fff; }
+.spn-language-panel { display:none; }
+.spn-language-panel.active { display:block; }
+.spn-design-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(300px,520px); gap:24px; }
+.spn-responsive-studio { grid-column:1/-1; padding:18px; border:1px solid #c8d6e5; border-radius:10px; background:linear-gradient(135deg,#f7fbff 0%,#eef5fb 100%); box-shadow:0 10px 24px rgba(42,72,101,.08); }
+.spn-responsive-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:14px; }
+.spn-responsive-heading strong { display:block; color:#263746; font-size:17px; }
+.spn-responsive-heading p { max-width:760px; margin:4px 0 0; color:#66788a; font-size:12px; line-height:1.5; }
+.spn-pro-chip { flex:0 0 auto; padding:4px 9px; border-radius:999px; background:#123b5d; color:#fff; font-size:10px; font-weight:800; letter-spacing:.08em; }
+.spn-responsive-cards { display:grid; grid-template-columns:repeat(4,minmax(150px,1fr)); gap:10px; }
+.spn-responsive-card { padding:12px; border:1px solid #d9e3ec; border-radius:8px; background:#fff; }
+.spn-responsive-card > strong { display:block; margin-bottom:9px; color:#31536d; font-size:13px; }
+.spn-responsive-fields { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.spn-responsive-fields .spn-field { margin:0; }
+.spn-responsive-fields .spn-field label { min-height:34px; font-size:11px; line-height:1.35; }
+.spn-breakpoint-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px; padding-top:12px; border-top:1px dashed #bdccda; }
+.spn-breakpoint-grid .spn-field { margin:0; }
+.spn-preview-wrap { position:sticky; top:10px; padding:18px; background:radial-gradient(circle at 50% 28%,#f7f9fb 0,#e8eaed 68%); min-height:430px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; overflow:hidden; }
+.spn-preview-toolbar { display:flex; flex-wrap:wrap; justify-content:center; gap:5px; width:100%; }
+.spn-preview-device { padding:6px 9px; border:1px solid #b9c5d0; border-radius:999px; background:#fff; color:#526475; font-size:11px; font-weight:700; }
+.spn-preview-device.active { border-color:#1976d2; background:#1976d2; color:#fff; box-shadow:0 4px 10px rgba(25,118,210,.22); }
+.spn-preview-size { min-height:16px; color:#617384; font-size:11px; font-weight:700; letter-spacing:.02em; }
+.spn-preview { width:420px; max-width:100%; overflow:hidden; border-radius:10px; background:#fffafc; box-shadow:0 18px 42px rgba(40,24,45,.22); text-align:center; position:relative; }
+.spn-preview-close { position:absolute; right:10px; top:10px; width:38px; height:38px; border:3px solid #fff; border-radius:50%; background:#e21d2f; color:#fff; font:700 26px/30px Arial,sans-serif; }
+.spn-preview-image { height:120px; min-height:120px; overflow:hidden; background:#eee; }
+.spn-preview-image img { display:block; width:100%; height:100%; object-fit:cover; object-position:center; }
+.spn-preview-content { padding:18px 24px 22px; }
+.spn-preview-title { max-width:calc(100% - 24px); margin:0 auto; padding:15px 24px; border-radius:999px; background:#713568; color:#fff; font-size:19px; font-weight:700; text-transform:uppercase; }
+.spn-preview-message { margin:22px 0 0; color:#2f2934; font-size:26px; font-weight:700; text-transform:uppercase; }
+.spn-preview-sub { font-size:21px; margin:16px 0; color:#2f2934; font-weight:600; }
+.spn-preview-divider { width:78%; height:2px; margin:14px auto; background:linear-gradient(90deg,transparent,#713568,transparent); opacity:.4; }
+.spn-preview-countdown { margin-top:16px; }
+.spn-preview-countdown .label { display:block; margin-bottom:7px; font-size:14px; font-weight:700; }
+.spn-preview-countdown .value { color:#713568; font-weight:700; }
+.spn-preview-cta { display:inline-block; margin-top:13px; padding:10px 18px; background:#e21d2f; color:#fff; }
+.spn-preview-thanks { margin:16px -24px -22px; padding:15px 24px; background:#713568; color:#fff; font-style:italic; }
+.spn-shortcodes { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+.spn-shortcode { font-family:monospace; border:1px solid #ccd3da; background:#f5f7fa; padding:5px 8px; cursor:pointer; }
+.spn-device-field { margin-bottom:18px; }
+.spn-device-options { display:flex; flex-wrap:wrap; gap:10px; }
+.spn-device-option { display:flex!important; align-items:center; gap:7px; min-width:145px; margin:0!important; padding:12px 14px; border:1px solid #ccd3da; border-radius:6px; background:#f8fafc; cursor:pointer; }
+.spn-device-option:has(input:checked) { border-color:#2e9fd1; background:#eef8fc; color:#176b91; }
+.spn-device-option input { margin:0; }
+.spn-category-list { max-height:360px; overflow:auto; border:1px solid #dfe3e8; padding:10px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
+.spn-product-toolbar { display:flex; align-items:stretch; }
+.spn-product-toolbar .spn-product-search { min-width:0; flex:1; }
+.spn-product-results { position:absolute; z-index:20; width:100%; max-height:340px; overflow:auto; background:#fff; border:1px solid #ccd3da; box-shadow:0 6px 18px rgba(0,0,0,.12); }
+.spn-product-result { display:block; width:100%; border:0; border-bottom:1px solid #eee; background:#fff; padding:9px 10px; text-align:left; }
+.spn-product-result:hover { background:#f1f7fd; }
+.spn-product-result small { display:block; color:#6b7785; margin-top:2px; }
+.spn-product-chips { position:relative; }
+.spn-chip { display:inline-flex; align-items:center; gap:7px; margin:6px 6px 0 0; padding:6px 9px; background:#edf2f7; border:1px solid #d8e0e8; }
+.spn-chip button { border:0; background:transparent; color:#c62828; }
+.spn-product-picker { position:relative; }
+.spn-product-status { min-height:18px; }
+.spn-stat-grid { display:grid; grid-template-columns:repeat(4,minmax(120px,1fr)); gap:12px; }
+.spn-stat { padding:20px; border:1px solid #dfe3e8; background:#f8fafb; text-align:center; }
+.spn-stat strong { display:block; font-size:28px; }
+.spn-target-box { display:none; margin-top:14px; }
+.spn-target-box.active { display:block; }
+.spn-help { color:#6b7785; font-size:12px; margin-top:5px; }
+.spn-danger { color:#c62828; }
+.spn-image-preview { max-width:260px; max-height:140px; display:block; margin:8px 0; border:1px solid #ddd; }
+.spn-empty { padding:50px; text-align:center; color:#6b7785; }
+.spn-help-inline { font-size:12px; color:#6b7785; margin:0; }
+@media(max-width:991px) {
+  .spn-layout { grid-template-columns:1fr; }
+  .spn-sidebar { min-height:0; display:flex; overflow:auto; }
+  .spn-campaign-link { min-width:190px; border-right:1px solid #e3e7eb; }
+  .spn-design-grid { grid-template-columns:1fr; }
+  .spn-preview-wrap { position:static; }
+  .spn-responsive-cards { grid-template-columns:repeat(2,minmax(150px,1fr)); }
+  .spn-stat-grid { grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:600px) {
+  .spn-global-bar { align-items:stretch; flex-direction:column; }
+  .spn-global-bar > select { width:100%; }
+  .spn-global-actions { margin-left:0; flex-wrap:wrap; }
+  .spn-template-toolbar { flex-direction:column; align-items:stretch; }
+  .spn-responsive-cards, .spn-breakpoint-grid { grid-template-columns:1fr; }
+  .spn-responsive-heading { align-items:flex-start; }
+  .spn-template-toolbar > * { width:100%; }
+  .spn-grid { grid-template-columns:1fr; }
+  .spn-field.full { grid-column:auto; }
+  .spn-category-list { grid-template-columns:1fr; }
+  .spn-stat-grid { grid-template-columns:1fr; }
+  .spn-tabs { overflow:auto; flex-wrap:nowrap; }
+  .spn-tab { white-space:nowrap; }
+}
 </style>
 
 <script>
 (function(){
   'use strict';
-  function decode(value){try{return JSON.parse(decodeURIComponent(escape(atob(value))))}catch(error){return JSON.parse(atob(value))}}
-  function e(value){return String(value==null?'':value).replace(/[&<>'"]/g,function(char){return{'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]})}
-  function id(){return 'spn_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
-  var campaigns=decode('{{ campaigns_b64 }}'),languages=decode('{{ languages_b64 }}'),categories=decode('{{ categories_b64 }}'),timezones=decode('{{ timezones_b64 }}'),stats=decode('{{ stats_b64 }}'),ui=decode('{{ ui_b64 }}');
-  var list=document.getElementById('spn-campaign-list'),panels=document.getElementById('spn-campaign-panels'),json=document.getElementById('spn-json'),active=0,lastContentInput=null;
-  var imageBase='{{ catalog_image_url }}',defaultImage='{{ default_image_url }}',autocompleteUrl=decode('{{ autocomplete_url_b64 }}'),resetStatsUrl=decode('{{ reset_stats_url_b64 }}');
-  document.querySelector('#spn-add span').textContent=ui.text_add_campaign;
-
-  function baseContent(language){
-    var code=String(language&&language.code||'en-gb').toLowerCase().replace('_','-').split('-')[0];
-    var content={
-      en:{title:'Important announcement',message:'Our schedule changes between {start_date} and {end_date}.',submessage:'Normal service resumes after {end_date}.',thanks:'Thank you for your understanding!',email_message:'Important: our schedule changes between {start_date} and {end_date}.',button_text:'Learn more',countdown_label:'Time remaining'},
-      ro:{title:'AnunÈ› important',message:'Programul nostru se modificÄƒ Ã®n perioada {start_date} - {end_date}.',submessage:'Programul normal se reia dupÄƒ {end_date}.',thanks:'VÄƒ mulÈ›umim pentru Ã®nÈ›elegere!',email_message:'Important: programul nostru se modificÄƒ Ã®ntre {start_date} È™i {end_date}.',button_text:'AflÄƒ mai multe',countdown_label:'Timp rÄƒmas'},
-      de:{title:'Wichtige AnkÃ¼ndigung',message:'Unser Zeitplan Ã¤ndert sich vom {start_date} bis {end_date}.',submessage:'Nach dem {end_date} gilt wieder der normale Zeitplan.',thanks:'Vielen Dank fÃ¼r Ihr VerstÃ¤ndnis!',email_message:'Wichtig: Unser Zeitplan Ã¤ndert sich vom {start_date} bis {end_date}.',button_text:'Mehr erfahren',countdown_label:'Verbleibende Zeit'},
-      fr:{title:'Annonce importante',message:'Nos horaires changent du {start_date} au {end_date}.',submessage:'Le service normal reprend aprÃ¨s le {end_date}.',thanks:'Merci de votre comprÃ©hension !',email_message:'Important : nos horaires changent du {start_date} au {end_date}.',button_text:'En savoir plus',countdown_label:'Temps restant'},
-      es:{title:'Aviso importante',message:'Nuestro horario cambia del {start_date} al {end_date}.',submessage:'El servicio normal se reanuda despuÃ©s del {end_date}.',thanks:'Â¡Gracias por su comprensiÃ³n!',email_message:'Importante: nuestro horario cambia del {start_date} al {end_date}.',button_text:'MÃ¡s informaciÃ³n',countdown_label:'Tiempo restante'},
-      it:{title:'Avviso importante',message:'I nostri orari cambiano dal {start_date} al {end_date}.',submessage:'Il servizio normale riprende dopo il {end_date}.',thanks:'Grazie per la comprensione!',email_message:'Importante: i nostri orari cambiano dal {start_date} al {end_date}.',button_text:'Scopri di piÃ¹',countdown_label:'Tempo rimanente'},
-      pt:{title:'Aviso importante',message:'O nosso horÃ¡rio muda de {start_date} a {end_date}.',submessage:'O serviÃ§o normal recomeÃ§a apÃ³s {end_date}.',thanks:'Agradecemos a sua compreensÃ£o!',email_message:'Importante: o nosso horÃ¡rio muda de {start_date} a {end_date}.',button_text:'Saiba mais',countdown_label:'Tempo restante'}
-    };
-    if(ui.content_templates&&ui.content_templates[code])return JSON.parse(JSON.stringify(ui.content_templates[code]));
-    return content[code]||content.en;
+  function decode(value) {
+    try {
+      return JSON.parse(decodeURIComponent(escape(atob(value))));
+    } catch (error) {
+      return JSON.parse(atob(value));
+    }
   }
-  function fresh(){var content={};languages.forEach(function(l){content[String(l.language_id)]=baseContent(l)});var now=new Date(),tomorrow=new Date(now.getTime()+86400000),timezone='UTC';try{timezone=Intl.DateTimeFormat().resolvedOptions().timeZone||timezone}catch(error){}function pad(value){return value<10?'0'+value:String(value)}function stamp(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' 00:00:00'}return{id:id(),name:ui.text_new_campaign,status:1,priority:10,timezone:timezone,starts_at:stamp(now),ends_at:stamp(tomorrow),recurrence:'none',recurrence_until:'',date_format:'d.m.Y',time_format:'H:i',image:'',remove_image:0,preset:'elegant',accent_color:'#713568',background_color:'#fffafc',text_color:'#2f2934',button_color:'#e21d2f',overlay_color:'#25182a',overlay_opacity:42,blur:3,countdown:0,button_url:'',button_target:'_self',target_type:'all',target_categories:[],target_products:[],target_product_labels:{},content:content}}
-  function option(value,label,current){return'<option value="'+e(value)+'"'+(String(value)===String(current)?' selected':'')+'>'+e(label)+'</option>'}
-  function timezoneField(label,current){var found=false,html='<div class="spn-field"><label>'+e(label)+'</label><select class="form-control spn-timezone-select" data-field="timezone">';timezones.forEach(function(group){html+='<optgroup label="'+e(group.label)+'">';(group.zones||[]).forEach(function(zone){if(String(zone.value)===String(current))found=true;html+=option(zone.value,zone.label,current)});html+='</optgroup>'});if(!found&&current)html+='<optgroup label="Current"><option value="'+e(current)+'" selected>'+e(current)+'</option></optgroup>';return html+'</select></div>'}
-  function field(label,name,value,type,extra){return'<div class="spn-field'+(extra&&extra.full?' full':'')+'"><label>'+e(label)+'</label><input class="form-control" type="'+(type||'text')+'" data-field="'+e(name)+'" value="'+e(value)+'"'+(extra&&extra.min!=null?' min="'+extra.min+'"':'')+(extra&&extra.max!=null?' max="'+extra.max+'"':'')+'></div>'}
-  function dateTimeInputValue(value){var match=String(value||'').trim().match(/^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})(?::\d{2})?$/);return match?match[1]+'T'+match[2]:''}
-  function dateTimeStorageValue(value){var match=String(value||'').trim().match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})(?::\d{2})?$/);return match?match[1]+' '+match[2]+':00':''}
-  function dateTimeField(label,name,value){return'<div class="spn-field"><label>'+e(label)+'</label><div class="spn-datetime-control"><input class="form-control" type="datetime-local" step="60" data-field="'+e(name)+'" data-datetime-field="1" value="'+e(dateTimeInputValue(value))+'"><button type="button" class="spn-calendar-button" title="'+e(label)+'" aria-label="'+e(label)+'"><i class="fa-regular fa-calendar" aria-hidden="true"></i></button></div></div>'}
-  function checkbox(label,name,value){return'<div class="spn-field"><label><input type="checkbox" data-field="'+e(name)+'" value="1"'+(value?' checked':'')+'> '+e(label)+'</label></div>'}
-  function sectionButton(key,label,index){return'<button type="button" class="spn-tab'+(index===0?' active':'')+'" data-section="'+key+'">'+e(label)+'</button>'}
-  function languageFields(c){var html='<div class="spn-language-tabs">';languages.forEach(function(l,i){html+='<button type="button" class="spn-language-tab'+(i===0?' active':'')+'" data-language="'+l.language_id+'">'+e(l.name)+'</button>'});html+='</div><div class="spn-template-tools"><button type="button" class="btn btn-light spn-apply-template" data-template="ro"><i class="fa-solid fa-language"></i> '+e(ui.text_apply_romanian_template)+'</button><button type="button" class="btn btn-light spn-apply-template" data-template="en"><i class="fa-solid fa-language"></i> '+e(ui.text_apply_english_template)+'</button><span class="spn-help">'+e(ui.text_template_help)+'</span></div>';languages.forEach(function(l,i){var x=c.content[String(l.language_id)]||baseContent(l);html+='<div class="spn-language-panel'+(i===0?' active':'')+'" data-language-panel="'+l.language_id+'"><div class="spn-grid">'+contentInput(ui.entry_title,'title',x.title,l.language_id,1)+contentInput(ui.entry_message,'message',x.message,l.language_id,3)+contentInput(ui.entry_submessage,'submessage',x.submessage,l.language_id,3)+contentInput(ui.entry_thanks,'thanks',x.thanks,l.language_id,2)+contentInput(ui.entry_email_message,'email_message',x.email_message,l.language_id,5)+contentInput(ui.entry_button_text,'button_text',x.button_text,l.language_id,1)+contentInput(ui.entry_countdown_label,'countdown_label',x.countdown_label,l.language_id,1)+'</div></div>'});return html}
-  function contentInput(label,name,value,language,rows){return'<div class="spn-field'+(rows>1?' full':'')+'"><label>'+e(label)+'</label>'+(rows>1?'<textarea class="form-control" rows="'+rows+'" data-language-id="'+language+'" data-content-field="'+name+'">'+e(value)+'</textarea>':'<input class="form-control" data-language-id="'+language+'" data-content-field="'+name+'" value="'+e(value)+'">')+'</div>'}
-  function categoryList(c){var selected={};(c.target_categories||[]).forEach(function(v){selected[String(v)]=true});return'<div class="spn-category-list">'+categories.map(function(x){return'<label><input type="checkbox" data-category-id="'+x.category_id+'"'+(selected[String(x.category_id)]?' checked':'')+'> '+e(x.name)+'</label>'}).join('')+'</div>'}
-  function stat(c,key){var s=stats[c.id]||{impression:0,click:0,close:0},value=key==='ctr'?(s.impression?((s.click/s.impression)*100).toFixed(2)+'%':'0%'):(s[key]||0);return'<div class="spn-stat"><strong>'+e(value)+'</strong><span>'+e(key==='impression'?ui.text_impressions:key==='click'?ui.text_clicks:key==='close'?ui.text_closes:ui.text_ctr)+'</span></div>'}
-  function campaignHtml(c,index){var img=c.image?imageBase+c.image:defaultImage;return'<article class="spn-campaign'+(index===active?' active':'')+'" data-index="'+index+'">'+
-    '<div class="spn-campaign-header"><h3>'+e(c.name)+'</h3><button type="button" class="btn btn-light spn-duplicate"><i class="fa-regular fa-copy"></i> '+e(ui.text_duplicate)+'</button><button type="button" class="btn btn-danger spn-delete"><i class="fa-solid fa-trash"></i> '+e(ui.text_delete)+'</button></div>'+
-    '<div class="spn-tabs">'+sectionButton('schedule',ui.text_schedule,0)+sectionButton('content',ui.text_content)+sectionButton('design',ui.text_design)+sectionButton('targeting',ui.text_targeting)+sectionButton('statistics',ui.text_statistics)+'</div>'+
-    '<section class="spn-section active" data-section-panel="schedule"><div class="spn-grid">'+field(ui.entry_campaign_name,'name',c.name)+checkbox(ui.entry_status,'status',c.status)+field(ui.entry_priority,'priority',c.priority,'number',{min:-9999,max:9999})+timezoneField(ui.entry_timezone,c.timezone)+dateTimeField(ui.entry_starts_at,'starts_at',c.starts_at)+dateTimeField(ui.entry_ends_at,'ends_at',c.ends_at)+'<div class="spn-field"><label>'+e(ui.entry_recurrence)+'</label><select class="form-select" data-field="recurrence">'+option('none',ui.text_none,c.recurrence)+option('weekly',ui.text_weekly,c.recurrence)+option('monthly',ui.text_monthly,c.recurrence)+'</select></div>'+dateTimeField(ui.entry_recurrence_until,'recurrence_until',c.recurrence_until)+field(ui.entry_date_format,'date_format',c.date_format)+field(ui.entry_time_format,'time_format',c.time_format)+'</div></section>'+
-    '<section class="spn-section" data-section-panel="content">'+languageFields(c)+'<hr><h4>'+e(ui.text_shortcodes)+'</h4><p class="spn-help">'+e(ui.text_shortcode_help)+'</p><div class="spn-shortcodes">'+ui.shortcodes.map(function(x){return'<button type="button" class="spn-shortcode" title="Copy">'+e(x)+'</button>'}).join('')+'</div></section>'+
-    '<section class="spn-section" data-section-panel="design"><div class="spn-design-grid"><div><div class="spn-grid"><div class="spn-field full"><label>'+e(ui.entry_image)+'</label><img class="spn-image-preview" src="'+e(img)+'" alt=""><input type="file" class="form-control spn-image-input" name="campaign_image_'+e(c.id)+'" accept="image/jpeg,image/png,image/webp"><p class="spn-help">'+e(ui.text_upload_help)+'</p><label><input type="checkbox" data-field="remove_image" value="1"'+(c.remove_image?' checked':'')+'> '+e(ui.text_remove_image)+'</label></div><div class="spn-field"><label>'+e(ui.entry_preset)+'</label><select class="form-select" data-field="preset">'+option('elegant',ui.text_preset_elegant,c.preset)+option('minimal',ui.text_preset_minimal,c.preset)+option('bold',ui.text_preset_bold,c.preset)+'</select></div>'+field(ui.entry_accent_color,'accent_color',c.accent_color,'color')+field(ui.entry_background_color,'background_color',c.background_color,'color')+field(ui.entry_text_color,'text_color',c.text_color,'color')+field(ui.entry_button_color,'button_color',c.button_color,'color')+field(ui.entry_overlay_color,'overlay_color',c.overlay_color,'color')+range(ui.entry_overlay_opacity,'overlay_opacity',c.overlay_opacity,0,90)+range(ui.entry_blur,'blur',c.blur,0,12)+checkbox(ui.entry_countdown,'countdown',c.countdown)+field(ui.entry_button_url,'button_url',c.button_url)+selectTarget(ui.entry_button_target,'button_target',c.button_target,[["_self",ui.text_open_same],["_blank",ui.text_open_new]])+'</div></div><div class="spn-preview-wrap"><div class="spn-preview" data-preview><span class="spn-preview-close">&times;</span><div class="spn-preview-image" style="background-image:url(&quot;'+e(img)+'&quot;)"></div><div class="spn-preview-content"><div class="spn-preview-title"></div><div class="spn-preview-message"></div><div class="spn-preview-sub"></div><div class="spn-preview-countdown"></div><span class="spn-preview-cta"></span><div class="spn-preview-thanks"></div></div></div></div></div></section>'+
-    '<section class="spn-section" data-section-panel="targeting"><div class="spn-field"><label>'+e(ui.entry_target_type)+'</label><select class="form-select" data-field="target_type">'+option('all',ui.text_target_all,c.target_type)+option('categories',ui.text_target_categories,c.target_type)+option('products',ui.text_target_products,c.target_type)+'</select></div><div class="spn-target-box'+(c.target_type==='categories'?' active':'')+'" data-target="categories"><h4>'+e(ui.entry_categories)+'</h4>'+categoryList(c)+'</div><div class="spn-target-box'+(c.target_type==='products'?' active':'')+'" data-target="products"><h4>'+e(ui.entry_products)+'</h4><div class="spn-product-picker"><div class="spn-product-toolbar"><input class="form-control spn-product-search" placeholder="'+e(ui.placeholder_product_search)+'"><button type="button" class="btn btn-primary spn-product-search-button"><i class="fa-solid fa-magnifying-glass"></i> '+e(ui.button_product_search)+'</button></div><div class="spn-product-status spn-help">'+e(ui.text_product_suggestions)+'</div><div class="spn-product-results" hidden></div></div><div class="spn-product-chips"></div></div></section>'+
-    '<section class="spn-section" data-section-panel="statistics"><div class="spn-stat-grid">'+stat(c,'impression')+stat(c,'click')+stat(c,'close')+stat(c,'ctr')+'</div><p style="margin-top:16px"><a class="btn btn-danger" href="'+e(resetStatsUrl+(resetStatsUrl.indexOf('?')>=0?'&':'?')+'campaign_id='+encodeURIComponent(c.id))+'"><i class="fa-solid fa-eraser"></i> '+e(ui.text_reset_stats)+'</a></p></section></article>'}
-  function range(label,name,value,min,max){return'<div class="spn-field"><label>'+e(label)+'</label><div class="spn-range-line"><input type="range" data-field="'+name+'" value="'+e(value)+'" min="'+min+'" max="'+max+'"><span class="spn-range-value">'+e(value)+'</span></div></div>'}
-  function selectTarget(label,name,current,items){return'<div class="spn-field"><label>'+e(label)+'</label><select class="form-select" data-field="'+name+'">'+items.map(function(x){return option(x[0],x[1],current)}).join('')+'</select></div>'}
-  function render(){list.innerHTML=campaigns.map(function(c,i){return'<button type="button" class="spn-campaign-link'+(i===active?' active':'')+'" data-select="'+i+'"><span class="spn-dot'+(c.status?' on':'')+'"></span><strong>'+e(c.name)+'</strong></button>'}).join('');panels.innerHTML=campaigns.length?campaigns.map(campaignHtml).join(''):'<div class="spn-empty">'+e(ui.text_no_campaigns)+'</div>';bind();sync()}
-  function bind(){document.querySelectorAll('[data-select]').forEach(function(button){button.onclick=function(){active=Number(button.dataset.select);document.querySelectorAll('.spn-campaign-link,.spn-campaign').forEach(function(x){x.classList.remove('active')});button.classList.add('active');document.querySelector('.spn-campaign[data-index="'+active+'"]').classList.add('active')}});document.querySelectorAll('.spn-campaign').forEach(bindCampaign)}
-  function bindCampaign(panel){var index=Number(panel.dataset.index),c=campaigns[index];panel.querySelectorAll('.spn-tab').forEach(function(tab){tab.onclick=function(){panel.querySelectorAll('.spn-tab,.spn-section').forEach(function(x){x.classList.remove('active')});tab.classList.add('active');panel.querySelector('[data-section-panel="'+tab.dataset.section+'"]').classList.add('active')}});panel.querySelectorAll('.spn-language-tab').forEach(function(tab){tab.onclick=function(){panel.querySelectorAll('.spn-language-tab,.spn-language-panel').forEach(function(x){x.classList.remove('active')});tab.classList.add('active');panel.querySelector('[data-language-panel="'+tab.dataset.language+'"]').classList.add('active');lastContentInput=null}});panel.querySelectorAll('[data-field]').forEach(function(input){input.oninput=input.onchange=function(){var name=input.dataset.field,value=input.type==='checkbox'?(input.checked?1:0):input.type==='number'||input.type==='range'?Number(input.value):input.value;c[name]=input.dataset.datetimeField?dateTimeStorageValue(input.value):value;if(name==='name'){panel.querySelector('h3').textContent=c.name;list.querySelector('[data-select="'+index+'"] strong').textContent=c.name}if(name==='status'){list.querySelector('[data-select="'+index+'"] .spn-dot').classList.toggle('on',!!c.status)}if(input.type==='range')input.nextElementSibling.textContent=input.value;if(name==='target_type'){panel.querySelectorAll('.spn-target-box').forEach(function(x){x.classList.toggle('active',x.dataset.target===c.target_type)})}preview(panel,c);sync()}});panel.querySelectorAll('.spn-calendar-button').forEach(function(button){button.onclick=function(){var input=button.parentNode.querySelector('input');input.focus();if(typeof input.showPicker==='function'){try{input.showPicker()}catch(error){input.click()}}else{input.click()}}});panel.querySelectorAll('[data-content-field]').forEach(function(input){input.onfocus=function(){lastContentInput=input};input.oninput=function(){c.content[String(input.dataset.languageId)][input.dataset.contentField]=input.value;preview(panel,c);sync()}});panel.querySelectorAll('.spn-apply-template').forEach(function(button){button.onclick=function(){var languagePanel=panel.querySelector('.spn-language-panel.active'),languageId=languagePanel&&languagePanel.dataset.languagePanel,template=ui.content_templates&&ui.content_templates[button.dataset.template];if(!languageId||!template)return;c.content[String(languageId)]=JSON.parse(JSON.stringify(template));languagePanel.querySelectorAll('[data-content-field]').forEach(function(input){input.value=c.content[String(languageId)][input.dataset.contentField]||''});lastContentInput=null;preview(panel,c);sync()}});panel.querySelectorAll('[data-category-id]').forEach(function(input){input.onchange=function(){var value=Number(input.dataset.categoryId),set=new Set((c.target_categories||[]).map(Number));input.checked?set.add(value):set.delete(value);c.target_categories=Array.from(set);sync()}});panel.querySelector('.spn-duplicate').onclick=function(){var copy=JSON.parse(JSON.stringify(c));copy.id=id();copy.name=c.name+' - '+ui.text_duplicate;campaigns.splice(index+1,0,copy);active=index+1;render()};panel.querySelector('.spn-delete').onclick=function(){if(confirm(ui.text_confirm_delete)){campaigns.splice(index,1);active=Math.max(0,Math.min(active,campaigns.length-1));render()}};panel.querySelectorAll('.spn-shortcode').forEach(function(button){button.onclick=function(){var target=lastContentInput;if(!target||!panel.contains(target))target=panel.querySelector('.spn-language-panel.active [data-content-field]');if(target){var start=typeof target.selectionStart==='number'?target.selectionStart:target.value.length,end=typeof target.selectionEnd==='number'?target.selectionEnd:start,token=button.textContent;target.value=target.value.slice(0,start)+token+target.value.slice(end);c.content[String(target.dataset.languageId)][target.dataset.contentField]=target.value;target.focus();if(target.setSelectionRange)target.setSelectionRange(start+token.length,start+token.length);preview(panel,c);sync()}else if(navigator.clipboard){navigator.clipboard.writeText(button.textContent)}}});var file=panel.querySelector('.spn-image-input');file.onchange=function(){if(file.files&&file.files[0]){panel.querySelector('.spn-image-preview').src=URL.createObjectURL(file.files[0]);panel.querySelector('.spn-preview-image').style.backgroundImage='url("'+URL.createObjectURL(file.files[0])+'")'}};bindProducts(panel,c);preview(panel,c)}
-  function bindProducts(panel,c){renderProducts(panel,c);var search=panel.querySelector('.spn-product-search'),button=panel.querySelector('.spn-product-search-button'),results=panel.querySelector('.spn-product-results'),status=panel.querySelector('.spn-product-status'),timer,loaded=false;function load(){clearTimeout(timer);status.textContent=ui.text_product_loading;results.hidden=true;fetch(autocompleteUrl+(autocompleteUrl.indexOf('?')>=0?'&':'?')+'filter_name='+encodeURIComponent(search.value.trim()),{credentials:'same-origin'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(items){loaded=true;items=(items||[]).filter(function(x){return(c.target_products||[]).map(Number).indexOf(Number(x.product_id))<0});results.innerHTML=items.map(function(x){var details=['ID '+x.product_id,x.model?ui.text_product_model+': '+x.model:'',x.sku?'SKU: '+x.sku:''].filter(Boolean).join(' Â· ');return'<button type="button" class="spn-product-result" data-product-id="'+x.product_id+'" data-product-name="'+e(x.name)+'"><strong>'+e(x.name)+'</strong><small>'+e(details)+'</small></button>'}).join('');status.textContent=items.length?ui.text_product_suggestions:ui.text_product_empty;results.hidden=!items.length;results.querySelectorAll('button').forEach(function(resultButton){resultButton.onclick=function(){var productId=Number(resultButton.dataset.productId);if((c.target_products||[]).map(Number).indexOf(productId)<0)c.target_products.push(productId);c.target_product_labels[String(productId)]=resultButton.dataset.productName;results.hidden=true;search.value='';loaded=false;renderProducts(panel,c);sync()}})}).catch(function(){status.textContent=ui.text_product_error;results.hidden=true})}search.onfocus=function(){if(!loaded)load()};search.oninput=function(){clearTimeout(timer);timer=setTimeout(load,250)};search.onkeydown=function(event){if(event.key==='Enter'){event.preventDefault();load()}};button.onclick=load}
-  function renderProducts(panel,c){var box=panel.querySelector('.spn-product-chips');if(!box)return;box.innerHTML=(c.target_products||[]).map(function(productId){return'<span class="spn-chip">'+e(c.target_product_labels[String(productId)]||('#'+productId))+'<button type="button" data-remove-product="'+productId+'">&times;</button></span>'}).join('');box.querySelectorAll('button').forEach(function(button){button.onclick=function(){var productId=Number(button.dataset.removeProduct);c.target_products=c.target_products.filter(function(x){return Number(x)!==productId});delete c.target_product_labels[String(productId)];renderProducts(panel,c);sync()}})}
-  function preview(panel,c){var p=panel.querySelector('[data-preview]');if(!p)return;var lang=languages[0],x=c.content[String(lang.language_id)]||baseContent(lang);p.style.backgroundColor=c.background_color;p.style.color=c.text_color;p.style.borderRadius=c.preset==='minimal'?'0':c.preset==='bold'?'4px':'10px';p.querySelector('.spn-preview-title').textContent=x.title;p.querySelector('.spn-preview-title').style.background=c.accent_color;p.querySelector('.spn-preview-message').textContent=x.message;p.querySelector('.spn-preview-message').style.color=c.text_color;p.querySelector('.spn-preview-sub').textContent=x.submessage;p.querySelector('.spn-preview-countdown').textContent=c.countdown?x.countdown_label+': 02:14:35':'';var cta=p.querySelector('.spn-preview-cta');cta.textContent=c.button_url?x.button_text:'';cta.style.background=c.button_color;cta.style.display=c.button_url?'inline-block':'none';p.querySelector('.spn-preview-thanks').textContent=x.thanks;p.querySelector('.spn-preview-thanks').style.background=c.accent_color}
-  function sync(){json.value=JSON.stringify(campaigns)}
-  document.getElementById('spn-add').onclick=function(){campaigns.push(fresh());active=campaigns.length-1;render()};document.getElementById('form-module').addEventListener('submit',sync);render();
+  function e(value) {
+    return String(value == null ? '' : value).replace(/[&<>'"]/g, function(char) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char];
+    });
+  }
+  function uid() {
+    return 'spn_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+  }
+  var campaigns = decode('{{ campaigns_b64 }}');
+  var templates = decode('{{ templates_b64 }}');
+  var languages = decode('{{ languages_b64 }}');
+  var categories = decode('{{ categories_b64 }}');
+  var timezones = decode('{{ timezones_b64 }}');
+  var stats = decode('{{ stats_b64 }}');
+  var ui = decode('{{ ui_b64 }}');
+  var list = document.getElementById('spn-campaign-list');
+  var panels = document.getElementById('spn-campaign-panels');
+  var json = document.getElementById('spn-json');
+  var templateJson = document.getElementById('spn-templates');
+  var active = 0;
+  var lastContentInput = null;
+
+  var imageBase = '{{ catalog_image_url }}';
+  var defaultImage = '{{ default_image_url }}';
+  var autocompleteUrl = decode('{{ autocomplete_url_b64 }}');
+  var resetStatsUrl = decode('{{ reset_stats_url_b64 }}');
+  var templateSelect = document.getElementById('spn-template-select');
+  var templateNameInput = document.getElementById('spn-template-name');
+  var templateSaveButton = document.getElementById('spn-template-save');
+  var templateApplyButton = document.getElementById('spn-template-apply');
+  var templateDeleteButton = document.getElementById('spn-template-delete');
+  var templateImportButton = document.getElementById('spn-template-import');
+  var templateExportButton = document.getElementById('spn-template-export');
+  var templateImportFile = document.getElementById('spn-template-import-file');
+  var templateHelp = document.getElementById('spn-template-help');
+  var holidayList = document.getElementById('spn-holiday-list');
+  var holidayYear = document.getElementById('spn-holiday-year');
+  var holidayApplyButton = document.getElementById('spn-holiday-apply');
+  var holidayCreateButton = document.getElementById('spn-holiday-create');
+  var holidayHelp = document.getElementById('spn-holiday-help');
+  var holidayPresets = normalizeHolidayPresets(ui.holiday_presets);
+  var templateLibraryDefaults = {
+    labelDefault: ui.text_default_template_label || '{{ text_default_template_label }}',
+    labelUntitled: ui.text_untitled_template || '{{ text_untitled_template }}'
+  };
+  if (holidayYear) {
+    holidayYear.value = String(new Date().getFullYear());
+  }
+
+  document.querySelector('#spn-add span').textContent = ui.text_add_campaign;
+
+  function contentTemplatesByLanguage(language) {
+    var code = String((language && language.code) || 'en-gb').toLowerCase();
+    var key = code.replace('_', '-').split('-')[0];
+    if (ui.content_templates && ui.content_templates[key]) {
+      return JSON.parse(JSON.stringify(ui.content_templates[key]));
+    }
+    if (ui.content_templates && ui.content_templates.en) {
+      return JSON.parse(JSON.stringify(ui.content_templates.en));
+    }
+    return {
+      title: 'Shipping notice',
+      message: 'No deliveries are made during the period {start_date}, {start_time} - {end_date}, {end_time}.',
+      submessage: 'Deliveries resume on {end_date} at {end_time}.',
+      thanks: 'Thank you for your understanding!',
+      email_message: 'Important: no deliveries are made from {start_date}, {start_time} until {end_date}, {end_time}. Deliveries resume on {end_date} at {end_time}.',
+      button_text: 'Learn more',
+      countdown_label: 'Time remaining'
+    };
+  }
+
+  function normalizeHolidayPresets(rawPresets) {
+    var presets = [];
+    (rawPresets || []).forEach(function(preset) {
+      if (!preset || typeof preset !== 'object') {
+        return;
+      }
+      var type = String(preset.type || 'fixed');
+      var result = {
+        id: String(preset.id || '').replace(/[^a-zA-Z0-9_-]/g, ''),
+        name: String(preset.name || '').trim() || 'Sărbătoare',
+        type: type,
+        month: parseInt(preset.month, 10),
+        day: parseInt(preset.day, 10),
+        days: parseInt(preset.days, 10) > 0 ? parseInt(preset.days, 10) : 1,
+        easter_offset: parseInt(preset.easter_offset, 10) || 0
+      };
+      if (result.id === '') {
+        result.id = 'holiday_' + String(Math.random()).replace(/[^a-z0-9]/g, '').slice(0, 8);
+      }
+      if (type !== 'fixed' && type !== 'orthodox_easter' && type !== 'easter') {
+        return;
+      }
+      if (type === 'fixed' && (!result.month || !result.day)) {
+        return;
+      }
+      presets.push(result);
+    });
+    return presets;
+  }
+
+  function padded(v) {
+    return v < 10 ? '0' + v : String(v);
+  }
+
+  function dateInputToString(value) {
+    return value.getFullYear() + '-' + padded(value.getMonth() + 1) + '-' + padded(value.getDate()) + ' 00:00:00';
+  }
+
+  function holidayPresetDate(preset, year) {
+    var start;
+    if (preset.type === 'orthodox_easter' || preset.type === 'easter') {
+      var a = year % 4;
+      var b = year % 7;
+      var c = year % 19;
+      var d = (19 * c + 15) % 30;
+      var e = (2 * a + 4 * b - d + 34) % 7;
+      var month = Math.floor((d + e + 114) / 31);
+      var day = ((d + e + 114) % 31) + 1;
+      start = new Date(year, month - 1, day + 13);
+      if (preset.easter_offset) {
+        start.setDate(start.getDate() + preset.easter_offset);
+      }
+    } else {
+      start = new Date(year, (preset.month || 1) - 1, preset.day || 1);
+      if (start.getMonth() !== (preset.month || 1) - 1 || start.getDate() !== (preset.day || 1)) {
+        return null;
+      }
+    }
+    if (isNaN(start.getTime())) {
+      return null;
+    }
+    start.setHours(0, 0, 0, 0);
+    var end = new Date(start.getTime());
+    end.setDate(end.getDate() + Math.max(1, parseInt(preset.days, 10) || 1));
+    return {
+      starts_at: dateInputToString(start),
+      ends_at: dateInputToString(end)
+    };
+  }
+
+  function holidayYearValue() {
+    var nowYear = new Date().getFullYear();
+    var value = parseInt(holidayYear && holidayYear.value, 10);
+    if (!value || value < 2020) {
+      return nowYear;
+    }
+    return value;
+  }
+
+  function selectedHolidayPresets() {
+    if (!holidayList) {
+      return [];
+    }
+    var selected = [];
+    var inputs = holidayList.querySelectorAll('.spn-holiday-checkbox:checked');
+    for (var i = 0; i < inputs.length; i++) {
+      var index = parseInt(inputs[i].value, 10);
+      if (holidayPresets[index]) {
+        selected.push(holidayPresets[index]);
+      }
+    }
+    return selected;
+  }
+
+  function holidayContentByLanguage(language) {
+    var code = String((language && (language.code || language.language_code)) || '').toLowerCase();
+    if (code.split('-')[0] === 'ro') {
+      return {
+        title: 'Informare livrari',
+        message: 'Livrarile nu se efectueaza intre {start_date} si {end_date}.',
+        submessage: 'Comenzile plasate in aceasta perioada vor fi procesate si livrate incepand cu data de {end_date}.',
+        thanks: 'Iti multumim pentru intelegere!',
+        email_message: 'Livrarile nu se efectueaza intre {start_date} si {end_date}. Comenzile plasate in aceasta perioada vor fi procesate si livrate incepand cu data de {end_date}.',
+        button_text: '',
+        countdown_label: 'Pana la reluarea livrarilor'
+      };
+    }
+
+    return {
+      title: 'Delivery notice',
+      message: 'Deliveries are paused from {start_date} until {end_date}.',
+      submessage: 'Orders placed during this period will be processed and delivered starting on {end_date}.',
+      thanks: 'Thank you for your understanding!',
+      email_message: 'Deliveries are paused from {start_date} until {end_date}. Orders placed during this period will be processed and delivered starting on {end_date}.',
+      button_text: '',
+      countdown_label: 'Until deliveries resume'
+    };
+  }
+
+  function holidayTemplateContent() {
+    var content = {};
+    languages.forEach(function(language) {
+      content[String(language.language_id)] = holidayContentByLanguage(language);
+    });
+    return content;
+  }
+
+  function applyHolidayToCampaign(campaign, preset, year) {
+    var period = holidayPresetDate(preset, year);
+    if (!period) {
+      return false;
+    }
+    campaign.starts_at = period.starts_at;
+    campaign.starts_at_time = '00:00';
+    campaign.ends_at = period.ends_at;
+    campaign.ends_at_time = '00:00';
+    campaign.recurrence = 'none';
+    campaign.recurrence_until = '';
+    campaign.recurrence_until_time = '';
+    if (!campaign.name || campaign.name === ui.text_new_campaign) {
+      campaign.name = preset.name;
+    }
+    return true;
+  }
+
+  function createCampaignFromHoliday(preset, year) {
+    var campaign = fresh();
+    campaign.name = preset.name;
+    campaign.content = holidayTemplateContent();
+    if (!applyHolidayToCampaign(campaign, preset, year)) {
+      return null;
+    }
+    return campaign;
+  }
+
+  function renderHolidayPresets() {
+    if (!holidayList) {
+      return;
+    }
+    holidayList.innerHTML = '';
+    if (!holidayPresets.length) {
+      return;
+    }
+    var selectedYear = holidayYearValue();
+    holidayList.innerHTML = holidayPresets.map(function(preset, index) {
+      var period = holidayPresetDate(preset, selectedYear);
+      var periodHint = period ? (selectedYear + '-' + period.starts_at.slice(5, 10) + ' până la ' + period.ends_at.slice(5, 10)) : '';
+      return '<label class="spn-holiday-item"><input class="spn-holiday-checkbox" type="checkbox" value="' + e(index) + '"><span>' + e(preset.name) + ' ' + e(periodHint) + '</span></label>';
+    }).join('');
+    if (holidayHelp) {
+      holidayHelp.textContent = 'Selectează una sau mai multe sărbători. Anul folosit: ' + e(selectedYear) + '.';
+    }
+  }
+
+  function fresh() {
+    var content = {};
+    languages.forEach(function(language) {
+      content[String(language.language_id)] = contentTemplatesByLanguage(language);
+    });
+    var now = new Date();
+    var tomorrow = new Date(now.getTime() + 86400000);
+    var timezone = 'UTC';
+    try {
+      timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || timezone;
+    } catch (error) {}
+    function pad(v) { return v < 10 ? '0' + v : String(v); }
+    function stamp(d) {
+      return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' 00:00:00';
+    }
+    return {
+      id: uid(),
+      name: ui.text_new_campaign,
+      status: 1,
+      priority: 10,
+      timezone: timezone,
+      starts_at: stamp(now),
+      ends_at: stamp(tomorrow),
+      recurrence: 'none',
+      recurrence_until: '',
+      date_format: 'd.m.Y',
+      time_format: 'H:i',
+      image: '',
+      remove_image: 0,
+      preset: 'elegant',
+      accent_color: '#713568',
+      background_color: '#fffafc',
+      text_color: '#2f2934',
+      button_color: '#e21d2f',
+      overlay_color: '#25182a',
+      overlay_opacity: 42,
+      blur: 3,
+      countdown: 0,
+      trigger: 'on_load',
+      trigger_delay: 0,
+      trigger_selector: '',
+      trigger_scroll_depth: 55,
+      auto_close_seconds: 0,
+      position: 'center',
+      popup_width_desktop: 520,
+      popup_width_laptop: 520,
+      popup_width_tablet: 480,
+      popup_width_mobile: 360,
+      popup_height_desktop: 90,
+      popup_height_laptop: 90,
+      popup_height_tablet: 92,
+      popup_height_mobile: 94,
+      breakpoint_mobile: 767,
+      breakpoint_tablet: 1024,
+      breakpoint_laptop: 1440,
+      devices: ['desktop', 'tablet', 'mobile'],
+      geo_countries: '',
+      button_url: '',
+      button_target: '_self',
+      target_type: 'all',
+      target_categories: [],
+      target_products: [],
+      target_product_labels: {},
+      content: content
+    };
+  }
+
+  function option(value, label, current) {
+    return '<option value="' + e(value) + '"' + (String(value) === String(current) ? ' selected' : '') + '>' + e(label) + '</option>';
+  }
+  function field(label, name, value, type, extra) {
+    var attrs = ' data-field="' + e(name) + '"';
+    var extraAttributes = '';
+    if (type === 'checkbox') {
+      return '<div class="spn-field"><label><input type="checkbox" value="1"' + attrs + (value ? ' checked' : '') + '> ' + e(label) + '</label></div>';
+    }
+    if (type === 'number' && extra && extra.min != null) {
+      extraAttributes += ' min="' + e(extra.min) + '"';
+    }
+    if (type === 'number' && extra && extra.max != null) {
+      extraAttributes += ' max="' + e(extra.max) + '"';
+    }
+    if (type === 'range' && extra && extra.min != null) {
+      extraAttributes += ' min="' + e(extra.min) + '"';
+    }
+    if (type === 'range' && extra && extra.max != null) {
+      extraAttributes += ' max="' + e(extra.max) + '"';
+    }
+    if (type === 'number' || type === 'range' || type === 'text' || type === 'datetime-local' || type === 'color') {
+      return '<div class="spn-field"><label>' + e(label) + '</label><input class="form-control" type="' + e(type || 'text') + '"' + attrs + extraAttributes + ' value="' + e(value) + '"></div>';
+    }
+    return '<div class="spn-field"><label>' + e(label) + '</label><textarea class="form-control" rows="3"' + attrs + '>' + e(value) + '</textarea></div>';
+  }
+  function responsiveCard(label, profile, c, widthMin, widthMax) {
+    return '<div class="spn-responsive-card" data-responsive-card="' + e(profile) + '"><strong>' + e(label) + '</strong><div class="spn-responsive-fields">' +
+      field(ui.entry_popup_width, 'popup_width_' + profile, c['popup_width_' + profile], 'number', {min:widthMin,max:widthMax}) +
+      field(ui.entry_popup_height, 'popup_height_' + profile, c['popup_height_' + profile], 'number', {min:45,max:98}) +
+    '</div></div>';
+  }
+  function responsiveStudio(c) {
+    return '<div class="spn-responsive-studio">' +
+      '<div class="spn-responsive-heading"><div><strong>' + e(ui.text_responsive_studio) + '</strong><p>' + e(ui.text_responsive_help) + '</p></div><span class="spn-pro-chip">PRO</span></div>' +
+      '<div class="spn-responsive-cards">' +
+        responsiveCard(ui.text_device_desktop, 'desktop', c, 280, 1600) +
+        responsiveCard(ui.text_device_laptop, 'laptop', c, 280, 1400) +
+        responsiveCard(ui.text_device_tablet, 'tablet', c, 260, 1200) +
+        responsiveCard(ui.text_device_mobile, 'mobile', c, 240, 800) +
+      '</div>' +
+      '<div class="spn-breakpoint-grid">' +
+        field(ui.entry_breakpoint_mobile, 'breakpoint_mobile', c.breakpoint_mobile, 'number', {min:320,max:900}) +
+        field(ui.entry_breakpoint_tablet, 'breakpoint_tablet', c.breakpoint_tablet, 'number', {min:600,max:1400}) +
+        field(ui.entry_breakpoint_laptop, 'breakpoint_laptop', c.breakpoint_laptop, 'number', {min:900,max:2560}) +
+      '</div>' +
+    '</div>';
+  }
+  function textAreaField(label, name, value, rows) {
+    return '<div class="spn-field full"><label>' + e(label) + '</label><textarea class="form-control" rows="' + (rows || 3) + '" data-field="' + e(name) + '">' + e(value) + '</textarea></div>';
+  }
+  function dateTimeInput(label, name, value, optionalTime) {
+    var match = String(value || '').trim().match(/^(\d{4}-\d{2}-\d{2})(?:[ T](\d{2}:\d{2})(?::\d{2})?)?$/);
+    var time = typeof optionalTime === 'string' ? optionalTime : (match && match[2] ? match[2] : '');
+    if (!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time)) {
+      time = '';
+    }
+    return '<div class="spn-field"><label>' + e(label) + '</label><div class="spn-datetime-control">' +
+      '<div class="spn-datetime-part"><span class="spn-datetime-caption">' + e(ui.text_date || 'Date') + '</span><input class="form-control" type="date" data-date-part="' + e(name) + '" value="' + e(match ? match[1] : '') + '"></div>' +
+      '<div class="spn-datetime-part"><span class="spn-datetime-caption">' + e(ui.text_time_optional || 'Time (optional)') + '</span><input class="form-control" type="time" step="60" data-time-part="' + e(name) + '" value="' + e(time) + '"></div>' +
+      '</div></div>';
+  }
+  function dateTimeStorageValue(dateValue, timeValue, name) {
+    var date = String(dateValue || '').trim();
+    var time = String(timeValue || '').trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return '';
+    }
+    if (/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time)) {
+      return date + ' ' + time + ':00';
+    }
+    return date + (name === 'starts_at' ? ' 00:00:00' : ' 23:59:59');
+  }
+  function selectField(label, name, value, items) {
+    var html = '<div class="spn-field"><label>' + e(label) + '</label><select class="form-select" data-field="' + e(name) + '">';
+    items.forEach(function(item) {
+      html += option(item[0], item[1], value);
+    });
+    return html + '</select></div>';
+  }
+  function checkbox(label, name, value) {
+    return field(label, name, value, 'checkbox');
+  }
+  function range(label, name, value, min, max) {
+    return '<div class="spn-field"><label>' + e(label) + '</label><div class="spn-range-line"><input class="form-control" type="range" data-field="' + e(name) + '" value="' + e(value) + '" min="' + e(min) + '" max="' + e(max) + '"><span class="spn-range-value">' + e(value) + '</span></div></div>';
+  }
+  function timezoneField(current) {
+    var html = '<div class="spn-field"><label>' + e(ui.entry_timezone) + '</label><select class="form-select" data-field="timezone">';
+    var hasCurrent = false;
+    timezones.forEach(function(group) {
+      html += '<optgroup label="' + e(group.label) + '">';
+      (group.zones || []).forEach(function(zone) {
+        if (String(zone.value) === String(current)) {
+          hasCurrent = true;
+        }
+        html += option(zone.value, zone.label, current);
+      });
+      html += '</optgroup>';
+    });
+    if (!hasCurrent && current) {
+      html += '<optgroup label="Current"><option value="' + e(current) + '" selected>' + e(current) + '</option></optgroup>';
+    }
+    return html + '</select></div>';
+  }
+  function categoryList(c) {
+    var selected = {};
+    (c.target_categories || []).forEach(function(v) { selected[String(v)] = true; });
+    return '<div class="spn-category-list">' + categories.map(function(category) {
+      return '<label><input type="checkbox" data-category-id="' + e(category.category_id) + '"' + (selected[String(category.category_id)] ? ' checked' : '') + '> ' + e(category.name) + '</label>';
+    }).join('') + '</div>';
+  }
+  function deviceList(c) {
+    var devices = Array.isArray(c.devices) ? c.devices : ['desktop', 'tablet', 'mobile'];
+    var selected = {};
+    devices.forEach(function(value) { selected[String(value)] = true; });
+    var items = [
+      ['desktop', ui.text_device_desktop],
+      ['tablet', ui.text_device_tablet],
+      ['mobile', ui.text_device_mobile]
+    ];
+    return '<div class="spn-field full spn-device-field"><label>' + e(ui.entry_devices) + '</label><div class="spn-device-options">' + items.map(function(item) {
+      return '<label class="spn-device-option"><input type="checkbox" data-device="' + e(item[0]) + '"' + (selected[item[0]] ? ' checked' : '') + '> <span>' + e(item[1]) + '</span></label>';
+    }).join('') + '</div><p class="spn-help">' + e(ui.text_device_help) + '</p></div>';
+  }
+  function stat(c, key) {
+    var source = stats[c.id] || {impression:0, click:0, close:0};
+    var value = key === 'ctr' ? (source.impression ? ((source.click / source.impression) * 100).toFixed(2) + '%' : '0%') : (source[key] || 0);
+    return '<div class="spn-stat"><strong>' + e(value) + '</strong><span>' + e(key === 'impression' ? ui.text_impressions : key === 'click' ? ui.text_clicks : key === 'close' ? ui.text_closes : ui.text_ctr) + '</span></div>';
+  }
+  function languageFields(c) {
+    var html = '';
+    languages.forEach(function(language, index) {
+      var x = c.content[String(language.language_id)] || contentTemplatesByLanguage(language);
+      html += '<button type="button" class="spn-language-tab' + (index === 0 ? ' active' : '') + '" data-language="' + e(language.language_id) + '">' + e(language.name) + '</button>';
+    });
+    var header = '<div class="spn-email-settings">' +
+      checkbox(ui.entry_email_enabled, 'email_enabled', c.email_enabled) +
+      '<p class="help-block">' + e(ui.text_email_enabled_help) + '</p>' +
+      '</div><div class="spn-language-tabs">' + html + '</div>';
+    var panels = '';
+    languages.forEach(function(language, index) {
+      var x = c.content[String(language.language_id)] || contentTemplatesByLanguage(language);
+      panels += '<div class="spn-language-panel' + (index === 0 ? ' active' : '') + '" data-language-panel="' + e(language.language_id) + '">';
+      panels += '<div class="spn-grid">';
+      panels += textAreaField(ui.entry_title, 'title', x.title, 1).replace('rows="3"', 'rows="1"').replace('data-field="title"', 'data-language-id="' + e(language.language_id) + '" data-content-field="title"');
+      panels += textAreaField(ui.entry_message, 'message', x.message, 3).replace('data-field="message"', 'data-language-id="' + e(language.language_id) + '" data-content-field="message"');
+      panels += textAreaField(ui.entry_submessage, 'submessage', x.submessage, 3).replace('data-field="submessage"', 'data-language-id="' + e(language.language_id) + '" data-content-field="submessage"');
+      panels += textAreaField(ui.entry_thanks, 'thanks', x.thanks, 2).replace('data-field="thanks"', 'data-language-id="' + e(language.language_id) + '" data-content-field="thanks"');
+      panels += textAreaField(ui.entry_email_message, 'email_message', x.email_message, 5).replace('data-field="email_message"', 'data-language-id="' + e(language.language_id) + '" data-content-field="email_message"');
+      panels += field(ui.entry_button_text, 'button_text', x.button_text).replace('data-field="button_text"', 'data-language-id="' + e(language.language_id) + '" data-content-field="button_text"');
+      panels += field(ui.entry_countdown_label, 'countdown_label', x.countdown_label).replace('rows="3"', 'rows="1"').replace('data-field="countdown_label"', 'data-language-id="' + e(language.language_id) + '" data-content-field="countdown_label"');
+      panels += '</div></div>';
+    });
+    return header + panels;
+  }
+  function campaignHtml(c, index) {
+    var image = c.image ? imageBase + c.image : defaultImage;
+    var triggers = [
+      ['on_load', ui.text_trigger_on_load || 'On load'],
+      ['on_delay', ui.text_trigger_on_delay || 'On delay'],
+      ['on_click', ui.text_trigger_on_click || 'On click'],
+      ['on_scroll', ui.text_trigger_on_scroll || 'On scroll'],
+      ['on_exit', ui.text_trigger_on_exit || 'On exit'],
+      ['on_inactivity', ui.text_trigger_on_inactivity || 'On inactivity'],
+      ['on_adblock', ui.text_trigger_on_adblock || 'On ad block']
+    ];
+    var positions = [
+      ['center', ui.text_position_center || 'Center'],
+      ['top_left', ui.text_position_top_left || 'Top left'],
+      ['top_center', ui.text_position_top_center || 'Top center'],
+      ['top_right', ui.text_position_top_right || 'Top right'],
+      ['middle_left', ui.text_position_middle_left || 'Middle left'],
+      ['middle_center', ui.text_position_middle_center || 'Middle center'],
+      ['middle_right', ui.text_position_middle_right || 'Middle right'],
+      ['bottom_left', ui.text_position_bottom_left || 'Bottom left'],
+      ['bottom_center', ui.text_position_bottom_center || 'Bottom center'],
+      ['bottom_right', ui.text_position_bottom_right || 'Bottom right']
+    ];
+    return '<article class="spn-campaign' + (index === active ? ' active' : '') + '" data-index="' + index + '">' +
+      '<div class="spn-campaign-header"><h3>' + e(c.name) + '</h3>' +
+      '<button type="button" class="btn btn-light spn-duplicate"><i class="fa-regular fa-copy"></i> ' + e(ui.text_duplicate) + '</button>' +
+      '<button type="button" class="btn btn-danger spn-delete"><i class="fa-solid fa-trash"></i> ' + e(ui.text_delete) + '</button></div>' +
+      '<div class="spn-tabs">' +
+        '<button type="button" class="spn-tab active" data-section="schedule">' + e(ui.text_schedule) + '</button>' +
+        '<button type="button" class="spn-tab" data-section="content">' + e(ui.text_content) + '</button>' +
+        '<button type="button" class="spn-tab" data-section="design">' + e(ui.text_design) + '</button>' +
+        '<button type="button" class="spn-tab" data-section="targeting">' + e(ui.text_targeting) + '</button>' +
+        '<button type="button" class="spn-tab" data-section="statistics">' + e(ui.text_statistics) + '</button>' +
+      '</div>' +
+      '<section class="spn-section active" data-section-panel="schedule">' +
+        '<div class="spn-grid">' +
+          field(ui.entry_campaign_name, 'name', c.name) +
+          checkbox(ui.entry_status, 'status', c.status) +
+          field(ui.entry_priority, 'priority', c.priority, 'number', {min:-9999,max:9999}) +
+          timezoneField(c.timezone) +
+          dateTimeInput(ui.entry_starts_at, 'starts_at', c.starts_at, c.starts_at_time) +
+          dateTimeInput(ui.entry_ends_at, 'ends_at', c.ends_at, c.ends_at_time) +
+          selectField(ui.entry_recurrence, 'recurrence', c.recurrence, [['none', ui.text_none], ['weekly', ui.text_weekly], ['monthly', ui.text_monthly], ['yearly', ui.text_yearly || 'Yearly']]) +
+          dateTimeInput(ui.entry_recurrence_until, 'recurrence_until', c.recurrence_until, c.recurrence_until_time) +
+          field(ui.entry_date_format, 'date_format', c.date_format) +
+          field(ui.entry_time_format, 'time_format', c.time_format) +
+          selectField(ui.entry_trigger, 'trigger', c.trigger, triggers) +
+          field(ui.entry_trigger_delay, 'trigger_delay', c.trigger_delay, 'number', {min:0,max:900}) +
+          field(ui.entry_trigger_selector, 'trigger_selector', c.trigger_selector) +
+          field(ui.entry_trigger_scroll_depth, 'trigger_scroll_depth', c.trigger_scroll_depth, 'number', {min:1,max:100}) +
+          field(ui.entry_auto_close, 'auto_close_seconds', c.auto_close_seconds, 'number', {min:0,max:900}) +
+          selectField(ui.entry_position, 'position', c.position, positions) +
+          field(ui.entry_geo_countries, 'geo_countries', c.geo_countries || '') +
+        '</div>' +
+      '</section>' +
+      '<section class="spn-section" data-section-panel="content">' +
+        languageFields(c) +
+        '<hr><h4>' + e(ui.text_shortcodes) + '</h4><p class="spn-help">' + e(ui.text_shortcode_help) + '</p>' +
+        '<div class="spn-shortcodes">' + ui.shortcodes.map(function(token) { return '<button type="button" class="spn-shortcode" title="Copy">' + e(token) + '</button>'; }).join('') + '</div>' +
+      '</section>' +
+      '<section class="spn-section" data-section-panel="design">' +
+        '<div class="spn-design-grid">' +
+          '<div>' +
+            '<div class="spn-grid">' +
+              '<div class="spn-field full"><label>' + e(ui.entry_image) + '</label><img class="spn-image-preview" src="' + e(image) + '" alt=""><input type="file" class="form-control spn-image-input" name="campaign_image_' + e(c.id) + '" accept="image/jpeg,image/png,image/webp"><p class="spn-help">' + e(ui.text_upload_help) + '</p>' + checkbox(ui.text_remove_image, 'remove_image', c.remove_image) + '</div>' +
+              responsiveStudio(c) +
+              '<div class="spn-field"><label>' + e(ui.entry_preset) + '</label><select class="form-select" data-field="preset">' + option('elegant', ui.text_preset_elegant, c.preset) + option('minimal', ui.text_preset_minimal, c.preset) + option('bold', ui.text_preset_bold, c.preset) + '</select></div>' +
+              field(ui.entry_accent_color, 'accent_color', c.accent_color, 'color') +
+              field(ui.entry_background_color, 'background_color', c.background_color, 'color') +
+              field(ui.entry_text_color, 'text_color', c.text_color, 'color') +
+              field(ui.entry_button_color, 'button_color', c.button_color, 'color') +
+              field(ui.entry_overlay_color, 'overlay_color', c.overlay_color, 'color') +
+              range(ui.entry_overlay_opacity, 'overlay_opacity', c.overlay_opacity, 0, 90) +
+              range(ui.entry_blur, 'blur', c.blur, 0, 12) +
+              checkbox(ui.entry_countdown, 'countdown', c.countdown) +
+              field(ui.entry_button_url, 'button_url', c.button_url) +
+              selectField(ui.entry_button_target, 'button_target', c.button_target, [['_self', ui.text_open_same], ['_blank', ui.text_open_new]]) +
+            '</div>' +
+          '</div>' +
+          '<div class="spn-preview-wrap">' +
+            '<div class="spn-preview-toolbar"><button type="button" class="spn-preview-device" data-preview-profile="desktop">' + e(ui.text_device_desktop) + '</button><button type="button" class="spn-preview-device active" data-preview-profile="laptop">' + e(ui.text_device_laptop) + '</button><button type="button" class="spn-preview-device" data-preview-profile="tablet">' + e(ui.text_device_tablet) + '</button><button type="button" class="spn-preview-device" data-preview-profile="mobile">' + e(ui.text_device_mobile) + '</button></div>' +
+            '<div class="spn-preview-size" data-preview-size></div>' +
+            '<div class="spn-preview" data-preview><span class="spn-preview-close">×</span><div class="spn-preview-image"><img src="' + e(image) + '" alt=""></div><div class="spn-preview-content"><div class="spn-preview-title"></div><div class="spn-preview-message"></div><div class="spn-preview-divider"></div><div class="spn-preview-sub"></div><div class="spn-preview-countdown"></div><span class="spn-preview-cta"></span><div class="spn-preview-thanks"></div></div></div></div>' +
+          '</div>' +
+        '</div>' +
+      '</section>' +
+      '<section class="spn-section" data-section-panel="targeting">' +
+        deviceList(c) +
+        '<div class="spn-field"><label>' + e(ui.entry_target_type) + '</label><select class="form-select" data-field="target_type">' + option('all', ui.text_target_all, c.target_type) + option('categories', ui.text_target_categories, c.target_type) + option('products', ui.text_target_products, c.target_type) + '</select></div>' +
+        '<div class="spn-target-box' + (c.target_type === 'categories' ? ' active' : '') + '" data-target="categories"><h4>' + e(ui.entry_categories) + '</h4>' + categoryList(c) + '</div>' +
+        '<div class="spn-target-box' + (c.target_type === 'products' ? ' active' : '') + '" data-target="products">' +
+          '<h4>' + e(ui.entry_products) + '</h4>' +
+          '<div class="spn-product-picker"><div class="spn-product-toolbar"><input class="form-control spn-product-search" placeholder="' + e(ui.placeholder_product_search) + '"><button type="button" class="btn btn-primary spn-product-search-button"><i class="fa-solid fa-magnifying-glass"></i> ' + e(ui.button_product_search) + '</button></div><div class="spn-product-status spn-help">' + e(ui.text_product_suggestions) + '</div><div class="spn-product-results" hidden></div></div><div class="spn-product-chips"></div>' +
+        '</div>' +
+      '</section>' +
+      '<section class="spn-section" data-section-panel="statistics"><div class="spn-stat-grid">' +
+        stat(c, 'impression') + stat(c, 'click') + stat(c, 'close') + stat(c, 'ctr') +
+      '</div><p style="margin-top:16px"><a class="btn btn-danger" href="' + e(resetStatsUrl + (resetStatsUrl.indexOf('?') >= 0 ? '&' : '?') + 'campaign_id=' + encodeURIComponent(c.id)) + '"><i class="fa-solid fa-eraser"></i> ' + e(ui.text_reset_stats) + '</a></p></section>' +
+    '</article>';
+  }
+
+  function templateChoices() {
+    return templates.map(function(template) {
+      return { id: template.id || uid(), name: template.name || templateLibraryDefaults.labelUntitled };
+    });
+  }
+  function sanitizeTemplates() {
+    if (!templates.length) {
+      templates = [{
+        id: uid(),
+        name: templateLibraryDefaults.labelDefault,
+        content: {}
+      }];
+      languages.forEach(function(l) {
+        templates[0].content[String(l.language_id)] = contentTemplatesByLanguage(l);
+      });
+    }
+    templates = templates.filter(function(template) {
+      return template && template.id && template.name;
+    });
+  }
+  function renderTemplateOptions() {
+    sanitizeTemplates();
+    templateSelect.innerHTML = templates.map(function(template, index) {
+      return '<option value="' + e(index) + '">' + e(template.name || templateLibraryDefaults.labelUntitled) + '</option>';
+    }).join('');
+    if (!templateSelect.querySelector('option')) {
+      templateHelp.textContent = ui.text_template_no_selection || templateLibraryDefaults.labelUntitled;
+      templateSelect.disabled = true;
+    } else {
+      templateSelect.disabled = false;
+      templateHelp.textContent = ui.text_template_help || '';
+    }
+  }
+
+  function applyTemplateToActive() {
+    if (!templateSelect.value && templateSelect.value !== '0') {
+      return;
+    }
+    var index = Number(templateSelect.value);
+    if (!templates[index]) {
+      return;
+    }
+    var campaign = campaigns[active];
+    if (!campaign) {
+      return;
+    }
+    var template = templates[index];
+    campaign.content = template.id === 'holiday_default' ? holidayTemplateContent() : JSON.parse(JSON.stringify(template.content || {}));
+    render();
+    sync();
+  }
+  function deleteTemplate() {
+    if (!templateSelect.value && templateSelect.value !== '0') {
+      return;
+    }
+    var index = Number(templateSelect.value);
+    if (!templates[index]) {
+      return;
+    }
+    if (!confirm(ui.text_template_delete_confirm || templateLibraryDefaults.labelUntitled)) {
+      return;
+    }
+    templates.splice(index, 1);
+    sanitizeTemplates();
+    renderTemplateOptions();
+    sync();
+  }
+  function saveCurrentTemplate() {
+    var campaign = campaigns[active];
+    if (!campaign) {
+      return;
+    }
+    var name = String(templateNameInput.value || '').trim() || templateLibraryDefaults.labelUntitled;
+    var payload = {};
+    languages.forEach(function(language) {
+      payload[String(language.language_id)] = JSON.parse(JSON.stringify(campaign.content[String(language.language_id)] || contentTemplatesByLanguage(language)));
+    });
+    templates.unshift({ id: uid(), name: name, content: payload });
+    sanitizeTemplates();
+    renderTemplateOptions();
+    sync();
+  }
+  function exportTemplates() {
+    var file = new Blob([JSON.stringify(templates, null, 2)], {type: 'application/json;charset=utf-8'});
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(file);
+    link.download = 'spn-templates.json';
+    link.click();
+    setTimeout(function() {
+      URL.revokeObjectURL(link.href);
+    }, 1000);
+  }
+  function importTemplatesFromFile(file) {
+    var reader = new FileReader();
+    reader.onload = function() {
+      try {
+        var parsed = JSON.parse(reader.result);
+        if (!Array.isArray(parsed)) {
+          throw new Error('Invalid data');
+        }
+        templates = parsed.map(function(template) {
+          var content = {};
+          languages.forEach(function(language) {
+            var languageId = String(language.language_id);
+            var data = (template && template.content && template.content[languageId]) ? template.content[languageId] : contentTemplatesByLanguage(language);
+            content[languageId] = {
+              title: data.title || '',
+              message: data.message || '',
+              submessage: data.submessage || '',
+              thanks: data.thanks || '',
+              email_message: data.email_message || '',
+              button_text: data.button_text || '',
+              countdown_label: data.countdown_label || ''
+            };
+          });
+          return {
+            id: template.id ? String(template.id).replace(/[^a-zA-Z0-9_-]/g, '') : uid(),
+            name: String(template.name || templateLibraryDefaults.labelUntitled).trim(),
+            content: content
+          };
+        });
+        sanitizeTemplates();
+        renderTemplateOptions();
+        sync();
+      } catch (error) {
+        templateHelp.textContent = 'Could not import templates.';
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function render() {
+    list.innerHTML = campaigns.map(function(campaign, index) {
+      return '<button type="button" class="spn-campaign-link' + (index === active ? ' active' : '') + '" data-select="' + index + '"><span class="spn-dot' + (campaign.status ? ' on' : '') + '"></span><strong>' + e(campaign.name) + '</strong></button>';
+    }).join('');
+    panels.innerHTML = campaigns.length ? campaigns.map(campaignHtml).join('') : '<div class="spn-empty">' + e(ui.text_no_campaigns) + '</div>';
+    bind();
+    sync();
+    renderTemplateOptions();
+    renderHolidayPresets();
+    syncTemplates();
+  }
+  function syncTemplates() {
+    templateJson.value = JSON.stringify(templates);
+  }
+  function sync() {
+    json.value = JSON.stringify(campaigns);
+  }
+  function preview(panel, c) {
+    var previewProfile = panel.dataset.previewProfile || 'laptop';
+    var allowedProfiles = ['desktop', 'laptop', 'tablet', 'mobile'];
+    if (allowedProfiles.indexOf(previewProfile) === -1) previewProfile = 'laptop';
+    var widthDefaults = {desktop:520,laptop:520,tablet:480,mobile:360};
+    var heightDefaults = {desktop:90,laptop:90,tablet:92,mobile:94};
+    var previewWidth = Number(c['popup_width_' + previewProfile]) || widthDefaults[previewProfile];
+    var previewHeight = Number(c['popup_height_' + previewProfile]) || heightDefaults[previewProfile];
+    var responsivePreview = panel.querySelector('[data-preview]');
+    if (responsivePreview) {
+      responsivePreview.style.width = Math.min(460, Math.max(220, Math.round(previewWidth * .72))) + 'px';
+      responsivePreview.style.maxHeight = Math.min(410, Math.max(240, Math.round(previewHeight * 4.2))) + 'px';
+    }
+    var previewSize = panel.querySelector('[data-preview-size]');
+    if (previewSize) previewSize.textContent = previewWidth + ' px · max ' + previewHeight + ' vh';
+    panel.querySelectorAll('[data-preview-profile]').forEach(function(button) {
+      button.classList.toggle('active', button.dataset.previewProfile === previewProfile);
+    });
+    var p = panel.querySelector('[data-preview]');
+    if (!p) return;
+    var language = languages[0];
+    var content = c.content[String(language.language_id)] || contentTemplatesByLanguage(language);
+    p.style.backgroundColor = c.background_color;
+    p.style.color = c.text_color;
+    p.querySelector('.spn-preview-title').textContent = content.title;
+    p.querySelector('.spn-preview-title').style.background = c.accent_color;
+    p.querySelector('.spn-preview-message').textContent = content.message;
+    p.querySelector('.spn-preview-message').style.color = c.text_color;
+    p.querySelector('.spn-preview-sub').textContent = content.submessage;
+    p.querySelector('.spn-preview-countdown').innerHTML = c.countdown ? '<span class="label">' + e(content.countdown_label) + '</span><span class="value">02:14:35</span>' : '';
+    var cta = p.querySelector('.spn-preview-cta');
+    cta.style.display = (c.button_url && content.button_text) ? 'inline-block' : 'none';
+    cta.textContent = content.button_text;
+    cta.style.background = c.button_color;
+    p.querySelector('.spn-preview-thanks').textContent = content.thanks;
+    p.querySelector('.spn-preview-thanks').style.background = c.accent_color;
+    p.querySelector('.spn-preview-image img').src = c.image ? imageBase + c.image : defaultImage;
+  }
+  function updateRangeValue(input) {
+    if (input.type === 'range' && input.nextElementSibling) {
+      input.nextElementSibling.textContent = input.value;
+    }
+  }
+  function bindProducts(panel, c) {
+    var search = panel.querySelector('.spn-product-search');
+    var button = panel.querySelector('.spn-product-search-button');
+    var results = panel.querySelector('.spn-product-results');
+    var status = panel.querySelector('.spn-product-status');
+    var loaded = false;
+    var timer;
+    function renderProducts() {
+      var box = panel.querySelector('.spn-product-chips');
+      if (!box) return;
+      box.innerHTML = (c.target_products || []).map(function(productId) {
+        return '<span class="spn-chip">' + e(c.target_product_labels[String(productId)] || ('#' + productId)) + '<button type="button" data-remove-product="' + e(productId) + '">&times;</button></span>';
+      }).join('');
+      box.querySelectorAll('button[data-remove-product]').forEach(function(btn) {
+        btn.onclick = function() {
+          var id = Number(btn.dataset.removeProduct);
+          c.target_products = (c.target_products || []).filter(function(value) {
+            return Number(value) !== id;
+          });
+          delete c.target_product_labels[String(id)];
+          renderProducts();
+          sync();
+        };
+      });
+    }
+    function loadProducts() {
+      clearTimeout(timer);
+      status.textContent = ui.text_product_loading;
+      results.hidden = true;
+      fetch(autocompleteUrl + (autocompleteUrl.indexOf('?') >= 0 ? '&' : '?') + 'filter_name=' + encodeURIComponent(search.value.trim()), {credentials:'same-origin'})
+        .then(function(res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function(items) {
+          loaded = true;
+          items = (items || []).filter(function(item) {
+            return (c.target_products || []).map(Number).indexOf(Number(item.product_id)) < 0;
+          });
+          results.innerHTML = items.map(function(item) {
+            var details = [
+              'ID ' + item.product_id,
+              item.model ? ui.text_product_model + ': ' + item.model : '',
+              item.sku ? 'SKU: ' + item.sku : ''
+            ].filter(Boolean).join(' · ');
+            return '<button type="button" class="spn-product-result" data-product-id="' + e(item.product_id) + '" data-product-name="' + e(item.name) + '"><strong>' + e(item.name) + '</strong><small>' + e(details) + '</small></button>';
+          }).join('');
+          status.textContent = items.length ? ui.text_product_suggestions : ui.text_product_empty;
+          results.hidden = !items.length;
+          results.querySelectorAll('.spn-product-result').forEach(function(item) {
+            item.onclick = function() {
+              var productId = Number(item.dataset.productId);
+              if ((c.target_products || []).map(Number).indexOf(productId) < 0) {
+                c.target_products = (c.target_products || []).concat([productId]);
+                c.target_product_labels[String(productId)] = item.dataset.productName;
+              }
+              search.value = '';
+              loaded = false;
+              results.hidden = true;
+              renderProducts();
+              sync();
+            };
+          });
+        })
+        .catch(function() {
+          status.textContent = ui.text_product_error;
+          results.hidden = true;
+        });
+    }
+    search.onfocus = function() { if (!loaded) { loadProducts(); } };
+    search.oninput = function() {
+      clearTimeout(timer);
+      timer = setTimeout(loadProducts, 250);
+    };
+    search.onkeydown = function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        loadProducts();
+      }
+    };
+    button.onclick = loadProducts;
+    renderProducts();
+  }
+
+  function bindCampaign(panel) {
+    var index = Number(panel.dataset.index);
+    var c = campaigns[index];
+
+    panel.querySelectorAll('.spn-tab').forEach(function(tab) {
+      tab.onclick = function() {
+        panel.querySelectorAll('.spn-tab, [data-section-panel]').forEach(function(item) {
+          item.classList.remove('active');
+        });
+        tab.classList.add('active');
+        panel.querySelector('[data-section-panel="' + tab.dataset.section + '"]').classList.add('active');
+      };
+    });
+    panel.querySelectorAll('.spn-language-tab').forEach(function(tab) {
+      tab.onclick = function() {
+        panel.querySelectorAll('.spn-language-tab, .spn-language-panel').forEach(function(node) {
+          node.classList.remove('active');
+        });
+        tab.classList.add('active');
+        panel.querySelector('[data-language-panel="' + tab.dataset.language + '"]').classList.add('active');
+        lastContentInput = null;
+      };
+    });
+    panel.querySelectorAll('[data-field]').forEach(function(input) {
+      input.oninput = input.onchange = function() {
+        var name = input.dataset.field;
+        if (!name) return;
+        var value;
+        if (input.type === 'checkbox') {
+          value = input.checked ? 1 : 0;
+        } else if (input.type === 'number' || input.type === 'range') {
+          value = Number(input.value);
+        } else {
+          value = input.value;
+        }
+        c[name] = value;
+        if (name === 'status') {
+          list.querySelector('[data-select="' + index + '"] .spn-dot').classList.toggle('on', !!c.status);
+        }
+        if (name === 'name') {
+          panel.querySelector('h3').textContent = c.name;
+          list.querySelector('[data-select="' + index + '"] strong').textContent = c.name;
+        }
+        if (name === 'target_type') {
+          panel.querySelectorAll('.spn-target-box').forEach(function(node) {
+            node.classList.toggle('active', node.dataset.target === c.target_type);
+          });
+        }
+        if (input.type === 'range' && input.nextElementSibling) {
+          input.nextElementSibling.textContent = input.value;
+        }
+        preview(panel, c);
+        sync();
+      };
+    });
+    panel.querySelectorAll('[data-preview-profile]').forEach(function(button) {
+      button.onclick = function() {
+        panel.dataset.previewProfile = button.dataset.previewProfile;
+        preview(panel, c);
+      };
+    });
+    preview(panel, c);
+    panel.querySelectorAll('[data-device]').forEach(function(input) {
+      input.onchange = function() {
+        c.devices = Array.prototype.map.call(panel.querySelectorAll('[data-device]:checked'), function(node) {
+          return node.dataset.device;
+        });
+        sync();
+      };
+    });
+    panel.querySelectorAll('[data-date-part], [data-time-part]').forEach(function(input) {
+      input.oninput = input.onchange = function() {
+        var name = input.dataset.datePart || input.dataset.timePart;
+        if (!name) return;
+        var dateInput = panel.querySelector('[data-date-part="' + name + '"]');
+        var timeInput = panel.querySelector('[data-time-part="' + name + '"]');
+        var timeValue = timeInput && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(timeInput.value) ? timeInput.value : '';
+        c[name + '_time'] = timeValue;
+        c[name] = dateTimeStorageValue(dateInput ? dateInput.value : '', timeValue, name);
+        preview(panel, c);
+        sync();
+      };
+    });
+    panel.querySelectorAll('[data-content-field]').forEach(function(input) {
+      input.onfocus = function() {
+        lastContentInput = input;
+      };
+      input.oninput = function() {
+        c.content[String(input.dataset.languageId)][input.dataset.contentField] = input.value;
+        preview(panel, c);
+        sync();
+      };
+    });
+    panel.querySelectorAll('.spn-shortcode').forEach(function(button) {
+      button.onclick = function() {
+        var target = lastContentInput;
+        if (!target || !panel.contains(target)) {
+          target = panel.querySelector('.spn-language-panel.active [data-content-field]');
+          if (!target) return;
+          lastContentInput = target;
+        }
+        if (!target || !target.dataset.languageId) return;
+        var content = c.content[String(target.dataset.languageId)];
+        var token = button.textContent;
+        var start = typeof target.selectionStart === 'number' ? target.selectionStart : target.value.length;
+        var end = typeof target.selectionEnd === 'number' ? target.selectionEnd : start;
+        target.value = target.value.slice(0, start) + token + target.value.slice(end);
+        content[target.dataset.contentField] = target.value;
+        if (target.setSelectionRange) target.setSelectionRange(start + token.length, start + token.length);
+        target.focus();
+        preview(panel, c);
+        sync();
+      };
+    });
+    panel.querySelector('.spn-image-input').onchange = function(event) {
+      var file = event.target.files && event.target.files[0];
+      if (!file) return;
+      var url = URL.createObjectURL(file);
+      panel.querySelector('.spn-image-preview').src = url;
+      panel.querySelector('.spn-preview-image img').src = url;
+    };
+    panel.querySelector('.spn-duplicate').onclick = function() {
+      var copy = JSON.parse(JSON.stringify(c));
+      copy.id = uid();
+      copy.name = c.name + ' - ' + ui.text_duplicate;
+      campaigns.splice(index + 1, 0, copy);
+      active = index + 1;
+      render();
+    };
+    panel.querySelector('.spn-delete').onclick = function() {
+      if (confirm(ui.text_confirm_delete)) {
+        campaigns.splice(index, 1);
+        active = Math.max(0, Math.min(active, campaigns.length - 1));
+        render();
+      }
+    };
+    bindProducts(panel, c);
+    preview(panel, c);
+  }
+
+  function bind() {
+    list.querySelectorAll('[data-select]').forEach(function(button) {
+      button.onclick = function() {
+        active = Number(button.dataset.select);
+        list.querySelectorAll('.spn-campaign-link').forEach(function(x) { x.classList.remove('active'); });
+        button.classList.add('active');
+        panels.querySelectorAll('.spn-campaign').forEach(function(panel) {
+          panel.classList.remove('active');
+        });
+        var target = panels.querySelector('.spn-campaign[data-index="' + active + '"]');
+        if (target) {
+          target.classList.add('active');
+        }
+      };
+    });
+    panels.querySelectorAll('.spn-campaign').forEach(bindCampaign);
+  }
+
+  document.getElementById('spn-add').onclick = function() {
+    campaigns.push(fresh());
+    active = campaigns.length - 1;
+    render();
+  };
+  templateSaveButton.onclick = saveCurrentTemplate;
+  templateApplyButton.onclick = applyTemplateToActive;
+  templateDeleteButton.onclick = deleteTemplate;
+  templateExportButton.onclick = exportTemplates;
+  templateImportButton.onclick = function() { templateImportFile.click(); };
+  templateImportFile.onchange = function() {
+    if (templateImportFile.files && templateImportFile.files[0]) {
+      importTemplatesFromFile(templateImportFile.files[0]);
+      templateImportFile.value = '';
+    }
+  };
+  if (holidayApplyButton) {
+    holidayApplyButton.onclick = function() {
+      var selected = selectedHolidayPresets();
+      if (!selected.length || !campaigns[active]) {
+        return;
+      }
+      var campaign = campaigns[active];
+      var year = holidayYearValue();
+      var preset = selected[0];
+      if (!applyHolidayToCampaign(campaign, preset, year)) {
+        return;
+      }
+      render();
+    };
+  }
+  if (holidayCreateButton) {
+    holidayCreateButton.onclick = function() {
+      var selected = selectedHolidayPresets();
+      if (!selected.length) {
+        return;
+      }
+      var year = holidayYearValue();
+      selected.forEach(function(preset) {
+        var campaign = createCampaignFromHoliday(preset, year);
+        if (campaign) {
+          campaigns.push(campaign);
+          active = campaigns.length - 1;
+        }
+      });
+      render();
+    };
+  }
+  if (holidayYear) {
+    holidayYear.addEventListener('change', renderHolidayPresets);
+  }
+
+  document.getElementById('form-module').addEventListener('submit', function() {
+    sync();
+    syncTemplates();
+  });
+
+  sanitizeTemplates();
+  render();
 })();
 </script>
 {{ footer }}
