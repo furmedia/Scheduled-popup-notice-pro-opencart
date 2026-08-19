@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.0.9 - 2026-08-19
+
+- Fixed true vertical and horizontal centering by removing conflicting position rules and transform-based entrance animation.
+- Added per-campaign responsive width and maximum-height profiles for large desktop, laptop, tablet, and mobile.
+- Added editable mobile, tablet, and laptop resolution breakpoints with safe server-side normalization.
+- Added a live responsive profile selector and size readout to the admin preview.
+
+## 2.0.7 - 2026-08-19
+
+- Added trigger-aware popup behaviors (`on_load`, `on_delay`, `on_click`, `on_scroll`, `on_exit`, `on_inactivity`, `on_adblock`), session dismissal, and campaign position presets.
+- Added geolocation filtering (`geo_countries`) for display and email notifications.
+- Added reusable template library (save/apply/delete/import/export) and prefilled Romanian/English templates with delivery-shortcode defaults.
+- Added product autocomplete improvements (search by name, model, SKU, and numeric ID) plus timezone list and trigger/appearance controls in compatibility builds.
+- Regenerated all compatibility trees and release packages to version 2.0.7.
+
 ## 2.0.4 - 2026-08-19
 
 - Migrates the intermediate English starter text to the localized language template.

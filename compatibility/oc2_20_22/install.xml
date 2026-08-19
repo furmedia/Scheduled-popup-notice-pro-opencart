@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <modification>
   <name>Scheduled Popup &amp; Notice Pro</name>
   <code>cristale_shipping_notice</code>
-  <version>2.0.4</version>
+  <version>2.0.9</version>
   <author>Furmedia</author>
   <link>https://github.com/furmedia/Scheduled-popup-notice-pro-opencart</link>
 
@@ -31,7 +31,7 @@
             $cristale_shipping_notice_email = $this->load->controller('module/cristale_shipping_notice/getEmailMessage', $order_info);
 
             if ($cristale_shipping_notice_email) {
-                $data['text_greeting'] .= "\n\n" . $cristale_shipping_notice_email;
+                $data['text_greeting'] .= '<span data-furmedia-scheduled-popup-email="1" style="display:block;margin:16px 0 0;padding:12px 15px;border-left:4px solid #713568;background:#fff7fb;color:#2f2934;font-size:13px;line-height:1.55">' . nl2br(htmlspecialchars($cristale_shipping_notice_email, ENT_QUOTES, 'UTF-8')) . '</span>';
             }
       ]]></add>
     </operation>

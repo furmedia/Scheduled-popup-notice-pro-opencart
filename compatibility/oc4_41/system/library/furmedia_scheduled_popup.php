@@ -4,25 +4,25 @@
  * Kept compatible with PHP 5.6 so the same source can serve OpenCart 2.x-4.x.
  */
 class FurmediaScheduledPopupEngine {
-    const VERSION = '2.0.4';
+    const VERSION = '2.0.7';
 
     public static function defaultContent($language_code = 'en') {
         $templates = array(
             'en' => array(
                 'title' => 'Important announcement',
-                'message' => '{store_name}: schedule update from {start_date}, {start_time} to {end_date}, {end_time}.',
-                'submessage' => 'Normal service resumes after {end_date}. {days_remaining} day(s) remaining.',
+                'message' => 'No deliveries are made during the period {start_date}, {start_time} - {end_date}, {end_time}.',
+                'submessage' => 'Deliveries resume on {end_date} at {end_time}.',
                 'thanks' => 'Thank you for your understanding!',
-                'email_message' => 'Important: {store_name} has a schedule update from {start_date}, {start_time} to {end_date}, {end_time}. Normal service resumes after this period.',
+                'email_message' => 'Important: no deliveries are made from {start_date}, {start_time} until {end_date}, {end_time}. Deliveries resume on {end_date} at {end_time}.',
                 'button_text' => 'Learn more',
                 'countdown_label' => 'Time remaining'
             ),
             'ro' => array(
                 'title' => 'Anunț important',
-                'message' => '{store_name}: program modificat din {start_date}, ora {start_time}, până în {end_date}, ora {end_time}.',
-                'submessage' => 'Programul normal se reia după {end_date}. Mai sunt {days_remaining} zile.',
+                'message' => 'La {store_name}, nu se fac livrări în perioada {start_date}, ora {start_time} - {end_date}, ora {end_time}.',
+                'submessage' => 'Livrările se reîncep pe {end_date}, ora {end_time}.',
                 'thanks' => 'Vă mulțumim pentru înțelegere!',
-                'email_message' => 'Important: {store_name} are program modificat din {start_date}, ora {start_time}, până în {end_date}, ora {end_time}. Programul normal se reia după această perioadă.',
+                'email_message' => 'Important: La {store_name}, în perioada {start_date}, ora {start_time} până la {end_date}, ora {end_time}, nu se fac livrări. Livrările se reiau pe {end_date}, ora {end_time}.',
                 'button_text' => 'Află mai multe',
                 'countdown_label' => 'Timp rămas'
             ),
@@ -87,12 +87,16 @@ class FurmediaScheduledPopupEngine {
             'id' => self::newId(),
             'name' => 'First campaign',
             'status' => 0,
+            'email_enabled' => 1,
             'priority' => 10,
             'timezone' => 'UTC',
             'starts_at' => date('Y-m-d') . ' 00:00:00',
+            'starts_at_time' => '',
             'ends_at' => date('Y-m-d', strtotime('+1 day')) . ' 00:00:00',
+            'ends_at_time' => '',
             'recurrence' => 'none',
             'recurrence_until' => '',
+            'recurrence_until_time' => '',
             'date_format' => 'd.m.Y',
             'time_format' => 'H:i',
             'image' => '',
@@ -106,8 +110,27 @@ class FurmediaScheduledPopupEngine {
             'overlay_opacity' => 42,
             'blur' => 3,
             'countdown' => 0,
+            'trigger' => 'on_load',
+            'trigger_delay' => 0,
+            'trigger_selector' => '',
+            'trigger_scroll_depth' => 55,
+            'auto_close_seconds' => 0,
+            'position' => 'center',
+            'popup_width_desktop' => 520,
+            'popup_width_laptop' => 520,
+            'popup_width_tablet' => 480,
+            'popup_width_mobile' => 360,
+            'popup_height_desktop' => 90,
+            'popup_height_laptop' => 90,
+            'popup_height_tablet' => 92,
+            'popup_height_mobile' => 94,
+            'breakpoint_mobile' => 767,
+            'breakpoint_tablet' => 1024,
+            'breakpoint_laptop' => 1440,
             'button_url' => '',
             'button_target' => '_self',
+            'devices' => array('desktop', 'tablet', 'mobile'),
+            'geo_countries' => array(),
             'target_type' => 'all',
             'target_categories' => array(),
             'target_products' => array(),
@@ -154,6 +177,8 @@ class FurmediaScheduledPopupEngine {
                 $campaign[$key] = (string)$legacy[$key];
             }
         }
+        $campaign['starts_at_time'] = self::extractTime($campaign['starts_at']);
+        $campaign['ends_at_time'] = self::extractTime($campaign['ends_at']);
 
         $mapping = array(
             'banner_title' => 'title',
@@ -172,8 +197,12 @@ class FurmediaScheduledPopupEngine {
     }
 
     public static function normalizeCampaign($campaign, $language_ids, $language_codes = array()) {
+        $campaign = (array)$campaign;
+        $has_starts_at_time = array_key_exists('starts_at_time', $campaign);
+        $has_ends_at_time = array_key_exists('ends_at_time', $campaign);
+        $has_recurrence_until_time = array_key_exists('recurrence_until_time', $campaign);
         $defaults = self::defaultCampaign($language_ids, $language_codes);
-        $result = array_merge($defaults, (array)$campaign);
+        $result = array_merge($defaults, $campaign);
 
         $result['id'] = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)$result['id']);
         if ($result['id'] === '') {
@@ -181,12 +210,37 @@ class FurmediaScheduledPopupEngine {
         }
         $result['name'] = self::plain($result['name'], 120);
         $result['status'] = !empty($result['status']) ? 1 : 0;
+        $result['email_enabled'] = !empty($result['email_enabled']) ? 1 : 0;
         $result['priority'] = max(-9999, min(9999, (int)$result['priority']));
         $result['timezone'] = (string)$result['timezone'];
-        $result['starts_at'] = self::dateTime($result['starts_at']);
-        $result['ends_at'] = self::dateTime($result['ends_at']);
-        $result['recurrence'] = in_array($result['recurrence'], array('none', 'weekly', 'monthly'), true) ? $result['recurrence'] : 'none';
-        $result['recurrence_until'] = $result['recurrence_until'] ? self::dateTime($result['recurrence_until']) : '';
+        $result['starts_at_time'] = $has_starts_at_time ? self::optionalTime($result['starts_at_time']) : self::extractTime($result['starts_at']);
+        $result['ends_at_time'] = $has_ends_at_time ? self::optionalTime($result['ends_at_time']) : self::extractTime($result['ends_at']);
+        $result['recurrence_until_time'] = $has_recurrence_until_time ? self::optionalTime($result['recurrence_until_time']) : self::extractTime($result['recurrence_until']);
+        $result['starts_at'] = self::dateTimeWithOptionalTime($result['starts_at'], $result['starts_at_time'], false);
+        $result['ends_at'] = self::dateTimeWithOptionalTime($result['ends_at'], $result['ends_at_time'], true);
+        $result['recurrence'] = in_array($result['recurrence'], array('none', 'weekly', 'monthly', 'yearly'), true) ? $result['recurrence'] : 'none';
+        $result['trigger'] = in_array($result['trigger'], array('on_load', 'on_delay', 'on_click', 'on_scroll', 'on_exit', 'on_inactivity', 'on_adblock'), true) ? $result['trigger'] : 'on_load';
+        $result['trigger_delay'] = max(0, min(900, (int)$result['trigger_delay']));
+        $result['trigger_selector'] = self::plain($result['trigger_selector'], 220);
+        $result['trigger_scroll_depth'] = max(1, min(100, (int)$result['trigger_scroll_depth']));
+        $result['auto_close_seconds'] = max(0, min(900, (int)$result['auto_close_seconds']));
+        $result['position'] = in_array($result['position'], array('center', 'top_left', 'top_center', 'top_right', 'middle_left', 'middle_center', 'middle_right', 'bottom_left', 'bottom_center', 'bottom_right'), true) ? $result['position'] : 'center';
+        $result['popup_width_desktop'] = max(280, min(1600, (int)$result['popup_width_desktop']));
+        $result['popup_width_laptop'] = max(280, min(1400, (int)$result['popup_width_laptop']));
+        $result['popup_width_tablet'] = max(260, min(1200, (int)$result['popup_width_tablet']));
+        $result['popup_width_mobile'] = max(240, min(800, (int)$result['popup_width_mobile']));
+        foreach (array('desktop', 'laptop', 'tablet', 'mobile') as $profile) {
+            $result['popup_height_' . $profile] = max(45, min(98, (int)$result['popup_height_' . $profile]));
+        }
+        $result['breakpoint_mobile'] = max(320, min(900, (int)$result['breakpoint_mobile']));
+        $result['breakpoint_tablet'] = max($result['breakpoint_mobile'] + 1, min(1400, (int)$result['breakpoint_tablet']));
+        $result['breakpoint_laptop'] = max($result['breakpoint_tablet'] + 1, min(2560, (int)$result['breakpoint_laptop']));
+        $result['devices'] = self::devices($result['devices']);
+        $result['geo_countries'] = self::countries($result['geo_countries']);
+        $result['recurrence_until'] = $result['recurrence_until'] ? self::dateTimeWithOptionalTime($result['recurrence_until'], $result['recurrence_until_time'], true) : '';
+        if ($result['recurrence_until'] === '') {
+            $result['recurrence_until_time'] = '';
+        }
         $result['date_format'] = self::format((string)$result['date_format'], 'd.m.Y');
         $result['time_format'] = self::format((string)$result['time_format'], 'H:i');
         $result['image'] = self::imagePath($result['image']);
@@ -270,6 +324,12 @@ class FurmediaScheduledPopupEngine {
             $steps = max(0, (int)floor($elapsed_days / 7));
             $start = clone $first_start;
             $start->modify('+' . ($steps * 7) . ' days');
+        } elseif ($recurrence === 'yearly') {
+            $years = (int)$current->format('Y') - (int)$first_start->format('Y');
+            $start = self::yearlyDate($first_start, max(0, $years));
+            if ($start > $current && $years > 0) {
+                $start = self::yearlyDate($first_start, $years - 1);
+            }
         } else {
             $months = ((int)$current->format('Y') - (int)$first_start->format('Y')) * 12 + ((int)$current->format('n') - (int)$first_start->format('n'));
             $start = self::monthlyDate($first_start, max(0, $months));
@@ -329,6 +389,15 @@ class FurmediaScheduledPopupEngine {
         );
     }
 
+    private static function yearlyDate($first, $years) {
+        $year = (int)$first->format('Y') + (int)$years;
+        $month = (int)$first->format('n');
+        $month_start = new DateTime(sprintf('%04d-%02d-01 00:00:00', $year, $month), $first->getTimezone());
+        $day = min((int)$first->format('j'), (int)$month_start->format('t'));
+        $value = sprintf('%04d-%02d-%02d %s', $year, $month, $day, $first->format('H:i:s'));
+        return new DateTime($value, $first->getTimezone());
+    }
+
     private static function monthlyDate($first, $months) {
         $year = (int)$first->format('Y');
         $month = (int)$first->format('n') + (int)$months;
@@ -347,9 +416,29 @@ class FurmediaScheduledPopupEngine {
         return sprintf('%02d:%02d:%02d', $days, $hours, $minutes);
     }
 
-    private static function dateTime($value) {
+    private static function optionalTime($value) {
         $value = trim((string)$value);
-        return preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value) ? $value : '';
+        return preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d$/', $value) ? $value : '';
+    }
+
+    private static function extractTime($value) {
+        $value = trim((string)$value);
+        return preg_match('/^\d{4}-\d{2}-\d{2}[ T]((?:[01]\d|2[0-3]):[0-5]\d)(?::[0-5]\d)?$/', $value, $matches) ? $matches[1] : '';
+    }
+
+    private static function dateTimeWithOptionalTime($value, $time, $end_of_day) {
+        $value = trim((string)$value);
+        if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})(?:[ T]\d{2}:\d{2}(?::\d{2})?)?$/', $value, $matches)) {
+            return '';
+        }
+        if (!checkdate((int)$matches[2], (int)$matches[3], (int)$matches[1])) {
+            return '';
+        }
+        $time = self::optionalTime($time);
+        if ($time !== '') {
+            return $matches[1] . '-' . $matches[2] . '-' . $matches[3] . ' ' . $time . ':00';
+        }
+        return $matches[1] . '-' . $matches[2] . '-' . $matches[3] . ($end_of_day ? ' 23:59:59' : ' 00:00:00');
     }
 
     private static function format($value, $fallback) {
@@ -427,11 +516,20 @@ class FurmediaScheduledPopupEngine {
 
         $templates = array(
             array(
-                'title' => 'Important announcement',
-                'message' => 'Our schedule changes between {start_date} and {end_date}.',
-                'submessage' => 'Normal service resumes after {end_date}.',
+                'title' => 'Shipping notice',
+                'message' => 'No deliveries are made between {start_date}, {start_time} and {end_date}, {end_time}.',
+                'submessage' => 'Deliveries resume on {end_date} at {end_time}.',
                 'thanks' => 'Thank you for your understanding!',
-                'email_message' => 'Important: our schedule changes between {start_date} and {end_date}.',
+                'email_message' => 'Important: no deliveries are made between {start_date}, {start_time} and {end_date}, {end_time}. Deliveries resume on {end_date} at {end_time}.',
+                'button_text' => 'Learn more',
+                'countdown_label' => 'Time remaining'
+            ),
+            array(
+                'title' => 'Shipping notice',
+                'message' => 'No deliveries are made between {start_date}, {start_time} and {end_date}, {end_time}.',
+                'submessage' => 'Deliveries resume on {end_date} at {end_time}.',
+                'thanks' => 'Thank you for your understanding!',
+                'email_message' => 'Important: no deliveries are made between {start_date}, {start_time} and {end_date}, {end_time}. Deliveries resume on {end_date} at {end_time}.',
                 'button_text' => 'Learn more',
                 'countdown_label' => 'Time remaining'
             ),
@@ -467,4 +565,37 @@ class FurmediaScheduledPopupEngine {
         $value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $value);
         return function_exists('mb_substr') ? mb_substr(trim($value), 0, $length, 'UTF-8') : substr(trim($value), 0, $length);
     }
+
+    private static function devices($values) {
+        $allowed = array('desktop', 'tablet', 'mobile');
+        $items = is_array($values) ? $values : preg_split('/[,\s;]+/', trim((string)$values));
+        $result = array();
+        foreach ((array)$items as $value) {
+            $value = strtolower(trim((string)$value));
+            if (in_array($value, $allowed, true)) {
+                $result[$value] = $value;
+            }
+        }
+        return array_values($result);
+    }
+
+    private static function countries($values) {
+        if (is_array($values)) {
+            $items = $values;
+        } elseif (is_string($values)) {
+            $items = preg_split('/[,\s;]+/', trim($values));
+        } else {
+            return array();
+        }
+
+        $result = array();
+        foreach ($items as $value) {
+            $code = strtoupper(preg_replace('/[^A-Za-z]/', '', (string)$value));
+            if (strlen($code) === 2) {
+                $result[$code] = $code;
+            }
+        }
+        return array_values($result);
+    }
 }
+

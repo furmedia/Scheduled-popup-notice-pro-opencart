@@ -1,4 +1,4 @@
-﻿# Scheduled Popup & Notice Pro 2.0 - OpenCart 3.0.x + Journal 3
+# Scheduled Popup & Notice Pro 2.0 - OpenCart 3.0.x + Journal 3
 
 This archive is built specifically for OpenCart 3.0.x + Journal 3. Do not install it on another OpenCart generation.
 

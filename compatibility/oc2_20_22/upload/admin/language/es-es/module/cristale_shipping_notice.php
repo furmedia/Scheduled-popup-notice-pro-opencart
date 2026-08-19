@@ -21,6 +21,8 @@ $_['entry_banner_preview'] = 'Vista previa del popup';
 $_['entry_timezone'] = 'Zona horaria';
 $_['entry_starts_at'] = 'Activo desde';
 $_['entry_ends_at'] = 'Caduca el';
+$_['text_date'] = 'Fecha';
+$_['text_time_optional'] = 'Hora (opcional)';
 $_['entry_banner_title'] = 'Título del popup';
 $_['entry_banner_message'] = 'Mensaje principal';
 $_['entry_banner_submessage'] = 'Mensaje secundario';
@@ -61,6 +63,19 @@ $_['text_preset_bold'] = 'Destacado';
 $_['text_target_all'] = 'Todas las páginas';
 $_['text_target_categories'] = 'Categorías seleccionadas';
 $_['text_target_products'] = 'Productos seleccionados';
+$_['entry_devices'] = 'Mostrar en dispositivos';
+$_['text_device_desktop'] = 'Escritorio';
+$_['text_device_tablet'] = 'Tableta';
+$_['text_device_mobile'] = 'Móvil';
+$_['text_device_help'] = 'Para versiones diferentes, duplica esta campaña y selecciona otros dispositivos.';
+$_['text_device_laptop'] = 'Portátil / escritorio';
+$_['text_responsive_studio'] = 'Estudio de popup adaptable';
+$_['text_responsive_help'] = 'Configura el ancho y la altura máxima para cada perfil de pantalla. Los umbrales editables determinan el perfil utilizado.';
+$_['entry_popup_width'] = 'Ancho (px)';
+$_['entry_popup_height'] = 'Altura máxima (vh)';
+$_['entry_breakpoint_mobile'] = 'Móvil hasta (px)';
+$_['entry_breakpoint_tablet'] = 'Tableta hasta (px)';
+$_['entry_breakpoint_laptop'] = 'Portátil hasta (px)';
 $_['text_impressions'] = 'Impresiones';
 $_['text_clicks'] = 'Clics en el botón';
 $_['text_closes'] = 'Cierres';
@@ -119,5 +134,47 @@ $_['error_campaign_timezone'] = 'La campaña %d tiene una zona horaria no válid
 $_['error_campaign_dates'] = 'La campaña %d tiene fechas no válidas o el final no es posterior al inicio.';
 $_['error_campaign_recurrence'] = 'La campaña %d tiene una fecha final de recurrencia no válida.';
 $_['error_campaign_target'] = 'La campaña %d debe tener al menos un destino seleccionado.';
+$_['error_campaign_devices'] = 'La campaña %d debe estar activa en al menos un dispositivo.';
 $_['error_campaign_content'] = 'La campaña %d necesita título y mensaje principal en cada idioma activo.';
 $_['error_upload'] = 'La imagen debe ser un archivo JPG, PNG o WebP válido de hasta 5 MB.';
+
+// Added for scheduled-popup-notice 2.0.7 template feature fallback
+
+
+// Added for Scheduled Popup & Notice Pro v2.0.7 (template support fallback)
+
+
+// Added for Scheduled Popup & Notice Pro v2.0.7 (template support fallback)
+$_['entry_auto_close'] = 'Auto close after (seconds)';
+$_['entry_geo_countries'] = 'Allowed countries (ISO code, comma-separated)';
+$_['entry_position'] = 'Popup position';
+$_['entry_template_library'] = 'Template library';
+$_['entry_trigger'] = 'Display trigger';
+$_['entry_trigger_delay'] = 'Trigger delay (seconds)';
+$_['entry_trigger_scroll_depth'] = 'Scroll depth (%)';
+$_['entry_trigger_selector'] = 'Click trigger selector';
+$_['text_default_template_label'] = 'Delivery window template';
+$_['text_position_bottom_center'] = 'Bottom center';
+$_['text_position_bottom_left'] = 'Bottom left';
+$_['text_position_bottom_right'] = 'Bottom right';
+$_['text_position_center'] = 'Center';
+$_['text_position_middle_center'] = 'Middle center';
+$_['text_position_middle_left'] = 'Middle left';
+$_['text_position_middle_right'] = 'Middle right';
+$_['text_position_top_center'] = 'Top center';
+$_['text_position_top_left'] = 'Top left';
+$_['text_position_top_right'] = 'Top right';
+$_['text_template_apply'] = 'Apply selected template';
+$_['text_template_delete'] = 'Delete selected template';
+$_['text_template_delete_confirm'] = 'Delete this template?';
+$_['text_template_export'] = 'Export templates';
+$_['text_template_import'] = 'Import templates';
+$_['text_template_library'] = 'Template library';
+$_['text_template_name'] = 'Template name';
+$_['text_template_no_selection'] = 'Choose a template.';
+$_['text_template_save'] = 'Save template';
+$_['text_trigger_on_adblock'] = 'On adblock detected';
+$_['text_untitled_template'] = 'Untitled template';
+$_['button_save_stay'] = 'Guardar y permanecer';
+$_['entry_email_enabled'] = 'Incluir el aviso en el correo de nuevo pedido';
+$_['text_email_enabled_help'] = 'Solo mientras esta campaña esté activa. Si el texto del correo está vacío, se usarán automáticamente el título y los textos del banner.';
